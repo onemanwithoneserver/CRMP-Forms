@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-export default function SectionCard({title, children}:{title?:string; children:React.ReactNode}){
+type Props = {
+  title?: string
+  children: ReactNode
+}
+
+export default function SectionCard({ title, children }: Props) {
   return (
-    <section className="mb-4 bg-white border border-gray-50 rounded-md p-4">
-      {title ? <h3 className="text-sm font-semibold mb-3">{title}</h3> : null}
+    <section className="section-card" style={{ marginBottom: '12px' }}>
+      {title && <div className="section-title">{title}</div>}
       {children}
     </section>
   )

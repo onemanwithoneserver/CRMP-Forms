@@ -1,46 +1,65 @@
 import React from 'react'
-import { FormProvider, useForm } from '../context/FormContext'
-import StepSlider from '../components/navigation/StepSlider'
-import FormContainer from '../components/layout/FormContainer'
-import SellerView from './SellerView'
-import BuyerView from './BuyerView'
-import ReviewSubmit from './ReviewSubmit'
-import Button from '../components/common/Button'
+import { useForm } from '../context/FormContext'
+import StepHeader from '../components/navigation/StepHeader'
+import RoleSelection from './RoleSelection'
 
-function Inner() {
-  const {state, next, back} = useForm()
+/* ─── Seller Pages ─── */
+import SellerPostType from './seller/PostType'
+import SellerPropertyType from './seller/PropertyType'
+import SellerPropertyDetails from './seller/PropertyDetails'
+import SellerBuildingInfo from './seller/BuildingInfo'
+import SellerLocationPricing from './seller/LocationPricing'
+import SellerReview from './seller/Review'
+
+/* ─── User Pages ─── */
+import UserLookingFor from './user/LookingFor'
+import UserBudgetArea from './user/BudgetArea'
+import UserLocationPref from './user/LocationPref'
+import UserReview from './user/Review'
+
+const USER_PAGES = [UserLookingFor, UserBudgetArea, UserLocationPref, UserReview]
+
+export default function MappingApp() {
+  const { state, steps, goToStep } = useForm()
+  const { role, step, sellerData } = state
+
+  /* ─── No role selected → show role picker ─── */
+  if (!role) {
+    return <RoleSelection />
+  }
+
+  /* ─── Role selected → show step flow ─── */
+  // Select the appropriate component based on role and step
+  let StepComponent: React.ComponentType | null = null
+
+  if (role === 'seller') {
+    const pages = [
+      SellerPostType,
+      SellerPropertyType,
+      SellerPropertyDetails,
+      sellerData.buildingSelection === 'new' ? SellerBuildingInfo : SellerLocationPricing,
+      SellerReview
+    ]
+    StepComponent = pages[step - 1]
+  } else if (role === 'user') {
+    StepComponent = USER_PAGES[step - 1]
+  }
+
+  if (!StepComponent) return null
 
   return (
-    <div>
-      <StepSlider />
-      <FormContainer>
-        {state.step === 1 && (
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Choose View</h2>
-            <div className="flex gap-3">
-              <button className="p-4 border rounded-md w-full" onClick={()=>{ /* set role */ (window as any).alert('Use Seller or Buyer view via step UI') }}>Seller View</button>
-              <button className="p-4 border rounded-md w-full" onClick={()=>{ (window as any).alert('Use Buyer view via step UI') }}>Buyer View</button>
-            </div>
-          </div>
-        )}
+    <div className="flex flex-col h-full">
+      {/* ─── Step Header ─── */}
+      <StepHeader
+        steps={steps}
+        currentStep={state.step}
+        onStepClick={goToStep}
+      />
 
-        {state.step === 2 && <SellerView />}
-        {state.step === 3 && <BuyerView />}
-        {state.step === 4 && <ReviewSubmit />}
-
-        <div className="mt-6 flex justify-between">
-          <Button variant="secondary" onClick={back}>Back</Button>
-          <Button onClick={next}>Next</Button>
-        </div>
-      </FormContainer>
+      {/* ─── Step Content ─── */}
+      <div className="flex-1 overflow-hidden">
+        <StepComponent key={state.step} />
+      </div>
     </div>
-  )
-}
-
-export default function MappingApp(){
-  return (
-    <FormProvider>
-      <Inner />
-    </FormProvider>
   )
 }

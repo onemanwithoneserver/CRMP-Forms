@@ -1,15 +1,57 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-export default function Button({children, variant='primary', onClick, disabled}:{
-  children:React.ReactNode
-  variant?: 'primary'|'secondary'
-  onClick?: ()=>void
+type Props = {
+  variant?: 'primary' | 'secondary' | 'ghost'
+  onClick?: () => void
   disabled?: boolean
-}){
-  const base = 'px-4 py-2 rounded-md text-sm font-medium'
-  const cls = variant==='primary' ? `${base} bg-primary-600 text-white` : `${base} border border-gray-200 bg-white`
+  children: ReactNode
+  fullWidth?: boolean
+}
+
+export default function Button({ variant = 'primary', onClick, disabled, children, fullWidth }: Props) {
+  const base: React.CSSProperties = {
+    fontFamily: "'Outfit', sans-serif",
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    borderRadius: '8px',
+    padding: '10px 20px',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.4 : 1,
+    transition: 'all 150ms ease',
+    border: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    width: fullWidth ? '100%' : 'auto',
+  }
+
+  const styles: Record<string, React.CSSProperties> = {
+    primary: {
+      ...base,
+      background: 'var(--accent)',
+      color: 'var(--text-inverse)',
+    },
+    secondary: {
+      ...base,
+      background: 'transparent',
+      color: 'var(--text)',
+      border: '1.5px solid var(--border)',
+    },
+    ghost: {
+      ...base,
+      background: 'transparent',
+      color: 'var(--text-secondary)',
+    },
+  }
+
   return (
-    <button className={`${cls} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={onClick} disabled={disabled}>
+    <button
+      type="button"
+      style={styles[variant]}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {children}
     </button>
   )

@@ -2,23 +2,41 @@ import React from 'react'
 
 type Option = { value: string; label: string }
 
-export default function SelectField({label, value, onChange, options}:{
+type Props = {
   label: string
   value?: string
   onChange?: (v: string) => void
   options: Option[]
-}){
+  placeholder?: string
+  error?: string | null
+}
+
+export default function SelectField({ label, value, onChange, options, placeholder, error }: Props) {
   return (
     <label className="block">
-      <div className="text-sm font-medium mb-2">{label}</div>
+      <div style={{
+        fontSize: '0.8125rem',
+        fontWeight: 500,
+        color: 'var(--text)',
+        marginBottom: '6px',
+      }}>
+        {label}
+      </div>
       <select
-        value={value}
-        onChange={e => onChange && onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2"
+        className={`form-input form-select ${error ? 'error' : ''}`}
+        value={value || ''}
+        onChange={e => onChange?.(e.target.value)}
       >
-        <option value="">Select</option>
-        {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+        <option value="">{placeholder || 'Select'}</option>
+        {options.map(o => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
       </select>
+      {error && (
+        <div style={{ fontSize: '0.75rem', color: '#d32f2f', marginTop: '4px' }}>
+          {error}
+        </div>
+      )}
     </label>
   )
 }

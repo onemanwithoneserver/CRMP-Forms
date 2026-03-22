@@ -50,30 +50,53 @@ function DesktopHeader({ steps, currentStep, onStepClick }: Props) {
 }
 
 /* ─── Mobile Step Header ─── */
-function MobileHeader({ steps, currentStep }: Props) {
+function MobileHeader({ steps, currentStep, onStepClick }: Props) {
   const current = steps[currentStep - 1]
   const prev = currentStep > 1 ? steps[currentStep - 2] : null
-  const next = currentStep < steps.length ? steps[currentStep] : null
 
   return (
-    <div>
-      <div className="step-header-mobile">
-        <div className="step-mobile-prev" style={{ visibility: prev ? 'visible' : 'hidden' }}>
-          ← {prev?.label}
+    <div style={{ background: 'white', paddingBottom: '12px', borderBottom: '1px solid var(--border-light)' }}>
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60px', padding: '0 16px' }}>
+        
+        {/* Left: Interactive Back Navigation */}
+        <div 
+          onClick={() => prev && onStepClick?.(currentStep - 1)}
+          style={{ 
+            position: 'absolute', 
+            left: '16px', 
+            color: 'var(--text-tertiary)', 
+            fontSize: '1.25rem', // Larger arrow
+            fontWeight: 500,
+            cursor: prev ? 'pointer' : 'default', 
+            visibility: prev ? 'visible' : 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '32px', // Larger hit area
+            height: '32px'
+          }}
+        >
+          ←
         </div>
-        <div className="step-mobile-current">
-          <div className="step-circle active" style={{ width: 24, height: 24, minWidth: 24, fontSize: '0.6875rem' }}>
+
+        {/* Center: Current Step */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="step-circle active" style={{ 
+            width: 32, height: 32, minWidth: 32, 
+            fontSize: '0.9rem', 
+            marginTop: 0 // Overriding global margin if any
+          }}>
             {currentStep}
           </div>
-          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text)' }}>
+          <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--accent)' }}>
             {current?.label}
           </span>
         </div>
-        <div className="step-mobile-next" style={{ visibility: next ? 'visible' : 'hidden', textAlign: 'right' }}>
-          {next?.label} →
-        </div>
+
       </div>
-      <div className="step-dots">
+
+      {/* Progress Dots */}
+      <div className="step-dots" style={{ padding: '0 16px', marginTop: '-4px' }}>
         {steps.map((_, i) => (
           <div
             key={i}

@@ -4,3 +4,58 @@
 
 html, body, #root { height: 100%; }
 body { @apply bg-gray-50; }
+
+:root {
+	--surface: #fcf9f8;
+	--surface-container-low: #f6f3f2;
+	--surface-container-lowest: #ffffff;
+	--primary: #3525cd;
+	--primary-container: #4f46e5;
+	--on-surface: #1c1b1b;
+	--on-surface-variant: #464555;
+	--tertiary-fixed: #ffe088;
+	--outline-variant-15: rgba(199,196,216,0.15);
+}
+
+.glass-bg {
+	background-color: rgba(252,249,248,0.8);
+	backdrop-filter: blur(8px);
+}
+
+.primary-gradient {
+	background: linear-gradient(135deg, var(--primary), var(--primary-container));
+}
+
+.ghost-border {
+	border: 1.5px solid var(--outline-variant-15);
+}
+
+/* Fixed device viewport frames for preview modes */
+main[data-device="mobile"] {
+	width: 375px;
+	max-width: none;
+	height: 812px;
+	margin: 24px auto;
+	border-radius: 20px;
+	box-shadow: 0 30px 60px rgba(28,27,27,0.12);
+	overflow: auto;
+	border: 1px solid rgba(0,0,0,0.04);
+	background: var(--surface);
+}
+
+main[data-device="tablet"] {
+	width: 768px;
+	max-width: none;
+	height: 1024px;
+	margin: 28px auto;
+	border-radius: 18px;
+	box-shadow: 0 30px 60px rgba(28,27,27,0.10);
+	overflow: auto;
+	border: 1px solid rgba(0,0,0,0.04);
+	background: var(--surface);
+}
+
+/* Keep desktop full width behavior */
+main[data-device="desktop"] {
+	max-width: 64rem;
+}

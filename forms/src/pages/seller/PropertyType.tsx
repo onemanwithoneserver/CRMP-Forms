@@ -2,8 +2,7 @@ import React from 'react'
 import { useForm, PROPERTY_TYPES } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 
-/* ─── Asset Icons ─── */
-// Assuming Vite converts string imports to base URLs or we can load them
+
 import iconOffice from '../../assets/Select Property Type/Office Space.svg'
 import iconRetail from '../../assets/Select Property Type/Rental  Commercial Space.svg'
 import iconHostel from '../../assets/Select Property Type/Hostel.svg'

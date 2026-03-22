@@ -17,7 +17,7 @@ export default function PropertyDetails() {
       onNext={next}
     >
       <div className="flex flex-col gap-4">
-        {/* Search Input */}
+
         <div style={{ position: 'relative' }}>
           <input
             type="text"
@@ -42,7 +42,7 @@ export default function PropertyDetails() {
           </div>
         </div>
 
-        {/* Option: Select from Existing */}
+
         <button
           type="button"
           className={`selection-card ${buildingSelection === 'existing' ? 'selected' : ''}`}
@@ -75,7 +75,7 @@ export default function PropertyDetails() {
           </div>
         </button>
 
-        {/* Option: Add New Existing */}
+
         <button
           type="button"
           className={`selection-card ${buildingSelection === 'new' ? 'selected' : ''}`}

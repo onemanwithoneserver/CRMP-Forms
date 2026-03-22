@@ -9,14 +9,12 @@ type Props = {
   onStepClick?: (step: number) => void
 }
 
-/* ─── SVG Icons ─── */
 const CheckIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20,6 9,17 4,12" />
   </svg>
 )
 
-/* ─── Desktop Step Header ─── */
 function DesktopHeader({ steps, currentStep, onStepClick }: Props) {
   return (
     <div className="step-header">
@@ -29,7 +27,7 @@ function DesktopHeader({ steps, currentStep, onStepClick }: Props) {
           <React.Fragment key={step.key}>
             <div
               className="step-item"
-              style={{ cursor: onStepClick && isCompleted ? 'pointer' : 'default', opacity: isActive || isCompleted ? 1 : 0.5 }}
+              style={{ cursor: onStepClick && isCompleted ? 'pointer' : 'default', opacity: isActive || isCompleted ? 1 : 0.4 }}
               onClick={() => isCompleted && onStepClick?.(stepNum)}
             >
               <div className={`step-circle ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}>
@@ -49,54 +47,50 @@ function DesktopHeader({ steps, currentStep, onStepClick }: Props) {
   )
 }
 
-/* ─── Mobile Step Header ─── */
 function MobileHeader({ steps, currentStep, onStepClick }: Props) {
   const current = steps[currentStep - 1]
   const prev = currentStep > 1 ? steps[currentStep - 2] : null
 
   return (
-    <div style={{ background: 'white', paddingBottom: '12px', borderBottom: '1px solid var(--border-light)' }}>
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60px', padding: '0 16px' }}>
-        
-        {/* Left: Interactive Back Navigation */}
-        <div 
+    <div className="step-header-mobile" style={{ flexDirection: 'column', padding: '16px 0 0 0', display: 'flex' }}>
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60px', width: '100%', padding: '0 24px' }}>
+
+        <div
           onClick={() => prev && onStepClick?.(currentStep - 1)}
-          style={{ 
-            position: 'absolute', 
-            left: '16px', 
-            color: 'var(--text-tertiary)', 
-            fontSize: '1.25rem', // Larger arrow
-            fontWeight: 500,
-            cursor: prev ? 'pointer' : 'default', 
+          className="step-mobile-prev"
+          style={{
+            position: 'absolute',
+            left: '16px',
+            fontSize: '1.75rem',
+            color: '#1C2A44',
+            cursor: prev ? 'pointer' : 'default',
             visibility: prev ? 'visible' : 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '32px', // Larger hit area
-            height: '32px'
+            width: '48px',
+            height: '48px'
           }}
         >
           ←
         </div>
 
-        {/* Center: Current Step */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div className="step-circle active" style={{ 
-            width: 32, height: 32, minWidth: 32, 
-            fontSize: '0.9rem', 
-            marginTop: 0 // Overriding global margin if any
+        <div className="step-mobile-current">
+          <div className="step-circle active" style={{
+            width: 28, height: 28, minWidth: 28,
+            fontSize: '0.85rem',
+            marginTop: 0
           }}>
             {currentStep}
           </div>
-          <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--accent)' }}>
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)' }}>
             {current?.label}
           </span>
         </div>
 
       </div>
 
-      {/* Progress Dots */}
-      <div className="step-dots" style={{ padding: '0 16px', marginTop: '-4px' }}>
+      <div className="step-dots" style={{ width: '100%' }}>
         {steps.map((_, i) => (
           <div
             key={i}
@@ -108,7 +102,6 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
   )
 }
 
-/* ─── Main Export ─── */
 export default function StepHeader(props: Props) {
   const { device } = useDevice()
   const isMobile = device === 'mobile'

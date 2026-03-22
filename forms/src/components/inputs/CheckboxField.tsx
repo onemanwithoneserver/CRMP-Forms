@@ -7,7 +7,7 @@ type Props = {
 }
 
 const CheckIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20,6 9,17 4,12" />
   </svg>
 )
@@ -16,17 +16,18 @@ export default function CheckboxField({ label, checked, onChange }: Props) {
   return (
     <button
       type="button"
-      className="flex items-center gap-3"
+      className="flex items-center gap-4"
       onClick={() => onChange(!checked)}
-      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0', textAlign: 'left' }}
     >
       <div className={`custom-checkbox ${checked ? 'checked' : ''}`}>
         {checked && <CheckIcon />}
       </div>
       <span style={{
-        fontSize: '0.875rem',
-        fontWeight: 400,
-        color: 'var(--text)',
+        fontSize: '0.95rem',
+        fontWeight: 500,
+        color: checked ? 'var(--text)' : 'var(--text-secondary)',
+        transition: 'color 300ms var(--ease-smooth)'
       }}>
         {label}
       </span>

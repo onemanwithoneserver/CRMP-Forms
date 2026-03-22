@@ -3,6 +3,7 @@ import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import Toggle from '../../components/inputs/Toggle'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
+import SelectField from '../../components/inputs/SelectField'
 
 export default function BuildingInfo() {
   const { state, dispatch, next, back } = useForm()
@@ -62,11 +63,15 @@ export default function BuildingInfo() {
         <div className="flex items-center justify-between py-2 mt-2">
           <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)' }}>Ownership Type</span>
           <div style={{ width: '180px' }}>
-            <select className="form-input form-select" style={{ height: '48px', borderColor: 'var(--accent)', borderWidth: '2px', fontWeight: 600, color: 'var(--text)' }} value={d.ownershipType} onChange={e => onUpdate({ ownershipType: e.target.value })}>
-              <option value="Free Hold">Free Hold</option>
-              <option value="Lease Hold">Lease Hold</option>
-              <option value="Co-operative Society">Co-operative Society</option>
-            </select>
+            <SelectField
+              value={d.ownershipType}
+              onChange={v => onUpdate({ ownershipType: v })}
+              options={[
+                { value: 'Free Hold', label: 'Free Hold' },
+                { value: 'Lease Hold', label: 'Lease Hold' },
+                { value: 'Co-operative Society', label: 'Co-operative Society' },
+              ]}
+            />
           </div>
         </div>
 

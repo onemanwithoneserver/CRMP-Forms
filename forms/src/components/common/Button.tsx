@@ -11,18 +11,18 @@ type Props = {
 export default function Button({ variant = 'primary', onClick, disabled, children, fullWidth }: Props) {
   const base: React.CSSProperties = {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '0.875rem',
+    fontSize: '0.95rem',
     fontWeight: 600,
-    borderRadius: '8px',
+    borderRadius: '10px',
     padding: '10px 20px',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.4 : 1,
-    transition: 'all 150ms ease',
+    transition: 'all 300ms var(--ease-smooth)',
     border: 'none',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '6px',
+    gap: '8px',
     width: fullWidth ? '100%' : 'auto',
   }
 
@@ -31,12 +31,14 @@ export default function Button({ variant = 'primary', onClick, disabled, childre
       ...base,
       background: 'var(--accent)',
       color: 'var(--text-inverse)',
+      boxShadow: disabled ? 'none' : '0 4px 12px rgba(9, 9, 11, 0.1)',
+      transform: 'translateY(0)',
     },
     secondary: {
       ...base,
       background: 'transparent',
       color: 'var(--text)',
-      border: '1.5px solid var(--border)',
+      border: '1px solid var(--border)',
     },
     ghost: {
       ...base,

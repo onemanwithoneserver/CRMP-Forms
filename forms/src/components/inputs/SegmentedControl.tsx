@@ -10,9 +10,11 @@ export default function SegmentedControl({ options, value, onChange }: Props) {
   return (
     <div style={{
       display: 'flex',
-      borderRadius: '8px',
+      borderRadius: '6px',
       overflow: 'hidden',
-      background: 'var(--surface-container)',
+      background: 'rgba(9, 9, 11, 0.04)',
+      padding: '4px',
+      gap: '4px'
     }}>
       {options.map(opt => {
         const isSelected = value === opt.value
@@ -23,14 +25,16 @@ export default function SegmentedControl({ options, value, onChange }: Props) {
             onClick={() => onChange(opt.value)}
             style={{
               flex: 1,
-              padding: '12px 0',
-              background: isSelected ? 'var(--accent)' : '#e5e7eb',
-              color: isSelected ? 'var(--text-inverse)' : 'var(--accent)',
+              padding: '10px 0',
+              background: isSelected ? '#1C2A44' : 'transparent',
+              color: isSelected ? '#ffffff' : 'var(--text-secondary)',
               fontSize: '0.9rem',
-              fontWeight: 500,
+              fontWeight: 600,
               border: 'none',
+              borderRadius: '4px',
               cursor: 'pointer',
-              transition: 'all 150ms ease'
+              transition: 'all 300ms var(--ease-smooth)',
+              boxShadow: isSelected ? '0 2px 8px rgba(9, 9, 11, 0.08)' : 'none'
             }}
           >
             {opt.label}

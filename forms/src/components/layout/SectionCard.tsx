@@ -7,7 +7,7 @@ type Props = {
 
 export default function SectionCard({ title, children }: Props) {
   return (
-    <section className="section-card" style={{ marginBottom: '12px' }}>
+    <section className="section-card" style={{ marginBottom: '16px' }}>
       {title && <div className="section-title">{title}</div>}
       {children}
     </section>

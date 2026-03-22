@@ -3,10 +3,10 @@ import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 export type FormData = {
   // Global
   postType: string
+  postSubCategory: string
 
   // Property / Building
   propertyType: string
-  includeOperatingBusiness: boolean
   buildingSelection: string
   buildingName: string
 
@@ -24,6 +24,17 @@ export type FormData = {
   liftAvailable: boolean
   fireCompliant: boolean
   ownershipType: string
+  
+  // Transaction Setup
+  askingPriceTotal: string
+  askingPriceMonthly: string
+  propertyOwnership: string
+  transactionDetails: string
+  pricePerSqFt: string
+  additionalNotes: string
+  
+  // Uploads
+  photosUploaded: boolean
   
   // Unit Details
   unitType: string
@@ -70,33 +81,28 @@ export const getDynamicSteps = (data: FormData) => {
     steps.push({ key: 'looking-for', label: 'Looking For' })
     steps.push({ key: 'budget-area', label: 'Budget & Area' })
     steps.push({ key: 'location-pref', label: 'Location' })
-  } else {
+  } else if (post) {
     // Seller/Landlord flows
     steps.push({ key: 'property-type', label: 'Property Type' })
     steps.push({ key: 'property-details', label: 'Building Selection' })
     
     if (data.buildingSelection === 'new') {
       steps.push({ key: 'building-info', label: 'Building Info' })
-    } else {
-      steps.push({ key: 'location-pricing', label: 'Location & Pricing' })
     }
 
-    if (post === 'sell_property') {
+    if (post === 'Property Sale' || post === 'Lease/Rent Property') {
       steps.push({ key: 'unit-details', label: 'Unit Details' })
-      if (data.includeOperatingBusiness) {
-        steps.push({ key: 'business-info', label: 'Business Information' })
+      if (post === 'Lease/Rent Property') {
+         steps.push({ key: 'lease-info', label: 'Lease Information' })
       }
-    } else if (post === 'lease_property') {
-      steps.push({ key: 'unit-details', label: 'Unit Details' })
-      steps.push({ key: 'lease-info', label: 'Lease Information' })
-      if (data.includeOperatingBusiness) {
-        steps.push({ key: 'business-info', label: 'Business Information' })
-      }
-    } else if (post === 'sell_business') {
+    } else if (post.includes('Running Business') || post === 'Offer Franchise') {
       steps.push({ key: 'business-info', label: 'Business Information' })
-    } else {
       steps.push({ key: 'unit-details', label: 'Unit Details' })
     }
+    
+    // Add Transactional Details and Upload Photos
+    steps.push({ key: 'transaction-details', label: 'Transactional Details' })
+    steps.push({ key: 'upload-photos', label: 'Upload Photos' })
   }
 
   steps.push({ key: 'review', label: 'Review' })
@@ -105,11 +111,22 @@ export const getDynamicSteps = (data: FormData) => {
 
 /* ─── Options Data ─── */
 export const SELLER_POST_TYPES = [
-  { value: 'sell_property', label: 'Sell Property', description: 'List a residential or commercial asset for direct purchase.' },
-  { value: 'lease_property', label: 'Lease property', description: 'Find long-term tenants for your managed spaces.' },
-  { value: 'sell_business', label: 'Sell Operating Business', description: 'List a residential or commercial asset for direct purchase.' },
+  { value: 'Property Sale', label: 'Property Sale', description: 'List a residential or commercial asset for direct purchase.' },
+  { value: 'Lease/Rent Property', label: 'Lease/Rent Property', description: 'Find long-term tenants for your managed spaces.' },
+  { value: 'Running Business - Sale', label: 'Running Business - Sale', description: 'Sell an ongoing operating business.' },
+  { value: 'Running Business - Lease', label: 'Running Business - Lease', description: 'Lease an ongoing operating business.' },
+  { value: 'Offer Franchise', label: 'Offer Franchise', description: 'Offer a new franchise opportunity.' },
+  // Optional buyer mapping stub just in case
   { value: 'rent_property', label: 'Rent property', description: 'Short-term vacation rentals or seasonal stays.' },
 ] as const
+
+export const SELLER_SUB_CATEGORIES: Record<string, string[]> = {
+  'Property Sale': ['Vacant', 'Pre-Leased', 'Fractional'],
+  'Lease/Rent Property': ['Full Lease', 'Sub-Lease'],
+  'Running Business - Sale': ['Franchise', 'Regular'],
+  'Running Business - Lease': ['Franchise', 'Regular'],
+  'Offer Franchise': ['New'],
+}
 
 export const PROPERTY_TYPES = [
   { value: 'office', label: 'Office Space', icon: 'office' },
@@ -145,19 +162,19 @@ export const PROPERTY_AGE_OPTIONS = [
 ] as const
 
 export const USER_PROPERTY_TYPES = [
-  { value: 'office', label: 'Office Space' },
-  { value: 'retail', label: 'Retail / Commercial' },
-  { value: 'hostel', label: 'Hostel / PG' },
-  { value: 'land', label: 'Land' },
-  { value: 'coworking', label: 'Co-Working' },
-  { value: 'warehouse', label: 'Warehouse' },
+  { value: 'office', label: 'Office Space', icon: 'office' },
+  { value: 'retail', label: 'Retail / Commercial', icon: 'retail' },
+  { value: 'hostel', label: 'Hostel / PG', icon: 'hostel' },
+  { value: 'land', label: 'Land', icon: 'land' },
+  { value: 'coworking', label: 'Co-Working', icon: 'coworking' },
+  { value: 'warehouse', label: 'Warehouse', icon: 'warehouse' },
 ] as const
 
 /* ─── State ─── */
 const initialFormData: FormData = {
   postType: '',
+  postSubCategory: '',
   propertyType: '',
-  includeOperatingBusiness: false,
   buildingSelection: '',
   buildingName: '',
   listingType: '',
@@ -173,6 +190,15 @@ const initialFormData: FormData = {
   liftAvailable: true,
   fireCompliant: true,
   ownershipType: 'Free Hold',
+
+  askingPriceTotal: '',
+  askingPriceMonthly: '',
+  propertyOwnership: 'Freehold',
+  transactionDetails: '100% Equity Sale',
+  pricePerSqFt: '',
+  additionalNotes: '',
+  
+  photosUploaded: false,
 
   unitType: 'Entire Building',
   totalBuiltUpArea: '',
@@ -208,6 +234,7 @@ type State = {
   step: number
   formData: FormData
   errors: Record<string, string>
+  designStepOverride: string | null
 }
 
 type Action =
@@ -219,11 +246,13 @@ type Action =
   | { type: 'setError'; field: string; message: string }
   | { type: 'clearErrors' }
   | { type: 'reset' }
+  | { type: 'setDesignOverride'; key: string | null }
 
 const initialState: State = {
   step: 1,
   formData: { ...initialFormData },
   errors: {},
+  designStepOverride: null,
 }
 
 function reducer(state: State, action: Action): State {
@@ -251,6 +280,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, errors: {} }
     case 'reset':
       return { ...initialState }
+    case 'setDesignOverride':
+      return { ...state, designStepOverride: action.key }
     default:
       return state
   }
@@ -259,8 +290,12 @@ function reducer(state: State, action: Action): State {
 /* ─── Validation ─── */
 function validateStep(step: number, data: FormData): Record<string, string> {
   const errors: Record<string, string> = {}
-  if (step === 1 && !data.postType) {
-    errors.postType = 'Please select what you want to post'
+  if (step === 1) {
+    if (!data.postType) {
+      errors.postType = 'Please select a main category'
+    } else if (SELLER_SUB_CATEGORIES[data.postType] && !data.postSubCategory) {
+      errors.postType = 'Please select a sub-category to proceed'
+    }
   }
   return errors
 }

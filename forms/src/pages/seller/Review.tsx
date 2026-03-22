@@ -1,7 +1,6 @@
 import React from 'react'
 import { useForm, SELLER_POST_TYPES, PROPERTY_TYPES } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
-import Button from '../../components/common/Button'
 
 function findLabel(options: readonly { value: string; label: string }[], value: string): string {
   return options.find(o => o.value === value)?.label || '—'
@@ -34,30 +33,30 @@ export default function Review() {
       nextLabel="Submit"
     >
       <div className="flex flex-col gap-4">
-        {/* Post Type */}
+
         <div className="section-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div className="section-title" style={{ margin: 0 }}>Post Type</div>
-            <Button variant="ghost" onClick={() => goToStep(1)}>Edit</Button>
+            <button type="button" className="edit-link" onClick={() => goToStep(1)}>Edit</button>
           </div>
           <SummaryRow label="Type" value={findLabel(SELLER_POST_TYPES as any, d.postType)} />
           <SummaryRow label="Operating Business" value={d.includeOperatingBusiness ? 'Included' : 'Not Included'} />
         </div>
 
-        {/* Property Type */}
+
         <div className="section-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div className="section-title" style={{ margin: 0 }}>Property Type</div>
-            <Button variant="ghost" onClick={() => goToStep(2)}>Edit</Button>
+            <button type="button" className="edit-link" onClick={() => goToStep(2)}>Edit</button>
           </div>
           <SummaryRow label="Type" value={findLabel(PROPERTY_TYPES as any, d.propertyType)} />
         </div>
 
-        {/* Property Details */}
+
         <div className="section-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div className="section-title" style={{ margin: 0 }}>Property Details</div>
-            <Button variant="ghost" onClick={() => goToStep(3)}>Edit</Button>
+            <button type="button" className="edit-link" onClick={() => goToStep(3)}>Edit</button>
           </div>
           <SummaryRow label="Building Option" value={d.buildingSelection === 'existing' ? 'Select from Existing' : d.buildingSelection === 'new' ? 'Add New Existing' : '—'} />
           <SummaryRow label="Building Name" value={d.buildingName || '—'} />
@@ -76,11 +75,11 @@ export default function Review() {
           )}
         </div>
 
-        {/* Unit Details */}
+
         <div className="section-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div className="section-title" style={{ margin: 0 }}>Unit Details</div>
-            <Button variant="ghost" onClick={() => goToStep(d.buildingSelection === 'new' ? 5 : 5)}>Edit</Button>
+            <button type="button" className="edit-link" onClick={() => goToStep(d.buildingSelection === 'new' ? 5 : 5)}>Edit</button>
           </div>
           <SummaryRow label="Unit Type" value={d.unitType || '—'} />
           <SummaryRow label="Total Built-up Area" value={d.totalBuiltUpArea ? `${d.totalBuiltUpArea} sqft` : '—'} />
@@ -89,11 +88,11 @@ export default function Review() {
           <SummaryRow label="Attached Washrooms" value={d.attachedWashrooms || '—'} />
         </div>
 
-        {/* Lease Information */}
+
         <div className="section-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div className="section-title" style={{ margin: 0 }}>Lease Information</div>
-            <Button variant="ghost" onClick={() => goToStep(6)}>Edit</Button>
+            <button type="button" className="edit-link" onClick={() => goToStep(6)}>Edit</button>
           </div>
           <SummaryRow label="Monthly Rent" value={d.monthlyRent ? `₹${d.monthlyRent}` : '—'} />
           <SummaryRow label="Security Deposit" value={d.securityDeposit ? `₹${d.securityDeposit}` : '—'} />
@@ -104,11 +103,11 @@ export default function Review() {
           <SummaryRow label="Power Backup" value={d.powerBackup || '—'} />
         </div>
 
-        {/* Business Information */}
+
         <div className="section-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div className="section-title" style={{ margin: 0 }}>Business Information</div>
-            <Button variant="ghost" onClick={() => goToStep(7)}>Edit</Button>
+            <button type="button" className="edit-link" onClick={() => goToStep(7)}>Edit</button>
           </div>
           <SummaryRow label="Business Category" value={d.businessCategory || '—'} />
           <SummaryRow label="Monthly Revenue" value={d.monthlyRevenue ? `₹${d.monthlyRevenue}` : '—'} />

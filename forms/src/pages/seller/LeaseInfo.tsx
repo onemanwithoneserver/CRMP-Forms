@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
+import DatePicker from '../../components/inputs/DatePicker'
 
 export default function LeaseInfo() {
   const { state, dispatch, next, back } = useForm()
@@ -39,7 +40,12 @@ export default function LeaseInfo() {
         <div className="flex items-center justify-between py-2">
           <span style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)' }}>Lease Expiry Date</span>
           <div style={{ width: '160px', position: 'relative' }}>
-            <input type="date" className="form-input" style={{ height: '48px', borderColor: 'var(--border)' }} value={d.leaseExpiryDate} onChange={e => onUpdate({ leaseExpiryDate: e.target.value })} />
+            <DatePicker 
+              value={d.leaseExpiryDate} 
+              onChange={v => onUpdate({ leaseExpiryDate: v })} 
+              placeholder="Select Date"
+              disablePast
+            />
           </div>
         </div>
 

@@ -1,14 +1,14 @@
 import React from 'react'
-import { useForm, SELLER_POST_TYPES } from '../../context/FormContext'
+import { useForm, SELLER_POST_TYPES, SELLER_SUB_CATEGORIES } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 
 export default function PostType() {
   const { state, dispatch, next, back } = useForm()
-  const { postType, includeOperatingBusiness } = state.formData
+  const { postType, postSubCategory } = state.formData
 
   return (
     <FormPage
-      title="What do you want to Post?"
+      title="What do you want to do?"
       onBack={back}
       onNext={next}
       backDisabled={true}
@@ -21,7 +21,11 @@ export default function PostType() {
               key={option.value}
               type="button"
               className={`selection-card ${selected ? 'selected' : ''}`}
-              onClick={() => dispatch({ type: 'updateData', payload: { postType: option.value } })}
+              onClick={() => {
+                 if (!selected) {
+                    dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
+                 }
+              }}
               aria-pressed={selected}
               style={{
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.04)',
@@ -46,47 +50,41 @@ export default function PostType() {
                 }}>
                   {option.description}
                 </div>
+
+                {selected && SELLER_SUB_CATEGORIES[option.value] && (
+                  <div style={{ marginTop: '16px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {SELLER_SUB_CATEGORIES[option.value].map(sub => {
+                      const isSubSelected = postSubCategory === sub
+                      return (
+                        <div
+                          key={sub}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch({ type: 'updateData', payload: { postSubCategory: sub } })
+                          }}
+                          style={{
+                            padding: '8px 16px',
+                            borderRadius: '4px',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            background: isSubSelected ? 'var(--accent-gold)' : 'rgba(28, 42, 68, 0.05)',
+                            color: isSubSelected ? '#fff' : 'var(--text)',
+                            border: `1px solid ${isSubSelected ? 'var(--accent-gold)' : 'rgba(28, 42, 68, 0.1)'}`,
+                            transition: 'all 200ms ease'
+                          }}
+                        >
+                          {sub}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+
               </div>
             </button>
           )
         })}
-      </div>
-
-      <div style={{ marginTop: '28px' }}>
-        <button
-          type="button"
-          onClick={() => dispatch({ type: 'updateData', payload: { includeOperatingBusiness: !includeOperatingBusiness } })}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '4px 0',
-          }}
-        >
-          <div className={`custom-checkbox ${includeOperatingBusiness ? 'checked' : ''}`} style={{ 
-            width: '20px',
-            height: '20px',
-            borderWidth: '2px',
-            borderColor: includeOperatingBusiness ? 'var(--accent)' : '#6B7280',
-            borderRadius: '4px'
-          }}>
-             {includeOperatingBusiness && (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20,6 9,17 4,12" />
-                </svg>
-             )}
-          </div>
-          <span style={{
-            fontSize: '0.95rem',
-            color: 'var(--text-secondary)',
-            fontFamily: "'Outfit', sans-serif",
-          }}>
-            Include Operating Business ?
-          </span>
-        </button>
       </div>
 
       {state.errors.postType && (

@@ -1,6 +1,7 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
+import SelectField from '../../components/inputs/SelectField'
 
 export default function BusinessInfo() {
   const { state, dispatch, next, back } = useForm()
@@ -18,16 +19,18 @@ export default function BusinessInfo() {
     >
       <div className="flex flex-col gap-4">
         
-        <div>
-          <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Business Category</label>
-          <select className="form-input form-select" style={{ height: '48px', borderColor: 'var(--border)' }} value={d.businessCategory} onChange={e => onUpdate({ businessCategory: e.target.value })}>
-            <option value="Hostel / PG">Hostel / PG</option>
-            <option value="Retail">Retail</option>
-            <option value="Co-Working">Co-Working</option>
-            <option value="Gym / Fitness">Gym / Fitness</option>
-            <option value="Restaurant / Cafe">Restaurant / Cafe</option>
-          </select>
-        </div>
+        <SelectField
+          label="Business Category"
+          value={d.businessCategory}
+          onChange={v => onUpdate({ businessCategory: v })}
+          options={[
+            { value: 'Hostel / PG', label: 'Hostel / PG' },
+            { value: 'Retail', label: 'Retail' },
+            { value: 'Co-Working', label: 'Co-Working' },
+            { value: 'Gym / Fitness', label: 'Gym / Fitness' },
+            { value: 'Restaurant / Cafe', label: 'Restaurant / Cafe' },
+          ]}
+        />
 
         <hr style={{ borderColor: 'var(--border-light)', margin: '4px 0' }} />
 

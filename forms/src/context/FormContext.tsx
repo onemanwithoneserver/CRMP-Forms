@@ -1,15 +1,24 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 
-/* ─── Step Definitions ─── */
-export const getSellerSteps = (data: SellerData) => [
-  { key: 'post-type', label: 'Post Type' },
-  { key: 'property-type', label: 'Property Type' },
-  { key: 'property-details', label: 'Property Details' },
-  data.buildingSelection === 'new'
-    ? { key: 'building-info', label: 'Building Info' }
-    : { key: 'location-pricing', label: 'Location & Pricing' },
-  { key: 'review', label: 'Review' },
-]
+export const getSellerSteps = (data: SellerData) => {
+  const steps = [
+    { key: 'post-type', label: 'Post Type' },
+    { key: 'property-type', label: 'Property Type' },
+    { key: 'property-details', label: 'Building Selection' },
+  ]
+  if (data.buildingSelection === 'new') {
+    steps.push({ key: 'building-info', label: 'Building Info' })
+  } else {
+    steps.push({ key: 'location-pricing', label: 'Location & Pricing' })
+  }
+  
+  steps.push({ key: 'unit-details', label: 'Unit Details' })
+  steps.push({ key: 'lease-info', label: 'Lease Information' })
+  steps.push({ key: 'business-info', label: 'Business Information' })
+  
+  steps.push({ key: 'review', label: 'Review' })
+  return steps
+}
 
 export const USER_STEPS = [
   { key: 'looking-for', label: 'Looking For' },
@@ -90,6 +99,30 @@ type SellerData = {
   liftAvailable: boolean
   fireCompliant: boolean
   ownershipType: string
+  
+  // Unit Details
+  unitType: string
+  totalBuiltUpArea: string
+  numberOfRooms: string
+  numberOfBeds: string
+  attachedWashrooms: string // 'Yes' | 'No'
+
+  // Lease Information
+  monthlyRent: string
+  securityDeposit: string
+  remainingTenure: string
+  leaseExpiryDate: string
+  lockInPeriod: string
+  isFurnished: string // 'Yes' | 'No'
+  powerBackup: string // 'Yes' | 'No'
+
+  // Business Information
+  businessCategory: string
+  monthlyRevenue: string
+  monthlyExpenses: string
+  occupancyRate: string
+  yearsInOperation: string
+  rentEscalation: string
 }
 
 type UserData = {
@@ -141,6 +174,27 @@ const initialSellerData: SellerData = {
   liftAvailable: true,
   fireCompliant: true,
   ownershipType: 'Free Hold',
+
+  unitType: 'Entire Building',
+  totalBuiltUpArea: '',
+  numberOfRooms: '',
+  numberOfBeds: '',
+  attachedWashrooms: 'No',
+
+  monthlyRent: '',
+  securityDeposit: '',
+  remainingTenure: '',
+  leaseExpiryDate: '',
+  lockInPeriod: '',
+  isFurnished: 'No',
+  powerBackup: 'No',
+
+  businessCategory: 'Hostel / PG',
+  monthlyRevenue: '',
+  monthlyExpenses: '',
+  occupancyRate: '',
+  yearsInOperation: '',
+  rentEscalation: '',
 }
 
 const initialUserData: UserData = {

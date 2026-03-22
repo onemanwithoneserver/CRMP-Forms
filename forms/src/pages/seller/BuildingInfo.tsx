@@ -1,78 +1,8 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
-
-/* ─── Inline Components ─── */
-function Toggle({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) {
-  return (
-    <div className="flex items-center justify-between py-2">
-      <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)' }}>{label}</span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        style={{
-          width: '56px',
-          height: '32px',
-          borderRadius: '8px',
-          background: checked ? 'var(--accent)' : 'var(--text-tertiary)',
-          position: 'relative',
-          transition: 'background 200ms ease',
-          border: 'none',
-          cursor: 'pointer',
-        }}
-      >
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '4px',
-          background: 'white',
-          position: 'absolute',
-          top: '4px',
-          left: checked ? '28px' : '4px',
-          transition: 'left 200ms ease',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }} />
-      </button>
-    </div>
-  )
-}
-
-function SegmentedControl({ options, value, onChange }: { options: {label: string, value: string}[], value: string, onChange: (v: string) => void }) {
-  return (
-    <div style={{
-      display: 'flex',
-      borderRadius: '8px',
-      overflow: 'hidden',
-      background: 'var(--surface-container)',
-    }}>
-      {options.map(opt => {
-        const isSelected = value === opt.value
-        return (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => onChange(opt.value)}
-            style={{
-              flex: 1,
-              padding: '12px 0',
-              background: isSelected ? 'var(--accent)' : '#e5e7eb',
-              color: isSelected ? 'var(--text-inverse)' : 'var(--accent)',
-              fontSize: '0.9rem',
-              fontWeight: 500,
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 150ms ease'
-            }}
-          >
-            {opt.label}
-          </button>
-        )
-      })}
-    </div>
-  )
-}
+import Toggle from '../../components/inputs/Toggle'
+import SegmentedControl from '../../components/inputs/SegmentedControl'
 
 export default function BuildingInfo() {
   const { state, dispatch, next, back } = useForm()

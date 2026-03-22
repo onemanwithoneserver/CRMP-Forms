@@ -9,6 +9,9 @@ import SellerPropertyType from './seller/PropertyType'
 import SellerPropertyDetails from './seller/PropertyDetails'
 import SellerBuildingInfo from './seller/BuildingInfo'
 import SellerLocationPricing from './seller/LocationPricing'
+import SellerUnitDetails from './seller/UnitDetails'
+import SellerLeaseInfo from './seller/LeaseInfo'
+import SellerBusinessInfo from './seller/BusinessInfo'
 import SellerReview from './seller/Review'
 
 /* ─── User Pages ─── */
@@ -38,6 +41,9 @@ export default function MappingApp() {
       SellerPropertyType,
       SellerPropertyDetails,
       sellerData.buildingSelection === 'new' ? SellerBuildingInfo : SellerLocationPricing,
+      SellerUnitDetails,
+      SellerLeaseInfo,
+      SellerBusinessInfo,
       SellerReview
     ]
     StepComponent = pages[step - 1]

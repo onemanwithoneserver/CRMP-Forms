@@ -76,16 +76,47 @@ export default function Review() {
           )}
         </div>
 
-        {/* Location & Pricing */}
-        {d.buildingSelection === 'existing' && (
-          <div className="section-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <div className="section-title" style={{ margin: 0 }}>Location & Pricing</div>
-              <Button variant="ghost" onClick={() => goToStep(4)}>Edit</Button>
-            </div>
-            <SummaryRow label="City" value={d.city} />
+        {/* Unit Details */}
+        <div className="section-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="section-title" style={{ margin: 0 }}>Unit Details</div>
+            <Button variant="ghost" onClick={() => goToStep(d.buildingSelection === 'new' ? 5 : 5)}>Edit</Button>
           </div>
-        )}
+          <SummaryRow label="Unit Type" value={d.unitType || '—'} />
+          <SummaryRow label="Total Built-up Area" value={d.totalBuiltUpArea ? `${d.totalBuiltUpArea} sqft` : '—'} />
+          <SummaryRow label="Number of Rooms" value={d.numberOfRooms || '—'} />
+          <SummaryRow label="Number of Beds" value={d.numberOfBeds || '—'} />
+          <SummaryRow label="Attached Washrooms" value={d.attachedWashrooms || '—'} />
+        </div>
+
+        {/* Lease Information */}
+        <div className="section-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="section-title" style={{ margin: 0 }}>Lease Information</div>
+            <Button variant="ghost" onClick={() => goToStep(6)}>Edit</Button>
+          </div>
+          <SummaryRow label="Monthly Rent" value={d.monthlyRent ? `₹${d.monthlyRent}` : '—'} />
+          <SummaryRow label="Security Deposit" value={d.securityDeposit ? `₹${d.securityDeposit}` : '—'} />
+          <SummaryRow label="Remaining Tenure" value={d.remainingTenure || '—'} />
+          <SummaryRow label="Lease Expiry Date" value={d.leaseExpiryDate || '—'} />
+          <SummaryRow label="Lock-in Period" value={d.lockInPeriod || '—'} />
+          <SummaryRow label="Furnishing Type" value={d.isFurnished || '—'} />
+          <SummaryRow label="Power Backup" value={d.powerBackup || '—'} />
+        </div>
+
+        {/* Business Information */}
+        <div className="section-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="section-title" style={{ margin: 0 }}>Business Information</div>
+            <Button variant="ghost" onClick={() => goToStep(7)}>Edit</Button>
+          </div>
+          <SummaryRow label="Business Category" value={d.businessCategory || '—'} />
+          <SummaryRow label="Monthly Revenue" value={d.monthlyRevenue ? `₹${d.monthlyRevenue}` : '—'} />
+          <SummaryRow label="Monthly Expenses" value={d.monthlyExpenses ? `₹${d.monthlyExpenses}` : '—'} />
+          <SummaryRow label="Occupancy Rate" value={d.occupancyRate ? `${d.occupancyRate}%` : '—'} />
+          <SummaryRow label="Years in Operation" value={d.yearsInOperation || '—'} />
+          <SummaryRow label="Rent Escalation" value={d.rentEscalation ? `${d.rentEscalation}%` : '—'} />
+        </div>
       </div>
     </FormPage>
   )

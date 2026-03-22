@@ -6,7 +6,7 @@ import { FormProvider, useForm } from './context/FormContext'
 
 function Header() {
   const { device, setDevice } = useDevice()
-  const { state, resetToRoleSelection } = useForm()
+  const { state, resetToStart } = useForm()
 
   return (
     <header style={{
@@ -38,10 +38,10 @@ function Header() {
         </h1>
 
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          {state.role && (
+          {state.step > 1 && (
             <button
               type="button"
-              onClick={resetToRoleSelection}
+              onClick={resetToStart}
               style={{
                 background: 'var(--surface-low)',
                 border: '1px solid var(--border-light)',
@@ -66,7 +66,7 @@ function Header() {
                 e.currentTarget.style.color = 'var(--text-secondary)'
               }}
             >
-              ← {state.role === 'seller' ? 'Seller View' : 'User View'}
+              ← Start Over
             </button>
           )}
         </div>

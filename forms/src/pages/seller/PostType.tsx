@@ -4,7 +4,7 @@ import FormPage from '../../components/layout/FormPage'
 
 export default function PostType() {
   const { state, dispatch, next, back } = useForm()
-  const { postType, includeOperatingBusiness } = state.sellerData
+  const { postType, includeOperatingBusiness } = state.formData
 
   return (
     <FormPage
@@ -21,7 +21,7 @@ export default function PostType() {
               key={option.value}
               type="button"
               className={`selection-card ${selected ? 'selected' : ''}`}
-              onClick={() => dispatch({ type: 'updateSeller', payload: { postType: option.value } })}
+              onClick={() => dispatch({ type: 'updateData', payload: { postType: option.value } })}
               aria-pressed={selected}
               style={{
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.04)',
@@ -55,7 +55,7 @@ export default function PostType() {
       <div style={{ marginTop: '28px' }}>
         <button
           type="button"
-          onClick={() => dispatch({ type: 'updateSeller', payload: { includeOperatingBusiness: !includeOperatingBusiness } })}
+          onClick={() => dispatch({ type: 'updateData', payload: { includeOperatingBusiness: !includeOperatingBusiness } })}
           style={{
             display: 'flex',
             alignItems: 'center',

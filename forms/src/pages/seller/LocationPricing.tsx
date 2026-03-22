@@ -18,10 +18,10 @@ const CITY_OPTIONS = [
 
 export default function LocationPricing() {
   const { state, dispatch, next, back } = useForm()
-  const { sellerData, errors } = state
+  const { formData, errors } = state
 
   const update = (payload: Record<string, string>) =>
-    dispatch({ type: 'updateSeller', payload })
+    dispatch({ type: 'updateData', payload })
 
   return (
     <FormPage
@@ -35,13 +35,13 @@ export default function LocationPricing() {
           <div className="flex flex-col gap-3">
             <TextField
               label="Address"
-              value={sellerData.address}
+              value={formData.address}
               onChange={v => update({ address: v })}
               placeholder="Street address or landmark"
             />
             <SelectField
               label="City"
-              value={sellerData.city}
+              value={formData.city}
               onChange={v => update({ city: v })}
               options={CITY_OPTIONS}
               placeholder="Select city"
@@ -54,14 +54,14 @@ export default function LocationPricing() {
           <div className="flex flex-col gap-3">
             <TextField
               label="Area (sq ft)"
-              value={sellerData.area}
+              value={formData.area}
               onChange={v => update({ area: v })}
               placeholder="e.g. 1200"
               type="number"
             />
             <TextField
               label="Price (₹)"
-              value={sellerData.price}
+              value={formData.price}
               onChange={v => update({ price: v })}
               placeholder="e.g. 50,00,000"
             />

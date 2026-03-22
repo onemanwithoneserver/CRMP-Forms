@@ -1,31 +1,107 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 
-export const getSellerSteps = (data: SellerData) => {
+export type FormData = {
+  // Global
+  postType: string
+
+  // Property / Building
+  propertyType: string
+  includeOperatingBusiness: boolean
+  buildingSelection: string
+  buildingName: string
+
+  // Location & Pricing
+  listingType: string
+  transactionType: string
+  furnishing: string
+  propertyAge: string
+  address: string
+  city: string
+  area: string
+  price: string
+  totalFloors: string
+  underConstruction: string
+  liftAvailable: boolean
+  fireCompliant: boolean
+  ownershipType: string
+  
+  // Unit Details
+  unitType: string
+  totalBuiltUpArea: string
+  numberOfRooms: string
+  numberOfBeds: string
+  attachedWashrooms: string
+
+  // Lease Information
+  monthlyRent: string
+  securityDeposit: string
+  remainingTenure: string
+  leaseExpiryDate: string
+  lockInPeriod: string
+  isFurnished: string
+  powerBackup: string
+
+  // Business Information
+  businessCategory: string
+  monthlyRevenue: string
+  monthlyExpenses: string
+  occupancyRate: string
+  yearsInOperation: string
+  rentEscalation: string
+
+  // Tenant / Buyer Specific (User Flow)
+  lookingFor: string[]
+  budgetMin: string
+  budgetMax: string
+  areaMin: string
+  areaMax: string
+  preferredCity: string
+  preferredLocality: string
+}
+
+export const getDynamicSteps = (data: FormData) => {
   const steps = [
-    { key: 'post-type', label: 'Post Type' },
-    { key: 'property-type', label: 'Property Type' },
-    { key: 'property-details', label: 'Building Selection' },
+    { key: 'post-type', label: 'Post Type' }
   ]
-  if (data.buildingSelection === 'new') {
-    steps.push({ key: 'building-info', label: 'Building Info' })
+
+  const post = data.postType
+
+  if (post === 'rent_property') {
+    steps.push({ key: 'looking-for', label: 'Looking For' })
+    steps.push({ key: 'budget-area', label: 'Budget & Area' })
+    steps.push({ key: 'location-pref', label: 'Location' })
   } else {
-    steps.push({ key: 'location-pricing', label: 'Location & Pricing' })
+    // Seller/Landlord flows
+    steps.push({ key: 'property-type', label: 'Property Type' })
+    steps.push({ key: 'property-details', label: 'Building Selection' })
+    
+    if (data.buildingSelection === 'new') {
+      steps.push({ key: 'building-info', label: 'Building Info' })
+    } else {
+      steps.push({ key: 'location-pricing', label: 'Location & Pricing' })
+    }
+
+    if (post === 'sell_property') {
+      steps.push({ key: 'unit-details', label: 'Unit Details' })
+      if (data.includeOperatingBusiness) {
+        steps.push({ key: 'business-info', label: 'Business Information' })
+      }
+    } else if (post === 'lease_property') {
+      steps.push({ key: 'unit-details', label: 'Unit Details' })
+      steps.push({ key: 'lease-info', label: 'Lease Information' })
+      if (data.includeOperatingBusiness) {
+        steps.push({ key: 'business-info', label: 'Business Information' })
+      }
+    } else if (post === 'sell_business') {
+      steps.push({ key: 'business-info', label: 'Business Information' })
+    } else {
+      steps.push({ key: 'unit-details', label: 'Unit Details' })
+    }
   }
-  
-  steps.push({ key: 'unit-details', label: 'Unit Details' })
-  steps.push({ key: 'lease-info', label: 'Lease Information' })
-  steps.push({ key: 'business-info', label: 'Business Information' })
-  
+
   steps.push({ key: 'review', label: 'Review' })
   return steps
 }
-
-export const USER_STEPS = [
-  { key: 'looking-for', label: 'Looking For' },
-  { key: 'budget-area', label: 'Budget & Area' },
-  { key: 'location-pref', label: 'Location' },
-  { key: 'review', label: 'Review' },
-] as const
 
 /* ─── Options Data ─── */
 export const SELLER_POST_TYPES = [
@@ -78,84 +154,7 @@ export const USER_PROPERTY_TYPES = [
 ] as const
 
 /* ─── State ─── */
-export type Role = 'seller' | 'user'
-
-type SellerData = {
-  postType: string
-  propertyType: string
-  includeOperatingBusiness: boolean
-  buildingSelection: string
-  buildingName: string
-  listingType: string
-  transactionType: string
-  furnishing: string
-  propertyAge: string
-  address: string
-  city: string
-  area: string
-  price: string
-  totalFloors: string
-  underConstruction: string // maps to 'Year of Construction' Yes/No in design
-  liftAvailable: boolean
-  fireCompliant: boolean
-  ownershipType: string
-  
-  // Unit Details
-  unitType: string
-  totalBuiltUpArea: string
-  numberOfRooms: string
-  numberOfBeds: string
-  attachedWashrooms: string // 'Yes' | 'No'
-
-  // Lease Information
-  monthlyRent: string
-  securityDeposit: string
-  remainingTenure: string
-  leaseExpiryDate: string
-  lockInPeriod: string
-  isFurnished: string // 'Yes' | 'No'
-  powerBackup: string // 'Yes' | 'No'
-
-  // Business Information
-  businessCategory: string
-  monthlyRevenue: string
-  monthlyExpenses: string
-  occupancyRate: string
-  yearsInOperation: string
-  rentEscalation: string
-}
-
-type UserData = {
-  lookingFor: string[]
-  budgetMin: string
-  budgetMax: string
-  areaMin: string
-  areaMax: string
-  preferredCity: string
-  preferredLocality: string
-}
-
-type State = {
-  role: Role | null
-  step: number
-  sellerData: SellerData
-  userData: UserData
-  errors: Record<string, string>
-}
-
-type Action =
-  | { type: 'setRole'; role: Role }
-  | { type: 'next' }
-  | { type: 'back' }
-  | { type: 'goToStep'; step: number }
-  | { type: 'updateSeller'; payload: Partial<SellerData> }
-  | { type: 'updateUser'; payload: Partial<UserData> }
-  | { type: 'toggleUserLookingFor'; value: string }
-  | { type: 'setError'; field: string; message: string }
-  | { type: 'clearErrors' }
-  | { type: 'reset' }
-
-const initialSellerData: SellerData = {
+const initialFormData: FormData = {
   postType: '',
   propertyType: '',
   includeOperatingBusiness: false,
@@ -195,9 +194,7 @@ const initialSellerData: SellerData = {
   occupancyRate: '',
   yearsInOperation: '',
   rentEscalation: '',
-}
 
-const initialUserData: UserData = {
   lookingFor: [],
   budgetMin: '',
   budgetMax: '',
@@ -207,42 +204,46 @@ const initialUserData: UserData = {
   preferredLocality: '',
 }
 
-const initialState: State = {
-  role: null,
-  step: 1,
-  sellerData: { ...initialSellerData },
-  userData: { ...initialUserData },
-  errors: {},
+type State = {
+  step: number
+  formData: FormData
+  errors: Record<string, string>
 }
 
-function getTotalSteps(role: Role | null, sellerData?: SellerData): number {
-  if (role === 'seller' && sellerData) return getSellerSteps(sellerData).length
-  if (role === 'user') return USER_STEPS.length
-  return 0
+type Action =
+  | { type: 'next' }
+  | { type: 'back' }
+  | { type: 'goToStep'; step: number }
+  | { type: 'updateData'; payload: Partial<FormData> }
+  | { type: 'toggleLookingFor'; value: string }
+  | { type: 'setError'; field: string; message: string }
+  | { type: 'clearErrors' }
+  | { type: 'reset' }
+
+const initialState: State = {
+  step: 1,
+  formData: { ...initialFormData },
+  errors: {},
 }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'setRole':
-      return { ...state, role: action.role, step: 1, errors: {} }
     case 'next': {
-      const total = getTotalSteps(state.role, state.sellerData)
+      const total = getDynamicSteps(state.formData).length
       return { ...state, step: Math.min(total, state.step + 1), errors: {} }
     }
     case 'back':
       return { ...state, step: Math.max(1, state.step - 1), errors: {} }
     case 'goToStep':
       return { ...state, step: action.step, errors: {} }
-    case 'updateSeller':
-      return { ...state, sellerData: { ...state.sellerData, ...action.payload }, errors: {} }
-    case 'updateUser':
-      return { ...state, userData: { ...state.userData, ...action.payload }, errors: {} }
-    case 'toggleUserLookingFor': {
-      const current = state.userData.lookingFor
+    case 'updateData':
+      return { ...state, formData: { ...state.formData, ...action.payload }, errors: {} }
+    case 'toggleLookingFor': {
+      const current = state.formData.lookingFor
       const next = current.includes(action.value)
         ? current.filter(v => v !== action.value)
         : [...current, action.value]
-      return { ...state, userData: { ...state.userData, lookingFor: next }, errors: {} }
+      return { ...state, formData: { ...state.formData, lookingFor: next }, errors: {} }
     }
     case 'setError':
       return { ...state, errors: { ...state.errors, [action.field]: action.message } }
@@ -256,35 +257,10 @@ function reducer(state: State, action: Action): State {
 }
 
 /* ─── Validation ─── */
-function validateSellerStep(step: number, data: SellerData): Record<string, string> {
+function validateStep(step: number, data: FormData): Record<string, string> {
   const errors: Record<string, string> = {}
   if (step === 1 && !data.postType) {
     errors.postType = 'Please select what you want to post'
-  }
-  if (step === 2 && !data.propertyType) {
-    errors.propertyType = 'Please select a property type'
-  }
-  if (step === 3 && !data.buildingSelection) {
-    errors.buildingSelection = 'Please select a building option'
-  }
-  if (step === 4) {
-    if (data.buildingSelection === 'new') {
-      if (!data.buildingName) errors.buildingName = 'Building name is required'
-      if (!data.city) errors.city = 'City is required'
-    } else {
-      if (!data.city) errors.city = 'City is required'
-    }
-  }
-  return errors
-}
-
-function validateUserStep(step: number, data: UserData): Record<string, string> {
-  const errors: Record<string, string> = {}
-  if (step === 1 && data.lookingFor.length === 0) {
-    errors.lookingFor = 'Please select at least one property type'
-  }
-  if (step === 3) {
-    if (!data.preferredCity) errors.preferredCity = 'City is required'
   }
   return errors
 }
@@ -298,7 +274,7 @@ type ContextValue = {
   next: () => void
   back: () => void
   goToStep: (step: number) => void
-  resetToRoleSelection: () => void
+  resetToStart: () => void
 }
 
 const FormContext = createContext<ContextValue>({
@@ -309,24 +285,17 @@ const FormContext = createContext<ContextValue>({
   next: () => null,
   back: () => null,
   goToStep: () => null,
-  resetToRoleSelection: () => null,
+  resetToStart: () => null,
 })
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const steps = state.role === 'seller' ? getSellerSteps(state.sellerData)
-    : state.role === 'user' ? USER_STEPS
-    : []
-
-  const totalSteps = getTotalSteps(state.role, state.sellerData)
+  const steps = getDynamicSteps(state.formData)
+  const totalSteps = steps.length
 
   const next = () => {
-    const errors = state.role === 'seller'
-      ? validateSellerStep(state.step, state.sellerData)
-      : state.role === 'user'
-      ? validateUserStep(state.step, state.userData)
-      : {}
+    const errors = validateStep(state.step, state.formData)
 
     if (Object.keys(errors).length > 0) {
       Object.entries(errors).forEach(([field, message]) => {
@@ -339,10 +308,10 @@ export function FormProvider({ children }: { children: ReactNode }) {
 
   const back = () => dispatch({ type: 'back' })
   const goToStep = (step: number) => dispatch({ type: 'goToStep', step })
-  const resetToRoleSelection = () => dispatch({ type: 'reset' })
+  const resetToStart = () => dispatch({ type: 'reset' })
 
   return (
-    <FormContext.Provider value={{ state, dispatch, steps, totalSteps, next, back, goToStep, resetToRoleSelection }}>
+    <FormContext.Provider value={{ state, dispatch, steps, totalSteps, next, back, goToStep, resetToStart }}>
       {children}
     </FormContext.Provider>
   )

@@ -6,10 +6,10 @@ import SegmentedControl from '../../components/inputs/SegmentedControl'
 
 export default function BuildingInfo() {
   const { state, dispatch, next, back } = useForm()
-  const d = state.sellerData
+  const d = state.formData
 
-  const onUpdate = (payload: Partial<typeof state.sellerData>) => {
-    dispatch({ type: 'updateSeller', payload })
+  const onUpdate = (payload: Partial<typeof state.formData>) => {
+    dispatch({ type: 'updateData', payload })
   }
 
   return (

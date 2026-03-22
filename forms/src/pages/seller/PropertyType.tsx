@@ -20,7 +20,7 @@ const icons: Record<string, string> = {
 
 export default function PropertyType() {
   const { state, dispatch, next, back } = useForm()
-  const { propertyType } = state.sellerData
+  const { propertyType } = state.formData
 
   return (
     <FormPage
@@ -38,7 +38,7 @@ export default function PropertyType() {
               key={option.value}
               type="button"
               className={`selection-card ${selected ? 'selected' : ''}`}
-              onClick={() => dispatch({ type: 'updateSeller', payload: { propertyType: option.value } })}
+              onClick={() => dispatch({ type: 'updateData', payload: { propertyType: option.value } })}
               aria-pressed={selected}
               style={{
                 display: 'flex',

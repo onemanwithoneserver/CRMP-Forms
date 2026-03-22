@@ -6,10 +6,10 @@ import SectionCard from '../../components/layout/SectionCard'
 
 export default function BudgetArea() {
   const { state, dispatch, next, back } = useForm()
-  const { userData } = state
+  const { formData } = state
 
   const update = (payload: Record<string, string>) =>
-    dispatch({ type: 'updateUser', payload })
+    dispatch({ type: 'updateData', payload })
 
   return (
     <FormPage
@@ -24,7 +24,7 @@ export default function BudgetArea() {
             <div style={{ flex: 1 }}>
               <TextField
                 label="Min"
-                value={userData.budgetMin}
+                value={formData.budgetMin}
                 onChange={v => update({ budgetMin: v })}
                 placeholder="e.g. 10,00,000"
               />
@@ -32,7 +32,7 @@ export default function BudgetArea() {
             <div style={{ flex: 1 }}>
               <TextField
                 label="Max"
-                value={userData.budgetMax}
+                value={formData.budgetMax}
                 onChange={v => update({ budgetMax: v })}
                 placeholder="e.g. 50,00,000"
               />
@@ -45,7 +45,7 @@ export default function BudgetArea() {
             <div style={{ flex: 1 }}>
               <TextField
                 label="Min"
-                value={userData.areaMin}
+                value={formData.areaMin}
                 onChange={v => update({ areaMin: v })}
                 placeholder="e.g. 500"
                 type="number"
@@ -54,7 +54,7 @@ export default function BudgetArea() {
             <div style={{ flex: 1 }}>
               <TextField
                 label="Max"
-                value={userData.areaMax}
+                value={formData.areaMax}
                 onChange={v => update({ areaMax: v })}
                 placeholder="e.g. 2000"
                 type="number"

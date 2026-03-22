@@ -10,10 +10,10 @@ const CheckIcon = () => (
 
 export default function LookingFor() {
   const { state, dispatch, next, back } = useForm()
-  const selected = state.userData.lookingFor
+  const selected = state.formData.lookingFor
 
   const toggle = (value: string) => {
-    dispatch({ type: 'toggleUserLookingFor', value })
+    dispatch({ type: 'toggleLookingFor', value })
   }
 
   return (

@@ -1,57 +1,59 @@
 import React from 'react'
 import { useForm } from '../context/FormContext'
 import StepHeader from '../components/navigation/StepHeader'
-import RoleSelection from './RoleSelection'
 
-/* ─── Seller Pages ─── */
-import SellerPostType from './seller/PostType'
-import SellerPropertyType from './seller/PropertyType'
-import SellerPropertyDetails from './seller/PropertyDetails'
-import SellerBuildingInfo from './seller/BuildingInfo'
-import SellerLocationPricing from './seller/LocationPricing'
-import SellerUnitDetails from './seller/UnitDetails'
-import SellerLeaseInfo from './seller/LeaseInfo'
-import SellerBusinessInfo from './seller/BusinessInfo'
-import SellerReview from './seller/Review'
+/* ─── Core / Shared Pages ─── */
+import PostType from './seller/PostType'
+import Review from './seller/Review' // Unified review for now
 
-/* ─── User Pages ─── */
+/* ─── Property & Listing Pages ─── */
+import PropertyType from './seller/PropertyType'
+import PropertyDetails from './seller/PropertyDetails'
+import BuildingInfo from './seller/BuildingInfo'
+import LocationPricing from './seller/LocationPricing'
+
+import UnitDetails from './seller/UnitDetails'
+import LeaseInfo from './seller/LeaseInfo'
+import BusinessInfo from './seller/BusinessInfo'
+
+/* ─── Tenant / Buyer Pages ─── */
 import UserLookingFor from './user/LookingFor'
 import UserBudgetArea from './user/BudgetArea'
 import UserLocationPref from './user/LocationPref'
-import UserReview from './user/Review'
 
-const USER_PAGES = [UserLookingFor, UserBudgetArea, UserLocationPref, UserReview]
+const COMPONENT_MAP: Record<string, React.ComponentType> = {
+  'post-type': PostType,
+  
+  // Seller / Landlord Specific
+  'property-type': PropertyType,
+  'property-details': PropertyDetails,
+  'building-info': BuildingInfo,
+  'location-pricing': LocationPricing,
+  'unit-details': UnitDetails,
+  'lease-info': LeaseInfo,
+  'business-info': BusinessInfo,
+
+  // Tenant / Buyer Specific
+  'looking-for': UserLookingFor,
+  'budget-area': UserBudgetArea,
+  'location-pref': UserLocationPref,
+
+  // Shared
+  'review': Review,
+}
 
 export default function MappingApp() {
   const { state, steps, goToStep } = useForm()
-  const { role, step, sellerData } = state
+  const { step } = state
 
-  /* ─── No role selected → show role picker ─── */
-  if (!role) {
-    return <RoleSelection />
+  const currentStepData = steps[step - 1]
+  if (!currentStepData) return null
+
+  const StepComponent = COMPONENT_MAP[currentStepData.key]
+
+  if (!StepComponent) {
+    return <div style={{ padding: 40, textAlign: 'center' }}>Component not bound: {currentStepData.key}</div>
   }
-
-  /* ─── Role selected → show step flow ─── */
-  // Select the appropriate component based on role and step
-  let StepComponent: React.ComponentType | null = null
-
-  if (role === 'seller') {
-    const pages = [
-      SellerPostType,
-      SellerPropertyType,
-      SellerPropertyDetails,
-      sellerData.buildingSelection === 'new' ? SellerBuildingInfo : SellerLocationPricing,
-      SellerUnitDetails,
-      SellerLeaseInfo,
-      SellerBusinessInfo,
-      SellerReview
-    ]
-    StepComponent = pages[step - 1]
-  } else if (role === 'user') {
-    StepComponent = USER_PAGES[step - 1]
-  }
-
-  if (!StepComponent) return null
 
   return (
     <div className="flex flex-col h-full">

@@ -18,10 +18,10 @@ const CITY_OPTIONS = [
 
 export default function LocationPref() {
   const { state, dispatch, next, back } = useForm()
-  const { userData, errors } = state
+  const { formData, errors } = state
 
   const update = (payload: Record<string, string>) =>
-    dispatch({ type: 'updateUser', payload })
+    dispatch({ type: 'updateData', payload })
 
   return (
     <FormPage
@@ -34,7 +34,7 @@ export default function LocationPref() {
         <div className="flex flex-col gap-3">
           <SelectField
             label="Preferred City"
-            value={userData.preferredCity}
+            value={formData.preferredCity}
             onChange={v => update({ preferredCity: v })}
             options={CITY_OPTIONS}
             placeholder="Select city"
@@ -42,7 +42,7 @@ export default function LocationPref() {
           />
           <TextField
             label="Preferred Locality"
-            value={userData.preferredLocality}
+            value={formData.preferredLocality}
             onChange={v => update({ preferredLocality: v })}
             placeholder="e.g. Bandra West, Koramangala"
           />

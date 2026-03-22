@@ -18,7 +18,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 
 export default function Review() {
   const { state, back, goToStep } = useForm()
-  const d = state.sellerData
+  const d = state.formData
 
   const handleSubmit = () => {
     alert('Form submitted successfully! (Integration point)')

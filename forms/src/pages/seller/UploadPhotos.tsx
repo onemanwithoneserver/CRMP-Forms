@@ -1,16 +1,145 @@
-import React, { useState } from 'react'
+import React, { useRef } from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
+import SectionCard from '../../components/layout/SectionCard'
+
+import iconOffice from '../../assets/Select Property Type/Office Space.svg'
+import iconRetail from '../../assets/Select Property Type/Rental  Commercial Space.svg'
+import iconHostel from '../../assets/Select Property Type/Hostel.svg'
+import iconLand from '../../assets/Select Property Type/Land.svg'
+import iconCoworking from '../../assets/Select Property Type/Co-Working.svg'
+
+const PROPERTY_TYPE_OPTIONS = [
+  { value: 'office', label: 'Office Space', icon: iconOffice },
+  { value: 'retail', label: 'Rental / Commercial Space', icon: iconRetail },
+  { value: 'hostel', label: 'Hostel / PG', icon: iconHostel },
+  { value: 'land', label: 'Land', icon: iconLand },
+  { value: 'coworking', label: 'Co-Working', icon: iconCoworking },
+  { value: 'entire_building', label: 'Entire Building', icon: iconOffice },
+]
+
+
+
+interface UploadZoneProps {
+  label: string
+  description: string
+  accept: string
+  note?: string
+}
+
+function UploadTile({ accept, index }: { accept: string; index: number }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const isMain = index === 0
+  return (
+    <div
+      onClick={() => inputRef.current?.click()}
+      style={{
+        border: `1.5px dashed ${isMain ? 'var(--accent-gold)' : 'var(--border)'}`,
+        borderRadius: '10px',
+        aspectRatio: '1 / 1',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        cursor: 'pointer',
+        background: isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)',
+        transition: 'border-color 200ms ease, background 200ms ease',
+        position: 'relative',
+      }}
+      onMouseEnter={e => {
+        ;(e.currentTarget as HTMLDivElement).style.borderColor = 'var(--accent-gold)'
+        ;(e.currentTarget as HTMLDivElement).style.background = 'rgba(200,155,60,0.06)'
+      }}
+      onMouseLeave={e => {
+        ;(e.currentTarget as HTMLDivElement).style.borderColor = isMain ? 'var(--accent-gold)' : 'var(--border)'
+        ;(e.currentTarget as HTMLDivElement).style.background = isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)'
+      }}
+    >
+      <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
+      {/* Camera / image icon */}
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+        stroke={isMain ? 'var(--accent-gold)' : 'var(--text-tertiary)'}
+        strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      <span style={{
+        fontSize: '0.68rem',
+        fontWeight: isMain ? 700 : 500,
+        color: isMain ? 'var(--accent-gold)' : 'var(--text-tertiary)',
+        letterSpacing: '0.01em',
+      }}>
+        {isMain ? 'Main Photo' : `Photo ${index + 1}`}
+      </span>
+    </div>
+  )
+}
+
+function UploadZone({ label, description, accept, note }: UploadZoneProps) {
+  const addMoreRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="flex flex-col gap-3">
+      <label className="text-[13px] font-semibold text-[#445069] pl-0.5">{label}</label>
+
+      {/* 2×2 grid of upload tiles */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+        {[0, 1, 2, 3].map(i => (
+          <UploadTile key={i} accept={accept} index={i} />
+        ))}
+      </div>
+
+      {/* Add more button */}
+      <button
+        type="button"
+        onClick={() => addMoreRef.current?.click()}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+          padding: '10px 16px', borderRadius: '8px',
+          border: '1.5px dashed var(--border)',
+          background: 'transparent',
+          color: 'var(--text-secondary)',
+          fontSize: '0.8rem', fontWeight: 600,
+          cursor: 'pointer', fontFamily: "'Outfit', sans-serif",
+          transition: 'border-color 200ms ease, color 200ms ease',
+          width: '100%',
+        }}
+        onMouseEnter={e => {
+          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--accent-gold)'
+          ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--accent-gold)'
+        }}
+        onMouseLeave={e => {
+          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'
+          ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'
+        }}
+      >
+        <input ref={addMoreRef} type="file" accept={accept} multiple style={{ display: 'none' }} />
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        {description}
+      </button>
+
+      {note && (
+        <p style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', textAlign: 'center', marginTop: '-4px' }}>{note}</p>
+      )}
+    </div>
+  )
+}
 
 export default function UploadPhotos() {
   const { state, dispatch, next, back } = useForm()
   const d = state.formData
 
-  const [uploaded] = useState([1, 2, 3]) 
-
   const onUpdate = (payload: Partial<typeof state.formData>) => {
     dispatch({ type: 'updateData', payload })
   }
+
+  const pType = d.propertyType || 'office'
+
+  const showFloorPlan = ['retail', 'office', 'coworking', 'entire_building'].includes(pType)
+  const showLayoutPlan = pType === 'land'
 
   const handleNext = () => {
     onUpdate({ photosUploaded: true })
@@ -18,75 +147,52 @@ export default function UploadPhotos() {
   }
 
   return (
-    <FormPage
-      title="Upload Photos"
-      onBack={back}
-      onNext={handleNext}
-    >
-      <div className="flex flex-col gap-6">
-        
-        <div style={{
-          border: '1.5px dashed var(--text-tertiary)',
-          borderRadius: '16px',
-          padding: '40px 20px',
-          textAlign: 'center',
-          backgroundColor: 'var(--surface-lowest)',
-          transition: 'all 300ms ease',
-          cursor: 'pointer'
-        }}
-        >
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>
-            Drag & drop photos/videos here<br/>or <span style={{ color: 'var(--accent-gold)' }}>Browse Files</span>
-          </h3>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '12px' }}>
-            JPG, PNG, MP4 formats | Max. 15 uploads
-          </p>
-        </div>
+    <FormPage title="Media" onBack={back} onNext={handleNext}>
+      <div className="flex flex-col gap-5 sm:gap-6 font-['Outfit'] pb-4">
 
-        <button className="save-draft-btn" style={{ justifyContent: 'center', width: '100%', padding: '14px', background: 'var(--accent)', color: '#fff', borderColor: 'var(--accent)' }}>
-           + Add More Photos
-        </button>
+        {/* IMAGES */}
+        <SectionCard title="Images">
+          <UploadZone
+            label="Upload Images"
+            description="Drag & drop photos here"
+            accept="image/jpeg,image/png,image/webp"
+            note="JPG, PNG, WEBP — Max 15 images"
+          />
+        </SectionCard>
 
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', textAlign: 'center' }}>
-          Some tips: Add clear photos with good lighting.
-        </p>
+        {/* VIDEO */}
+        <SectionCard title="Video">
+          <UploadZone
+            label="Upload Video"
+            description="Drag & drop a walkthrough video here"
+            accept="video/mp4,video/webm,video/quicktime"
+            note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
+          />
+        </SectionCard>
 
+        {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
+        {showFloorPlan && (
+          <SectionCard title="Floor Plan">
+            <UploadZone
+              label="Upload Floor Plan"
+              description="Drag & drop floor plan here"
+              accept="image/jpeg,image/png,application/pdf"
+              note="JPG, PNG, PDF — architectural or space layout"
+            />
+          </SectionCard>
+        )}
 
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {uploaded.map((i) => (
-            <div key={i} style={{ 
-              minWidth: '110px', height: '80px', 
-              borderRadius: '8px', 
-              background: 'var(--border-light)',
-              position: 'relative',
-              overflow: 'hidden',
-              border: '1px solid var(--border-light)'
-            }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(45deg, #e4e4e7, #f4f4f5)' }} />
-              <div style={{ 
-                  position: 'absolute', top: 6, right: 6, width: 20, height: 20, 
-                  background: 'rgba(28, 42, 68, 0.7)', color: '#fff', 
-                  borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' 
-              }}>✓</div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{
-          border: '1px solid var(--border)',
-          borderRadius: '12px',
-          padding: '16px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          cursor: 'pointer',
-          background: 'var(--surface-lowest)',
-          transition: 'all 300ms ease'
-        }}
-        >
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)' }}>+ Add More Photos/Videos</span>
-          <span style={{ color: 'var(--text-tertiary)' }}>›</span>
-        </div>
+        {/* LAYOUT PLAN — Land only */}
+        {showLayoutPlan && (
+          <SectionCard title="Layout Plan">
+            <UploadZone
+              label="Upload Layout Plan"
+              description="Drag & drop your layout / site plan here"
+              accept="image/jpeg,image/png,application/pdf"
+              note="JPG, PNG, PDF — demarcation or survey plan"
+            />
+          </SectionCard>
+        )}
 
       </div>
     </FormPage>

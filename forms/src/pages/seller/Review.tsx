@@ -40,7 +40,7 @@ export default function Review() {
             <button type="button" className="edit-link" onClick={() => goToStep(1)}>Edit</button>
           </div>
           <SummaryRow label="Type" value={findLabel(SELLER_POST_TYPES as any, d.postType)} />
-          <SummaryRow label="Operating Business" value={d.includeOperatingBusiness ? 'Included' : 'Not Included'} />
+          <SummaryRow label="Sub-Category" value={d.postSubCategory || '—'} />
         </div>
 
 
@@ -115,6 +115,32 @@ export default function Review() {
           <SummaryRow label="Occupancy Rate" value={d.occupancyRate ? `${d.occupancyRate}%` : '—'} />
           <SummaryRow label="Years in Operation" value={d.yearsInOperation || '—'} />
           <SummaryRow label="Rent Escalation" value={d.rentEscalation ? `${d.rentEscalation}%` : '—'} />
+        </div>
+
+
+        <div className="section-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="section-title" style={{ margin: 0 }}>Transaction Details</div>
+            <button type="button" className="edit-link" onClick={() => goToStep(8)}>Edit</button>
+          </div>
+          {d.postType === 'Lease/Rent Property' ? (
+            <SummaryRow label="Asking Price (Monthly)" value={d.askingPriceMonthly ? `₹${d.askingPriceMonthly}` : '—'} />
+          ) : (
+            <SummaryRow label="Asking Price (Total)" value={d.askingPriceTotal ? `₹${d.askingPriceTotal}` : '—'} />
+          )}
+          <SummaryRow label="Property Ownership" value={d.propertyOwnership || '—'} />
+          <SummaryRow label="Transaction Details" value={d.transactionDetails || '—'} />
+          <SummaryRow label="Price Per Sq. Ft." value={d.pricePerSqFt ? `₹${d.pricePerSqFt}` : '—'} />
+          <SummaryRow label="Additional Notes" value={d.additionalNotes || '—'} />
+        </div>
+
+
+        <div className="section-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="section-title" style={{ margin: 0 }}>Photos & Media</div>
+            <button type="button" className="edit-link" onClick={() => goToStep(9)}>Edit</button>
+          </div>
+          <SummaryRow label="Status" value={d.photosUploaded ? 'Photos Uploaded' : 'No Photos Uploaded'} />
         </div>
       </div>
     </FormPage>

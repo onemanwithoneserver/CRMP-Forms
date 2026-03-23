@@ -8,22 +8,18 @@ function Header() {
   const { device, setDevice } = useDevice()
   const { state, resetToStart, dispatch } = useForm()
 
-  const allPages = [
-    { key: '', label: 'Dynamic Flow (Default)' },
-    { key: 'post-type', label: '1. What to post?' },
-    { key: 'property-type', label: '2. Property Type' },
-    { key: 'property-details', label: '3. Building Selection' },
-    { key: 'building-info', label: '4. Building Info' },
-    { key: 'unit-details', label: '5. Unit Details' },
-    { key: 'lease-info', label: '6. Lease Information' },
-    { key: 'business-info', label: '7. Business Information' },
-    { key: 'transaction-details', label: '8. Transaction Details' },
-    { key: 'upload-photos', label: '9. Upload Photos' },
-    { key: 'looking-for', label: 'B1. Looking For (Tenant/Buyer)' },
-    { key: 'budget-area', label: 'B2. Budget (Tenant/Buyer)' },
-    { key: 'location-pref', label: 'B3. Location (Tenant/Buyer)' },
-    { key: 'review', label: 'Final. Review Setup' },
+  const sellerPages = [
+    { key: 'post-type',            label: '1. Post Type' },
+    { key: 'unit-details',         label: '2. Unit Details' },
+    { key: 'facilities',           label: '3. Facilities' },
+    { key: 'unit-availability',    label: '4. Unit Availability' },
+    { key: 'upload-photos',        label: '5. Media' },
+    { key: 'lease-info',           label: '6. Lease Information' },
+    { key: 'transaction-details',  label: '6. Transactional Details' },
+    { key: 'review',               label: '7. Review' },
   ]
+
+
 
   return (
     <header style={{
@@ -74,7 +70,8 @@ function Header() {
                outline: 'none',
              }}
           >
-            {allPages.map(p => (
+            <option value="">— Dynamic Flow (Default) —</option>
+            {sellerPages.map(p => (
               <option key={p.key} value={p.key}>{p.label}</option>
             ))}
           </select>

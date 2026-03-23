@@ -11,12 +11,25 @@ export type FormData = {
   buildingName: string
 
   // Location & Pricing
+  country: string
+  state: string
+  city: string
+  district: string
+  circle: string
+  location: string
+  microLocation: string
+  zone: string
+  orrZoning: string
+  googleLocation: string
+  latitude: string
+  longitude: string
+  pincode: string
+  nearestOrrExits: string
   listingType: string
   transactionType: string
   furnishing: string
   propertyAge: string
   address: string
-  city: string
   area: string
   price: string
   totalFloors: string
@@ -24,7 +37,7 @@ export type FormData = {
   liftAvailable: boolean
   fireCompliant: boolean
   ownershipType: string
-  
+
   // Transaction Setup
   askingPriceTotal: string
   askingPriceMonthly: string
@@ -32,19 +45,92 @@ export type FormData = {
   transactionDetails: string
   pricePerSqFt: string
   additionalNotes: string
-  
+  additionalCharges: string
+  expectedRentalYield: string
+  existingMonthlyRent: string
+  existingLeaseTenure: string
+  existingLeaseTenureUnit: string
+  rentEscalationEvery: string
+  rentEscalationEveryUnit: string
+  existingTenantCompany: string
+  tenantCategory: string
+  minimumSqFt: string
+  assuredMonthlyRent: string
+  annualYield: string
+  isPreLeased: string
+  fractionalRemarks: string
+
+  // Unit Availability
+  isImmediatelyAvailable: string
+  tentativeMonth: string
+  unitNo: string
+  numberOfUnitsAvailable: string
+
   // Uploads
   photosUploaded: boolean
-  
+
   // Unit Details
   unitType: string
   totalBuiltUpArea: string
   numberOfRooms: string
   numberOfBeds: string
   attachedWashrooms: string
+  plotSize: string
+  unitFacing: string
+  plotDimensions: string
+  layoutDimensionsLength: string
+  layoutDimensionsBreadth: string
+  carpetArea: string
+  floor: string
+  idealFor: string
+  cornerUnit: boolean
+  frontage: string
+  ceilingHeight: string
+  spaceCondition: string
+  glassFacade: boolean
+  flooring: string
+  walls: string
+  electricals: string
+  hvac: string
+  lighting: string
+  compoundWall: boolean
+  waterConnection: boolean
+  partitionsType: string
+  externalBranding: string
+  meetingRooms: string
+  conferenceRoom: boolean
+  receptionArea: boolean
+  brandingSpace: boolean
+  falseCeiling: boolean
+  storageSpace: string
+  columnFree: boolean
+  workstations: string
+  chairs: string
+  storageCupboards: boolean
+  sofaLounge: boolean
+  receptionDesk: boolean
+  pantryEquipment: boolean
+  appliances: string[]
+  appliancesOthers: string
+
+  // Facilities
+  designatedParking: string
+  noOfParkings: string
+  visitorParking: string
+  powerLoad: string
+  powerPhase: string
+  washrooms: string
+  fireSprinklers: string
+  fireExtinguishers: string
 
   // Lease Information
   monthlyRent: string
+  leaseSubType: string
+  rentPricingMode: string
+  advanceDeposit: string
+  maintenanceCharges: string
+  tenantIndustry: string
+  subLeaseRemarks: string
   securityDeposit: string
   remainingTenure: string
   leaseExpiryDate: string
@@ -83,26 +169,16 @@ export const getDynamicSteps = (data: FormData) => {
     steps.push({ key: 'location-pref', label: 'Location' })
   } else if (post) {
     // Seller/Landlord flows
-    steps.push({ key: 'property-type', label: 'Property Type' })
-    steps.push({ key: 'property-details', label: 'Building Selection' })
+    steps.push({ key: 'unit-details', label: 'Unit details' })
+    steps.push({ key: 'facilities', label: 'Facilities' })
+    steps.push({ key: 'unit-availability', label: 'Unit Availability' })
+    steps.push({ key: 'upload-photos', label: 'Media' })
     
-    if (data.buildingSelection === 'new') {
-      steps.push({ key: 'building-info', label: 'Building Info' })
+    if (post === 'Lease/Rent Property') {
+      steps.push({ key: 'lease-info', label: 'Lease Information' })
+    } else {
+      steps.push({ key: 'transaction-details', label: 'Transactional Details' })
     }
-
-    if (post === 'Property Sale' || post === 'Lease/Rent Property') {
-      steps.push({ key: 'unit-details', label: 'Unit Details' })
-      if (post === 'Lease/Rent Property') {
-         steps.push({ key: 'lease-info', label: 'Lease Information' })
-      }
-    } else if (post.includes('Running Business') || post === 'Offer Franchise') {
-      steps.push({ key: 'business-info', label: 'Business Information' })
-      steps.push({ key: 'unit-details', label: 'Unit Details' })
-    }
-    
-    // Add Transactional Details and Upload Photos
-    steps.push({ key: 'transaction-details', label: 'Transactional Details' })
-    steps.push({ key: 'upload-photos', label: 'Upload Photos' })
   }
 
   steps.push({ key: 'review', label: 'Review' })
@@ -111,21 +187,15 @@ export const getDynamicSteps = (data: FormData) => {
 
 /* ─── Options Data ─── */
 export const SELLER_POST_TYPES = [
-  { value: 'Property Sale', label: 'Property Sale', description: 'List a residential or commercial asset for direct purchase.' },
-  { value: 'Lease/Rent Property', label: 'Lease/Rent Property', description: 'Find long-term tenants for your managed spaces.' },
-  { value: 'Running Business - Sale', label: 'Running Business - Sale', description: 'Sell an ongoing operating business.' },
-  { value: 'Running Business - Lease', label: 'Running Business - Lease', description: 'Lease an ongoing operating business.' },
-  { value: 'Offer Franchise', label: 'Offer Franchise', description: 'Offer a new franchise opportunity.' },
-  // Optional buyer mapping stub just in case
-  { value: 'rent_property', label: 'Rent property', description: 'Short-term vacation rentals or seasonal stays.' },
+  { value: 'Property Sale', label: 'Sell Property' },
+  { value: 'Lease/Rent Property', label: 'Lease/Rent Property' },
+  { value: 'Offer Franchise', label: 'Offer Franchisee' },
+  { value: 'Running Business', label: 'Sell/Lease Running Business' },
 ] as const
 
 export const SELLER_SUB_CATEGORIES: Record<string, string[]> = {
-  'Property Sale': ['Vacant', 'Pre-Leased', 'Fractional'],
-  'Lease/Rent Property': ['Full Lease', 'Sub-Lease'],
-  'Running Business - Sale': ['Franchise', 'Regular'],
-  'Running Business - Lease': ['Franchise', 'Regular'],
-  'Offer Franchise': ['New'],
+  'Property Sale': ['Vacant Space', 'Pre-Leased', 'Fractional'],
+  'Lease/Rent Property': ['Full Lease', 'Sub Lease'],
 }
 
 export const PROPERTY_TYPES = [
@@ -177,12 +247,25 @@ const initialFormData: FormData = {
   propertyType: '',
   buildingSelection: '',
   buildingName: '',
+  country: 'India',
+  state: '',
+  city: '',
+  district: '',
+  circle: '',
+  location: '',
+  microLocation: '',
+  zone: '',
+  orrZoning: '',
+  googleLocation: '',
+  latitude: '',
+  longitude: '',
+  pincode: '',
+  nearestOrrExits: '',
   listingType: '',
   transactionType: '',
   furnishing: '',
   propertyAge: '',
   address: '',
-  city: '',
   area: '',
   price: '',
   totalFloors: '',
@@ -191,13 +274,11 @@ const initialFormData: FormData = {
   fireCompliant: true,
   ownershipType: 'Free Hold',
 
-  askingPriceTotal: '',
-  askingPriceMonthly: '',
-  propertyOwnership: 'Freehold',
-  transactionDetails: '100% Equity Sale',
-  pricePerSqFt: '',
-  additionalNotes: '',
-  
+  isImmediatelyAvailable: 'Yes',
+  tentativeMonth: '',
+  unitNo: '',
+  numberOfUnitsAvailable: '',
+
   photosUploaded: false,
 
   unitType: 'Entire Building',
@@ -205,8 +286,80 @@ const initialFormData: FormData = {
   numberOfRooms: '',
   numberOfBeds: '',
   attachedWashrooms: 'No',
+  plotSize: '',
+  unitFacing: '',
+  plotDimensions: '',
+  layoutDimensionsLength: '',
+  layoutDimensionsBreadth: '',
+  carpetArea: '',
+  floor: '',
+  idealFor: '',
+  cornerUnit: false,
+  frontage: '',
+  ceilingHeight: '',
+  spaceCondition: '',
+  glassFacade: false,
+  flooring: '',
+  walls: '',
+  electricals: '',
+  hvac: '',
+  lighting: '',
+  compoundWall: false,
+  waterConnection: false,
+  partitionsType: '',
+  externalBranding: '',
+  meetingRooms: '',
+  conferenceRoom: false,
+  receptionArea: false,
+  brandingSpace: false,
+  falseCeiling: false,
+  storageSpace: '',
+  columnFree: false,
+  workstations: '',
+  chairs: '',
+  storageCupboards: false,
+  sofaLounge: false,
+  receptionDesk: false,
+  pantryEquipment: false,
+  appliances: [],
+  appliancesOthers: '',
 
+  designatedParking: 'No',
+  noOfParkings: '',
+  visitorParking: 'No',
+  powerLoad: '',
+  powerPhase: 'Single',
+  washrooms: 'No',
+  fireSprinklers: 'No',
+  fireExtinguishers: 'No',
+
+  askingPriceTotal: '',
+  askingPriceMonthly: '',
+  propertyOwnership: '',
+  transactionDetails: '',
+  pricePerSqFt: '',
+  additionalNotes: '',
+  additionalCharges: '',
+  expectedRentalYield: '',
+  existingMonthlyRent: '',
+  existingLeaseTenure: '',
+  existingLeaseTenureUnit: 'Months',
+  rentEscalationEvery: '',
+  rentEscalationEveryUnit: 'Months',
+  existingTenantCompany: '',
+  tenantCategory: '',
+  minimumSqFt: '',
+  assuredMonthlyRent: '',
+  annualYield: '',
+  isPreLeased: 'No',
+  fractionalRemarks: '',
   monthlyRent: '',
+  leaseSubType: 'Full Lease',
+  rentPricingMode: 'Fixed Amount',
+  advanceDeposit: '',
+  maintenanceCharges: '',
+  tenantIndustry: '',
+  subLeaseRemarks: '',
   securityDeposit: '',
   remainingTenure: '',
   leaseExpiryDate: '',
@@ -290,13 +443,31 @@ function reducer(state: State, action: Action): State {
 /* ─── Validation ─── */
 function validateStep(step: number, data: FormData): Record<string, string> {
   const errors: Record<string, string> = {}
-  if (step === 1) {
+  
+  const stepsList = getDynamicSteps(data)
+  const currentStepKey = stepsList[step - 1]?.key
+
+  if (currentStepKey === 'post-type') {
     if (!data.postType) {
       errors.postType = 'Please select a main category'
     } else if (SELLER_SUB_CATEGORIES[data.postType] && !data.postSubCategory) {
       errors.postType = 'Please select a sub-category to proceed'
     }
   }
+
+  if (currentStepKey === 'unit-details') {
+    const pType = data.propertyType || 'office'
+    const isBuiltSpace = pType !== 'land'
+
+    if (['land', 'entire_building'].includes(pType)) {
+      if (!data.plotSize) errors.plotSize = 'Plot size is required'
+    }
+    
+    if (isBuiltSpace) {
+      if (!data.totalBuiltUpArea) errors.totalBuiltUpArea = 'Built up area is required'
+    }
+  }
+
   return errors
 }
 

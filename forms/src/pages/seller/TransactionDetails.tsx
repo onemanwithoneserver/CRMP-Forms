@@ -80,7 +80,7 @@ export default function TransactionDetails() {
   )
 
   const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex items-center justify-between w-full py-1.5 px-0.5">
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
       <div className="w-[110px]">
         <SegmentedControl

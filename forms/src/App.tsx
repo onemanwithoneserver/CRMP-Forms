@@ -95,8 +95,54 @@ function Header() {
           )}
         </div>
 
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-          {/* Viewport switcher removed */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+          {(['desktop', 'tablet', 'mobile'] as const).map((d) => {
+            const icons: Record<string, React.ReactElement> = {
+              desktop: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="1" y="2" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M5 14h6M8 12v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              ),
+              tablet: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="3.5" y="1" width="9" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="8" cy="13" r="0.75" fill="currentColor" />
+                </svg>
+              ),
+              mobile: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="5" y="1" width="6" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="8" cy="13" r="0.75" fill="currentColor" />
+                </svg>
+              ),
+            }
+            const isActive = device === d
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setDevice(d)}
+                title={d.charAt(0).toUpperCase() + d.slice(1)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '32px',
+                  height: '28px',
+                  borderRadius: '4px',
+                  border: isActive ? '1.5px solid var(--accent-gold)' : '1.5px solid var(--border)',
+                  background: isActive ? 'var(--accent-gold-subtle)' : 'transparent',
+                  color: isActive ? 'var(--accent-gold)' : 'var(--text-tertiary)',
+                  cursor: 'pointer',
+                  transition: 'all 200ms ease',
+                  padding: 0,
+                }}
+              >
+                {icons[d]}
+              </button>
+            )
+          })}
         </div>
       </div>
     </header>

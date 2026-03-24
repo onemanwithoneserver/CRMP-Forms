@@ -19,7 +19,9 @@ export type FormData = {
   location: string
   microLocation: string
   zone: string
+  corporation: string
   orrZoning: string
+  buildingType: string
   googleLocation: string
   latitude: string
   longitude: string
@@ -254,7 +256,9 @@ const initialFormData: FormData = {
   location: '',
   microLocation: '',
   zone: '',
+  corporation: '',
   orrZoning: '',
+  buildingType: '',
   googleLocation: '',
   latitude: '',
   longitude: '',

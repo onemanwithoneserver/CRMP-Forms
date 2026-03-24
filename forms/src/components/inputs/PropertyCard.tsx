@@ -7,12 +7,13 @@ export interface PropertyCardProps {
   icon: LucideIcon
   selected: boolean
   compact?: boolean
+  row?: boolean
   className?: string
   onClick: () => void
   children?: React.ReactNode
 }
 
-export function PropertyCard({ label, icon: Icon, selected, compact, className, onClick, children }: PropertyCardProps) {
+export function PropertyCard({ label, icon: Icon, selected, compact, row, className, onClick, children }: PropertyCardProps) {
   const { device } = useDevice()
   const isMobile = device === 'mobile'
 
@@ -39,6 +40,28 @@ export function PropertyCard({ label, icon: Icon, selected, compact, className, 
           </div>
         )}
       </div>
+    )
+  }
+
+  if (row) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={`
+          w-full flex items-center gap-3 px-3 py-2.5 rounded-[6px] border border-[#E2E8F0] bg-white
+          hover:border-[#C89B3C]/40 hover:bg-[#FFFBF0]/30
+          shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 cursor-pointer
+          ${className || ''}
+        `}
+      >
+        <div className="w-7 h-7 rounded-[5px] bg-[#F8FAFC] border border-[#F1F5F9] shadow-sm flex items-center justify-center flex-shrink-0">
+          <Icon size={15} className="text-[#64748B]" />
+        </div>
+        <span className="font-semibold text-[#475569] font-['Outfit'] text-[13px] text-left flex-1 leading-tight">
+          {label}
+        </span>
+      </button>
     )
   }
 

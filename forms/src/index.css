@@ -571,8 +571,15 @@ main[data-device="mobile"] .sm\:grid-cols-5,
 main[data-device="mobile"] .md\:grid-cols-2,
 main[data-device="mobile"] .md\:grid-cols-4,
 main[data-device="mobile"] .md\:grid-cols-5,
+main[data-device="mobile"] .lg\:grid-cols-3,
+main[data-device="mobile"] .lg\:grid-cols-4,
 main[data-device="mobile"] .lg\:grid-cols-5 {
   /* no-op: the base .grid and .grid-cols-2 rules above already set columns */
+}
+
+/* Mobile: lg:col-span-4 → single column */
+main[data-device="mobile"] .lg\:col-span-4 {
+  grid-column: span 1 / span 1 !important;
 }
 
 /* col-span overrides — prevent items from spanning beyond available cols */
@@ -645,8 +652,23 @@ main[data-device="tablet"] .lg\:grid-cols-5 {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 
+/* Tablet: cap 3-col grids to 2 columns */
+main[data-device="tablet"] .sm\:grid-cols-3 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Tablet: cap lg: 3/4-col grids to 2 columns */
+main[data-device="tablet"] .lg\:grid-cols-3,
+main[data-device="tablet"] .lg\:grid-cols-4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
 /* Tablet col-span: cap at 2 */
 main[data-device="tablet"] .sm\:col-span-4 {
+  grid-column: 1 / -1 !important;
+}
+
+main[data-device="tablet"] .lg\:col-span-4 {
   grid-column: 1 / -1 !important;
 }
 

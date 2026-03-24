@@ -146,10 +146,13 @@ export default function LeaseInfo() {
 
   return (
     <FormPage title="Lease Information" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-5 sm:gap-6 font-['Outfit'] pb-6">
+      <div className="flex flex-col gap-6 sm:gap-8 font-['Outfit'] pb-6">
 
         {/* ── LEASE TYPE ─────────────────────────────────── */}
-        <SectionCard title="Lease Type">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Lease Type
+          </h2>
           <div className="flex flex-col gap-4">
             {LEASE_SUB_TYPES.map(option => {
               const selected = d.leaseSubType === option
@@ -170,10 +173,13 @@ export default function LeaseInfo() {
               )
             })}
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── RENT / LEASE PRICING ───────────────────────── */}
-        <SectionCard title="Rent / Lease Pricing">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Rent / Lease Pricing
+          </h2>
           <div className="flex flex-col gap-4">
 
             {/* Radio: pricing mode */}
@@ -229,10 +235,13 @@ export default function LeaseInfo() {
               prefix="₹"
             />
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── ESCALATION ─────────────────────────────────── */}
-        <SectionCard title="Rent Escalation">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Rent Escalation
+          </h2>
           <div className="flex flex-col gap-4">
             <YesNoRow
               label="Rent Escalation Clause?"
@@ -249,10 +258,13 @@ export default function LeaseInfo() {
               />
             )}
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── RENT/LEASE DETAILS ─────────────────────────── */}
-        <SectionCard title="Rent / Lease Details">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Rent / Lease Details
+          </h2>
           <div className="flex flex-col gap-4">
             <NumericInput
               label="Maintenance Charges (If any)"
@@ -269,18 +281,21 @@ export default function LeaseInfo() {
               onChange={v => onUpdate({ tenantIndustry: v })}
             />
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── SUB LEASE REMARKS ──────────────────────────── */}
         {isSubLease && (
-          <SectionCard title="Sub Lease">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Sub Lease
+            </h2>
             <TextField
               label="Remarks"
               value={d.subLeaseRemarks}
               onChange={v => onUpdate({ subLeaseRemarks: v })}
               placeholder="Any additional details about the sub-lease arrangement"
             />
-          </SectionCard>
+          </div>
         )}
 
       </div>

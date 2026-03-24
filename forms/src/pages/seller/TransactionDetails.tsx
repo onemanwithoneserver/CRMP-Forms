@@ -200,10 +200,13 @@ export default function TransactionDetails() {
 
   return (
     <FormPage title="Transactional Details" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-5 sm:gap-6 font-['Outfit'] pb-6">
+      <div className="flex flex-col gap-6 sm:gap-8 font-['Outfit'] pb-6">
 
         {/* ── SALE TYPE SELECTOR ──────────────────────────── */}
-        <SectionCard title="Sale Type">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Sale Type
+          </h2>
           <div className="flex flex-col gap-4">
             {SALE_TYPES.map(option => {
               const selected = saleType === option.value
@@ -225,10 +228,13 @@ export default function TransactionDetails() {
               )
             })}
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── PRICING ─────────────────────────────────────── */}
-        <SectionCard title="Pricing">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Pricing
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
               <NumericInput
@@ -253,11 +259,14 @@ export default function TransactionDetails() {
               placeholder="e.g. Parking, CAM charges"
             />
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── VACANT SECTION ──────────────────────────────── */}
         {saleType === 'Vacant Space' && (
-          <SectionCard title="Vacant Space Details">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Vacant Space Details
+            </h2>
             <div className="flex flex-col gap-4">
               {/* Expected Rental Yield — NOT for Land */}
               {!isLand && (
@@ -270,12 +279,15 @@ export default function TransactionDetails() {
                 />
               )}
             </div>
-          </SectionCard>
+          </div>
         )}
 
         {/* ── PRE-LEASED SECTION ──────────────────────────── */}
         {saleType === 'Pre-Leased' && (
-          <SectionCard title="Pre-Leased Details">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Pre-Leased Details
+            </h2>
             <div className="flex flex-col gap-4">
               <NumericInput
                 label="Existing Monthly Rent"
@@ -327,12 +339,15 @@ export default function TransactionDetails() {
                 onChange={v => onUpdate({ tenantCategory: v })}
               />
             </div>
-          </SectionCard>
+          </div>
         )}
 
         {/* ── FRACTIONAL SECTION ──────────────────────────── */}
         {saleType === 'Fractional' && (
-          <SectionCard title="Fractional Details">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Fractional Details
+            </h2>
             <div className="flex flex-col gap-4">
               {!isLand && (
                 <>
@@ -372,7 +387,7 @@ export default function TransactionDetails() {
                 placeholder="Any additional remarks"
               />
             </div>
-          </SectionCard>
+          </div>
         )}
 
       </div>

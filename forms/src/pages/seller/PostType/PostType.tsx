@@ -77,21 +77,23 @@ export default function PostType() {
       <div className="flex-1 overflow-y-auto scroll-smooth">
 
         {/* ─── Hero ─── */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#1C2A44] via-[#243352] to-[#1a2740]  pt-2 pb-6 md:pb-8 rounded-b-[4px]">
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#1C2A44] via-[#243352] to-[#1a2740] pt-3 pb-8 rounded-b-[4px]">
+          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '20px 20px' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C]" />
           <div className="relative max-w-3xl mx-auto text-center px-4">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 md:mb-2 font-['Outfit'] tracking-tight leading-snug">
+            <h1 className="text-xl md:text-2xl font-bold text-white font-['Outfit'] tracking-tight leading-snug">
               What type of property do you want to list?
             </h1>
           </div>
         </div>
 
         {/* ─── Select Property Type Card ─── */}
-        <div ref={postTypeSectionRef} className="relative -mt-4 md:-mt-6 px-2 md:px-4 max-w-3xl mx-auto w-full">
+        <div ref={postTypeSectionRef} className="relative -mt-4 px-2 md:px-4 max-w-3xl mx-auto w-full">
           <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
             {/* Gradient accent bar */}
             <div className="h-1 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C]" />
 
-            <div className="p-4">
+            <div className="p-3">
               {/* Section heading */}
               <div className="flex items-center gap-2 md:gap-2.5 mb-3 md:mb-4">
                 <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-[#1C2A44] flex items-center justify-center">
@@ -136,7 +138,7 @@ export default function PostType() {
 
               {/* Selected Property Card */}
               {propertyType && (
-                <div className="mt-4 sm:mt-5 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
+                <div className="mt-3 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
                   {PROPERTY_TYPE_CARDS.filter(type => type.id === propertyType).map(type => (
                     <PropertyCard
                       key={type.id}
@@ -206,13 +208,10 @@ export default function PostType() {
         </div>
 
         {/* ─── Location Section ─── */}
-        {postType && (
-          !(SELLER_SUB_CATEGORIES[postType]) || postSubCategory
-        ) && (
-            <div
-              ref={locationSectionRef}
-              className="px-2 md:px-4 mt-3 md:mt-4 max-w-3xl mx-auto w-full"
-            >
+        <div
+          ref={locationSectionRef}
+          className="px-2 md:px-4 mt-2 max-w-3xl mx-auto w-full"
+        >
               <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] p-2">
 
                 <div className="flex items-center gap-2 md:gap-2.5 mb-2 md:mb-1.5">
@@ -300,37 +299,58 @@ export default function PostType() {
                 </div>
               </div>
             </div>
-          )}
 
-        <div className="h-4" />
       </div>
 
-      {/* ─── Bottom Footer ─── */}
-      <div className="w-full bg-white border-t border-[var(--border-light)] px-3 py-2.5 z-50 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.04)] mt-auto">
-        <button 
+      {/* ─── Bottom Footer (unified with FormPage) ─── */}
+      <div className="w-full bg-white border-t border-[#edf0f5] px-3.5 py-2.5 z-50 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.04)] mt-auto">
+        <button
           title="Save as Draft"
-          className="flex items-center justify-center gap-1.5 px-3 h-8 md:h-8 md:px-4 font-medium md:font-bold text-[#C89B3C] border border-[#C89B3C]/30 md:border-2 md:border-[#C89B3C]/20 hover:bg-[#C89B3C]/5 rounded-md md:rounded-lg transition-all font-['Outfit'] text-[12px] shadow-sm bg-white"
+          style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '7px 14px', borderRadius: '6px',
+            border: '1.5px solid rgba(200,155,60,0.5)',
+            background: 'rgba(200,155,60,0.05)',
+            color: '#C89B3C',
+            fontFamily: "'Outfit', sans-serif", fontSize: '0.8rem', fontWeight: 700,
+            cursor: 'pointer',
+          }}
         >
-          <Save size={14} className="md:w-[15px] md:h-[15px]" />
-          <span className="hidden sm:inline">Save as Draft</span>
-          <span className="sm:hidden">Draft</span>
+          <Save size={14} />
+          <span>Save draft</span>
         </button>
 
-        <div className="flex gap-2.5 sm:gap-3 items-center">
-          <button 
+        <div className="flex gap-2 items-center">
+          <button
             title="Back"
-            className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 font-medium text-[#445069] border border-[#e8ecf2] md:border-2 hover:bg-[#f8fafc] rounded-md md:rounded-lg transition-all shadow-sm bg-white"
+            disabled
+            style={{
+              width: '34px', height: '34px', borderRadius: '6px',
+              border: '1.5px solid #e2e6ec', background: '#ffffff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              opacity: 0.35, cursor: 'not-allowed', color: '#445069',
+            }}
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </button>
-          
+
           <button
             onClick={next}
             disabled={!postType || !propertyType || !city}
             title="Save & Next"
-            className="flex items-center justify-center w-12 h-8 md:w-14 md:h-9 text-white bg-gradient-to-r from-[#1C2A44] to-[#2a3f66] hover:from-[#131d2f] hover:to-[#1C2A44] disabled:opacity-50 disabled:cursor-not-allowed rounded-md md:rounded-lg transition-all shadow-md shadow-[#1C2A44]/20 border border-[#1C2A44]"
+            style={{
+              height: '34px', minWidth: '48px',
+              borderRadius: '6px', border: 'none',
+              background: 'linear-gradient(135deg, #1C2A44 0%, #2a3f66 100%)',
+              color: '#ffffff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: !postType || !propertyType || !city ? 'not-allowed' : 'pointer',
+              opacity: !postType || !propertyType || !city ? 0.5 : 1,
+              boxShadow: '0 4px 12px rgba(28,42,68,0.25)',
+              transition: 'all 200ms ease',
+            }}
           >
-            <ChevronRight size={18} className="text-white/90" />
+            <ChevronRight size={16} className="text-white" />
           </button>
         </div>
       </div>

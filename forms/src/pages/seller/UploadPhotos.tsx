@@ -35,13 +35,13 @@ function UploadTile({ accept, index }: { accept: string; index: number }) {
       onClick={() => inputRef.current?.click()}
       style={{
         border: `1.5px dashed ${isMain ? 'var(--accent-gold)' : 'var(--border)'}`,
-        borderRadius: '10px',
-        aspectRatio: '1 / 1',
+        borderRadius: '8px',
+        height: '48px',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '8px',
+        gap: '6px',
         cursor: 'pointer',
         background: isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)',
         transition: 'border-color 200ms ease, background 200ms ease',
@@ -58,14 +58,14 @@ function UploadTile({ accept, index }: { accept: string; index: number }) {
     >
       <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
       {/* Camera / image icon */}
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
         stroke={isMain ? 'var(--accent-gold)' : 'var(--text-tertiary)'}
         strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
         <circle cx="12" cy="13" r="4"/>
       </svg>
       <span style={{
-        fontSize: '0.68rem',
+        fontSize: '0.75rem',
         fontWeight: isMain ? 700 : 500,
         color: isMain ? 'var(--accent-gold)' : 'var(--text-tertiary)',
         letterSpacing: '0.01em',
@@ -83,9 +83,9 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
     <div className="flex flex-col gap-3">
       <label className="text-[13px] font-semibold text-[#445069] pl-0.5">{label}</label>
 
-      {/* 2×2 grid of upload tiles */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-        {[0, 1, 2, 3].map(i => (
+      {/* 1×2 grid of upload tiles (responsive) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {[0, 1].map(i => (
           <UploadTile key={i} accept={accept} index={i} />
         ))}
       </div>
@@ -96,7 +96,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
         onClick={() => addMoreRef.current?.click()}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-          padding: '10px 16px', borderRadius: '8px',
+          height: '48px', borderRadius: '8px',
           border: '1.5px dashed var(--border)',
           background: 'transparent',
           color: 'var(--text-secondary)',
@@ -148,50 +148,62 @@ export default function UploadPhotos() {
 
   return (
     <FormPage title="Media" onBack={back} onNext={handleNext}>
-      <div className="flex flex-col gap-5 sm:gap-6 font-['Outfit'] pb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 font-['Outfit'] pb-4">
 
         {/* IMAGES */}
-        <SectionCard title="Images">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Images
+          </h2>
           <UploadZone
             label="Upload Images"
             description="Drag & drop photos here"
             accept="image/jpeg,image/png,image/webp"
             note="JPG, PNG, WEBP — Max 15 images"
           />
-        </SectionCard>
+        </div>
 
         {/* VIDEO */}
-        <SectionCard title="Video">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Video
+          </h2>
           <UploadZone
             label="Upload Video"
             description="Drag & drop a walkthrough video here"
             accept="video/mp4,video/webm,video/quicktime"
             note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
           />
-        </SectionCard>
+        </div>
 
         {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
         {showFloorPlan && (
-          <SectionCard title="Floor Plan">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Floor Plan
+            </h2>
             <UploadZone
               label="Upload Floor Plan"
               description="Drag & drop floor plan here"
               accept="image/jpeg,image/png,application/pdf"
               note="JPG, PNG, PDF — architectural or space layout"
             />
-          </SectionCard>
+          </div>
         )}
 
         {/* LAYOUT PLAN — Land only */}
         {showLayoutPlan && (
-          <SectionCard title="Layout Plan">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Layout Plan
+            </h2>
             <UploadZone
               label="Upload Layout Plan"
               description="Drag & drop your layout / site plan here"
               accept="image/jpeg,image/png,application/pdf"
               note="JPG, PNG, PDF — demarcation or survey plan"
             />
-          </SectionCard>
+          </div>
         )}
 
       </div>

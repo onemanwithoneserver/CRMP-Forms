@@ -65,45 +65,13 @@ export default function UnitAvailability() {
 
   return (
     <FormPage title="Unit Availability" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-5 sm:gap-6 font-['Outfit'] pb-6">
-
-        {/* PROPERTY TYPE SELECTOR */}
-        <SectionCard title="Property Type">
-          <div className="flex flex-col gap-4">
-            {PROPERTY_TYPE_OPTIONS.map(option => {
-              const selected = d.propertyType === option.value
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`selection-card ${selected ? 'selected' : ''}`}
-                  onClick={() => onUpdate({ propertyType: option.value })}
-                  aria-pressed={selected}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.04)',
-                    padding: '18px 20px',
-                    gap: '16px',
-                  }}
-                >
-                  <div className={`radio-circle ${selected ? 'active' : ''}`} style={{ marginTop: 0 }} />
-                  <div style={{ flex: 1, fontSize: '1rem', fontWeight: 800, color: 'var(--text)', textAlign: 'left' }}>
-                    {option.label}
-                  </div>
-                  {option.icon && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px' }}>
-                      <img src={option.icon} alt={option.label} style={{ width: '100%', height: 'auto', opacity: 0.9 }} />
-                    </div>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </SectionCard>
+      <div className="flex flex-col gap-6 sm:gap-8 font-['Outfit'] pb-6">
 
         {/* AVAILABILITY */}
-        <SectionCard title="Availability">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+            Availability
+          </h2>
           <div className="flex flex-col gap-4">
             {renderYesNo('Is it immediately available?', 'isImmediatelyAvailable')}
 
@@ -125,11 +93,14 @@ export default function UnitAvailability() {
               </div>
             )}
           </div>
-        </SectionCard>
+        </div>
 
         {/* UNIT DETAILS */}
         {(showUnitNo || showUnitsCount || showUnitsLandMode) && (
-          <SectionCard title="Unit Information">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
+              Unit Information
+            </h2>
             <div className="flex flex-col gap-4">
 
               {showUnitNo && (
@@ -178,7 +149,7 @@ export default function UnitAvailability() {
               )}
 
             </div>
-          </SectionCard>
+          </div>
         )}
 
       </div>

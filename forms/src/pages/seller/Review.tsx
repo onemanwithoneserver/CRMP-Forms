@@ -59,7 +59,7 @@ export default function Review() {
       isLastStep
       nextLabel="Submit listing"
     >
-      <div className="flex flex-col gap-3 pb-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-2 p-2">
 
         {/* Post Type */}
         <SummarySection title="Post type" stepIndex={getStepIndex('post-type')}>
@@ -154,7 +154,7 @@ export default function Review() {
         )}
 
         {/* Submit hint */}
-        <div style={{
+        <div className="md:col-span-2" style={{
           textAlign: 'center',
           padding: '8px',
           fontSize: '0.78rem',

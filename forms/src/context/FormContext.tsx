@@ -21,6 +21,7 @@ export type FormData = {
   zone: string
   corporation: string
   orrZoning: string
+  colonyLayout: string
   buildingType: string
   googleLocation: string
   latitude: string
@@ -258,6 +259,7 @@ const initialFormData: FormData = {
   zone: '',
   corporation: '',
   orrZoning: '',
+  colonyLayout: '',
   buildingType: '',
   googleLocation: '',
   latitude: '',

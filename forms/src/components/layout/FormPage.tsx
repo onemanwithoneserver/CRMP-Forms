@@ -97,8 +97,8 @@ export default function FormPage({
       </div>
 
       {/* ── Scrollable content ── */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '6px 8px 4px' }}>
-        <div style={{ maxWidth: '680px', margin: '0 auto', width: '100%' }}>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '0 4px' }}>
+        <div style={{ width: '100%' }}>
           {children}
         </div>
       </div>

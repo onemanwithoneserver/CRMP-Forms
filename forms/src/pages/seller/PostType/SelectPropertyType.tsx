@@ -5,7 +5,7 @@ import {
   Map,
   Landmark
 } from 'lucide-react'
-import { useForm, SELLER_POST_TYPES, SELLER_SUB_CATEGORIES } from '../../../context/FormContext'
+import { useForm, SELLER_POST_TYPES } from '../../../context/FormContext'
 import { useDevice } from '../../../context/DeviceContext'
 import { PropertyCard } from '../../../components/inputs/PropertyCard'
 import { OptionButton } from '../../../components/inputs/OptionButton'
@@ -31,11 +31,11 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   // Shared children rendered inside the expanded selected card
   const selectedCardContent = (
     <>
-      <p className="text-[13px] font-bold text-[#445069] mb-3 mt-1 font-['Outfit'] tracking-wide">
+      <p className="text-[11px] font-bold text-[#445069] mb-1 mt-0 font-['Outfit'] tracking-wide">
         What do you want to do?
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-1">
         {SELLER_POST_TYPES.map(option => (
           <OptionButton
             key={option.value}
@@ -50,38 +50,6 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
           />
         ))}
       </div>
-
-      {postType && SELLER_SUB_CATEGORIES[postType] && (
-        <div className="mt-4 pt-4 border-t border-[#C89B3C]/15">
-          <p className="text-[12px] font-bold text-[#445069] mb-2.5 font-['Outfit'] tracking-wide">
-            Select Category
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {SELLER_SUB_CATEGORIES[postType].map(sub => {
-              const isSubSelected = postSubCategory === sub
-              return (
-                <button
-                  key={sub}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    dispatch({ type: 'updateData', payload: { postSubCategory: sub } })
-                  }}
-                  className={`
-                    px-3.5 py-1.5 rounded-[5px] text-[12px] sm:text-[13px] font-semibold font-['Outfit'] transition-all duration-200 border
-                    ${isSubSelected
-                      ? 'bg-[#C89B3C] text-white border-[#C89B3C] shadow-sm'
-                      : 'bg-white text-[#4a5568] border-[#D0D4DC] hover:border-[#C89B3C]/40 hover:bg-[#FFFBF0]/50'
-                    }
-                  `}
-                >
-                  {sub}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </>
   )
 
@@ -102,67 +70,56 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
             </h2>
           </div>
 
-          {/* ── Mobile selected: single-column stacked layout with expanded selected card ── */}
-          {isMobile && propertyType ? (
-            <div className="flex flex-col gap-2 page-enter">
-              {PROPERTY_TYPE_CARDS.map(type => {
-                const isSelected = propertyType === type.id
+          {/* ── Mobile layout ── */}
+          {isMobile ? (
+            <div className="flex flex-col gap-2">
 
-                if (isSelected) {
-                  return (
-                    <PropertyCard
-                      key={type.id}
-                      icon={type.icon}
-                      label={type.label}
-                      selected={true}
-                      onClick={() => dispatch({
-                        type: 'updateData',
-                        payload: { propertyType: type.id, postType: '', postSubCategory: '' },
-                      })}
-                    >
-                      {selectedCardContent}
-                    </PropertyCard>
-                  )
-                }
-
-                return (
+              {/* All unselected cards — 3-col grid (default) / 2-col grid (selection active) */}
+              <div className={propertyType ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-3 gap-2'}>
+                {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
                   <PropertyCard
                     key={type.id}
                     icon={type.icon}
                     label={type.label}
                     selected={false}
-                    row={true}
                     onClick={() => dispatch({
                       type: 'updateData',
                       payload: { propertyType: type.id, postType: '', postSubCategory: '' },
                     })}
                   />
-                )
-              })}
+                ))}
+              </div>
+
+              {/* Selected card — full width, at the bottom */}
+              {propertyType && PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
+                <PropertyCard
+                  key={type.id}
+                  icon={type.icon}
+                  label={type.label}
+                  selected={true}
+                  onClick={() => dispatch({
+                    type: 'updateData',
+                    payload: { propertyType: type.id, postType: '', postSubCategory: '' },
+                  })}
+                >
+                  {selectedCardContent}
+                </PropertyCard>
+              ))}
             </div>
+
           ) : (
             <>
-              {/* ── Mobile unselected (3×2 grid) + Desktop/Tablet layout ── */}
-              <div className={
-                propertyType && !isMobile
-                  ? 'grid grid-cols-4 gap-1.5 md:gap-2.5'
-                  : 'flex flex-wrap justify-center gap-1.5 md:gap-2.5'
-              }>
+              {/* ── Desktop/Tablet: compact row of unselected cards ── */}
+              <div className={propertyType ? 'grid grid-cols-4 gap-2' : 'grid grid-cols-5 gap-2'}>
                 {PROPERTY_TYPE_CARDS.map(type => {
                   if (propertyType === type.id) return null
-
-                  const layoutClass = propertyType && !isMobile
-                    ? 'col-span-1'
-                    : 'w-[calc(33.333%-4px)] flex-none md:flex-1 md:w-auto md:max-w-none'
-
                   return (
                     <PropertyCard
                       key={type.id}
                       icon={type.icon}
                       label={type.label}
                       selected={false}
-                      className={layoutClass}
-                      compact={!!(propertyType && !isMobile)}
+                      compact={!!propertyType}
                       onClick={() => dispatch({
                         type: 'updateData',
                         payload: { propertyType: type.id, postType: '', postSubCategory: '' },
@@ -173,8 +130,8 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
               </div>
 
               {/* Selected Property Card (desktop / tablet) */}
-              {propertyType && !isMobile && (
-                <div className="mt-4 sm:mt-5 transition-all duration-300">
+              {propertyType && (
+                <div className="mt-3 transition-all duration-300">
                   {PROPERTY_TYPE_CARDS.filter(type => type.id === propertyType).map(type => (
                     <PropertyCard
                       key={type.id}

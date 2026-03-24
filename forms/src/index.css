@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.map-dot-bg {
+  background-image: radial-gradient(circle at 1.5px 1.5px, #B0BAC9 1px, transparent 0);
+  background-size: 22px 22px;
+  opacity: 0.5;
+}
+
 *,
 *::before,
 *::after {

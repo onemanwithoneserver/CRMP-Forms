@@ -21,21 +21,21 @@ export function PropertyCard({ label, icon: Icon, selected, compact, row, classN
     return (
       <div className={`w-full flex flex-col rounded-[8px] border border-[#C89B3C] bg-[#FFFBF0] shadow-[0_4px_12px_rgba(200,155,60,0.08)] overflow-hidden transition-all duration-300 ${className || ''}`}>
         <div
-          className={`flex items-center relative cursor-pointer ${isMobile ? 'px-3 py-2.5' : 'px-4 py-3'}`}
+          className={`flex items-center relative cursor-pointer ${isMobile ? 'px-3 py-2' : 'px-3 py-2'}`}
           onClick={onClick}
         >
-          <div className={`flex items-center ${isMobile ? 'gap-2.5' : 'gap-3.5'}`}>
-            <div className={`rounded-[6px] bg-[#C89B3C]/15 flex items-center justify-center ${isMobile ? 'w-8 h-8' : 'w-10 h-10'}`}>
-              <Icon size={isMobile ? 18 : 22} className="text-[#C89B3C]" />
+          <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-2.5'}`}>
+            <div className={`rounded-[6px] bg-[#C89B3C]/15 flex items-center justify-center ${isMobile ? 'w-7 h-7' : 'w-8 h-8'}`}>
+              <Icon size={isMobile ? 15 : 17} className="text-[#C89B3C]" />
             </div>
-            <span className={`font-bold text-[#1C2A44] font-['Outfit'] leading-none mt-0.5 ${isMobile ? 'text-[15px]' : 'text-[17px]'}`}>{label}</span>
+            <span className={`font-bold text-[#1C2A44] font-['Outfit'] leading-none ${isMobile ? 'text-[14px]' : 'text-[15px]'}`}>{label}</span>
           </div>
-          <div className={`absolute ${isMobile ? 'top-2.5 right-2.5' : 'top-3.5 right-4'}`}>
-            <CheckCircle2 size={isMobile ? 16 : 18} className="text-[#C89B3C] fill-[#C89B3C] stroke-[#FFFBF0]" />
+          <div className={`absolute ${isMobile ? 'top-2 right-2.5' : 'top-2 right-3'}`}>
+            <CheckCircle2 size={isMobile ? 15 : 16} className="text-[#C89B3C] fill-[#C89B3C] stroke-[#FFFBF0]" />
           </div>
         </div>
         {children && (
-          <div className={`bg-transparent border-t border-[#C89B3C]/20 ${isMobile ? 'px-3 pb-3.5 pt-2 mt-0.5' : 'px-4 pb-4 pt-3 mt-1'}`}>
+          <div className={`bg-transparent border-t border-[#C89B3C]/20 ${isMobile ? 'px-3 pb-3 pt-2 mt-0' : 'px-3 pb-3 pt-2 mt-0'}`}>
             {children}
           </div>
         )}

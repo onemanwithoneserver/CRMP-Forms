@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import {
   Building2,
   MapPin,
@@ -8,13 +8,179 @@ import {
   ChevronRight,
   ChevronLeft,
   Save,
+  Landmark,
+  Globe,
   Navigation,
-  Landmark
+  X,
+  Check,
+  AlertCircle,
 } from 'lucide-react'
 import { useForm, SELLER_POST_TYPES, SELLER_SUB_CATEGORIES } from '../../../context/FormContext'
+import { useDevice } from '../../../context/DeviceContext'
 import { Dropdown } from '../../../components/inputs/Dropdown'
 import { PropertyCard } from '../../../components/inputs/PropertyCard'
 import { OptionButton } from '../../../components/inputs/OptionButton'
+import { TextFieldModern as TextField } from '../../../components/inputs/TextFieldModern'
+
+const COUNTRIES = ['India']
+const STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+  'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+  'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+  'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+  'Delhi', 'Chandigarh', 'Puducherry',
+]
+const ZONES = ['East Zone', 'West Zone', 'North Zone', 'South Zone', 'Central Zone']
+const CORPORATIONS = [
+  'GHMC', 'HMDA', 'HUDA', 'BMC', 'BBMP', 'MCGM', 'MCD', 'NDMC',
+  'AMC', 'KMC', 'PMC', 'CMC', 'NMMC', 'TMC',
+]
+const CIRCLES = ['Circle 1', 'Circle 2', 'Circle 3', 'Circle 4', 'Circle 5', 'Circle 6']
+
+// ─── Map Dialog ────────────────────────────────────────────────────────────────────────────────
+interface MapDialogProps {
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: (lat: string, lng: string) => void
+  initialLat: string
+  initialLng: string
+}
+
+function MapDialog({
+  isOpen, onClose, onConfirm, initialLat, initialLng,
+}: MapDialogProps) {
+  const [lat, setLat] = useState(initialLat)
+  const [lng, setLng] = useState(initialLng)
+  const [pinPosition, setPinPosition] = useState<{ x: number; y: number } | null>(null)
+  const [fetching, setFetching] = useState(false)
+  const [error, setError] = useState('')
+  const mapRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      setLat(initialLat); setLng(initialLng)
+      setPinPosition(null)
+      setFetching(false); setError('')
+    }
+  }, [isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (isOpen) { document.body.style.overflow = 'hidden' }
+    else { document.body.style.overflow = '' }
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
+  const handleAutoFetch = useCallback(() => {
+    if (!navigator.geolocation) { setError('Geolocation not supported.'); return }
+    setFetching(true); setError('')
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const fLat = pos.coords.latitude.toFixed(6)
+        const fLng = pos.coords.longitude.toFixed(6)
+        setLat(fLat); setLng(fLng); setFetching(false)
+        if (mapRef.current) {
+          const r = mapRef.current.getBoundingClientRect()
+          setPinPosition({ x: r.width / 2, y: r.height / 2 })
+        }
+      },
+      () => { setError('Unable to fetch location. Allow location access.'); setFetching(false) },
+      { timeout: 10000 }
+    )
+  }, [])
+
+  const handleMapClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!mapRef.current) return
+    const rect = mapRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    setPinPosition({ x, y })
+    const latVal = (17.385 + (0.5 - y / rect.height) * 0.25).toFixed(6)
+    const lngVal = (78.487 + (x / rect.width - 0.5) * 0.25).toFixed(6)
+    setLat(latVal); setLng(lngVal); setError('')
+  }, [])
+
+  if (!isOpen) return null
+  const canConfirm = lat.trim() !== '' && lng.trim() !== ''
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="relative w-full max-w-3xl bg-white rounded-[12px] shadow-2xl border border-[#E2E8F0] overflow-hidden flex flex-col max-h-[calc(100vh-48px)]">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9] bg-gradient-to-r from-[#F8FAFC] to-white shrink-0">
+          <div className="flex items-center gap-2">
+            <Globe size={15} className="text-[#3B82F6]" />
+            <span className="text-[14px] font-semibold text-[#0F172A] font-['Outfit']">Select Location on Map</span>
+          </div>
+          <button type="button" onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-[6px] hover:bg-[#F1F5F9] transition-colors" aria-label="Close">
+            <X size={15} className="text-[#64748B]" />
+          </button>
+        </div>
+        {/* Map Canvas */}
+        <div ref={mapRef} onClick={handleMapClick}
+          className="relative w-full h-64 overflow-hidden select-none flex-1 min-h-0 cursor-pointer"
+          role="application" aria-label="Map canvas">
+          <div className="absolute inset-0 bg-[#EEF1F6]" />
+          <div className="absolute inset-0 map-dot-bg" />
+          {!pinPosition && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 pointer-events-none">
+              <MapPin size={34} className="text-[#C89B3C]" />
+              <span className="text-[13px] font-medium font-['Outfit'] text-[#64748B]">
+                Pin drop selector will appear here
+              </span>
+            </div>
+          )}
+          <div className="absolute bottom-4 inset-x-0 flex justify-center z-10">
+            <button type="button" onClick={e => { e.stopPropagation(); handleAutoFetch() }} disabled={fetching}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#E2E8F0] text-[13px] font-semibold font-['Outfit'] text-[#1C2A44] hover:bg-[#F8FAFC] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150">
+              <Navigation size={13} className={fetching ? 'animate-spin text-[#2563EB]' : 'text-[#2563EB]'} />
+              {fetching ? 'Fetching…' : 'Auto-fetch Location'}
+            </button>
+          </div>
+          <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+            {pinPosition && (
+              <g transform={`translate(${pinPosition.x}, ${pinPosition.y})`}>
+                <ellipse cx="0" cy="4" rx="5" ry="2" fill="rgba(0,0,0,0.18)" />
+                <path d="M0,-28 C-9,-28 -14,-20 -14,-13 C-14,0 0,4 0,4 C0,4 14,0 14,-13 C14,-20 9,-28 0,-28 Z" fill="#EF4444" stroke="#fff" strokeWidth="1.5" />
+                <circle cx="0" cy="-14" r="5" fill="white" opacity="0.9" />
+              </g>
+            )}
+          </svg>
+        </div>
+        {/* Coordinate inputs */}
+        <div className="px-4 py-3 bg-[#F8FAFC] border-t border-[#F1F5F9] shrink-0">
+          {error && (
+            <div className="flex items-center gap-1.5 mb-2.5 text-[12px] font-['Outfit'] text-[#DC2626]">
+              <AlertCircle size={13} />{error}
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#475569] font-['Outfit']">Latitude</label>
+              <input type="text" value={lat} onChange={e => setLat(e.target.value)} placeholder="e.g. 17.418980"
+                className="w-full px-2.5 py-1.5 rounded-[6px] border border-[#E2E8F0] bg-white text-[13px] font-['Outfit'] text-[#0F172A] focus:outline-none focus:border-[#94A3B8] placeholder-[#94A3B8]" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#475569] font-['Outfit']">Longitude</label>
+              <input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="e.g. 78.343770"
+                className="w-full px-2.5 py-1.5 rounded-[6px] border border-[#E2E8F0] bg-white text-[13px] font-['Outfit'] text-[#0F172A] focus:outline-none focus:border-[#94A3B8] placeholder-[#94A3B8]" />
+            </div>
+          </div>
+        </div>
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[#F1F5F9] shrink-0">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] text-[#475569] border border-[#E2E8F0] hover:bg-[#F8FAFC] transition-colors">Cancel</button>
+          <button type="button" onClick={() => onConfirm(lat, lng)} disabled={!canConfirm}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] bg-[#0F172A] text-white hover:bg-[#1E293B] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+            <Check size={13} /> Confirm Location
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const PROPERTY_TYPE_CARDS = [
   { id: 'land', label: 'Land', icon: Map },
@@ -26,6 +192,8 @@ const PROPERTY_TYPE_CARDS = [
 
 export default function PostType() {
   const { state, dispatch, next } = useForm()
+  const { device } = useDevice()
+  const isMobile = device === 'mobile'
   const { postType, postSubCategory, propertyType, city } = state.formData
 
   const [localLocation, setLocalLocation] = useState({
@@ -35,12 +203,24 @@ export default function PostType() {
     circle: '',
     orrZoning: '',
     colony: '',
-    buildingType: ''
+    colonyLayout: '',
+    buildingType: '',
+    latitude: '',
+    longitude: '',
+    country: 'India',
+    state: '',
+    district: '',
+    location: '',
+    pincode: '',
   })
+  const [mapOpen, setMapOpen] = useState(false)
 
-  // Conditional field rendering based on property type
-  const showColony = propertyType === 'land' || propertyType === 'entire_building';
-  const showBuildingType = ['retail', 'office', 'coworking', 'entire_building'].includes(propertyType || '');
+  const openMap = () => setMapOpen(true)
+  const closeMap = () => setMapOpen(false)
+  const handleMapConfirm = (lat: string, lng: string) => {
+    setLocalLocation(s => ({ ...s, latitude: lat, longitude: lng }))
+    closeMap()
+  }
 
   const postTypeSectionRef = useRef<HTMLDivElement>(null)
   const locationSectionRef = useRef<HTMLDivElement>(null)
@@ -73,7 +253,15 @@ export default function PostType() {
   }, [postSubCategory])
 
   return (
-    <div className="flex flex-col h-auto bg-[#fafafa]">
+    <>
+      <MapDialog
+        isOpen={mapOpen}
+        onClose={closeMap}
+        onConfirm={handleMapConfirm}
+        initialLat={localLocation.latitude}
+        initialLng={localLocation.longitude}
+      />
+      <div className="flex flex-col h-auto bg-[#fafafa]">
       <div className="flex-1 overflow-y-auto scroll-smooth">
 
         {/* ─── Hero ─── */}
@@ -88,7 +276,7 @@ export default function PostType() {
         </div>
 
         {/* ─── Select Property Type Card ─── */}
-        <div ref={postTypeSectionRef} className="relative -mt-4 px-2 md:px-4 max-w-3xl mx-auto w-full">
+        <div ref={postTypeSectionRef} className="relative -mt-4 px-2 md:px-4 w-full">
           <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
             {/* Gradient accent bar */}
             <div className="h-1 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C]" />
@@ -104,60 +292,40 @@ export default function PostType() {
                 </h2>
               </div>
 
-              {/* Unselected Property Cards Wrapper */}
-              <div className={propertyType
-                ? "grid grid-cols-4 gap-1.5 md:gap-2.5"
-                : "flex flex-wrap justify-center gap-1.5 md:gap-2.5"
-              }>
-                {PROPERTY_TYPE_CARDS.map((type, index) => {
-                  if (propertyType === type.id) return null
-
-                  const layoutClass = propertyType
-                    ? "col-span-1"
-                    : "w-[calc(33.333%-4px)] flex-none md:flex-1 md:w-auto md:max-w-none"
-
-                  return (
-                    <PropertyCard
-                      key={type.id}
-                      icon={type.icon}
-                      label={type.label}
-                      selected={false}
-                      className={layoutClass}
-                      compact={!!propertyType}
-                      onClick={() => dispatch({
-                        type: 'updateData', payload: {
-                          propertyType: type.id,
-                          postType: '',
-                          postSubCategory: ''
-                        }
-                      })}
-                    />
-                  )
-                })}
-              </div>
-
-              {/* Selected Property Card */}
-              {propertyType && (
-                <div className="mt-3 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
-                  {PROPERTY_TYPE_CARDS.filter(type => type.id === propertyType).map(type => (
+              {/* ── Mobile layout ── */}
+              {isMobile ? (
+                <div className="flex flex-col gap-2">
+                  {/* All unselected cards — 3-col grid (default) / 2-col grid (selection active) */}
+                  <div className={propertyType ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-3 gap-2'}>
+                    {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
+                      <PropertyCard
+                        key={type.id}
+                        icon={type.icon}
+                        label={type.label}
+                        selected={false}
+                        onClick={() => dispatch({ type: 'updateData', payload: { propertyType: type.id, postType: '', postSubCategory: '' } })}
+                      />
+                    ))}
+                  </div>
+                  {/* Selected card — full width, at the bottom */}
+                  {propertyType && PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
                     <PropertyCard
                       key={type.id}
                       icon={type.icon}
                       label={type.label}
                       selected={true}
-                      onClick={() => { }}
+                      onClick={() => dispatch({ type: 'updateData', payload: { propertyType: type.id, postType: '', postSubCategory: '' } })}
                     >
-                      <p className="text-[13px] font-bold text-[#445069] mb-3 mt-1 font-['Outfit'] tracking-wide">
+                      <p className="text-[11px] font-bold text-[#445069] mb-1 mt-0 font-['Outfit'] tracking-wide">
                         What do you want to do?
                       </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-1">
                         {SELLER_POST_TYPES.map(option => (
                           <OptionButton
                             key={option.value}
                             label={option.label}
                             selected={postType === option.value}
-                            onClick={(e) => {
+                            onClick={(e: React.MouseEvent) => {
                               e.stopPropagation()
                               if (postType !== option.value) {
                                 dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
@@ -166,42 +334,61 @@ export default function PostType() {
                           />
                         ))}
                       </div>
-
-                      {/* Sub-category pills */}
-                      {postType && SELLER_SUB_CATEGORIES[postType] && (
-                        <div className="mt-4 pt-4 border-t border-[#C89B3C]/15">
-                          <p className="text-[12px] font-bold text-[#445069] mb-2.5 font-['Outfit'] tracking-wide">
-                            Select Category
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {SELLER_SUB_CATEGORIES[postType].map(sub => {
-                              const isSubSelected = postSubCategory === sub
-                              return (
-                                <button
-                                  key={sub}
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    dispatch({ type: 'updateData', payload: { postSubCategory: sub } })
-                                  }}
-                                  className={`
-                                    px-3.5 py-1.5 rounded-[5px] text-[12px] sm:text-[13px] font-semibold font-['Outfit'] transition-all duration-200 border
-                                    ${isSubSelected
-                                      ? 'bg-[#C89B3C] text-white border-[#C89B3C] shadow-sm'
-                                      : 'bg-white text-[#4a5568] border-[#D0D4DC] hover:border-[#C89B3C]/40 hover:bg-[#FFFBF0]/50'
-                                    }
-                                  `}
-                                >
-                                  {sub}
-                                </button>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
                     </PropertyCard>
                   ))}
                 </div>
+              ) : (
+                <>
+                  {/* ── Desktop/Tablet: compact row of unselected cards ── */}
+                  <div className={propertyType ? 'grid grid-cols-4 gap-2' : 'grid grid-cols-5 gap-2'}>
+                    {PROPERTY_TYPE_CARDS.map(type => {
+                      if (propertyType === type.id) return null
+                      return (
+                        <PropertyCard
+                          key={type.id}
+                          icon={type.icon}
+                          label={type.label}
+                          selected={false}
+                          compact={!!propertyType}
+                          onClick={() => dispatch({ type: 'updateData', payload: { propertyType: type.id, postType: '', postSubCategory: '' } })}
+                        />
+                      )
+                    })}
+                  </div>
+                  {/* Selected card — full width below */}
+                  {propertyType && (
+                    <div className="mt-3 transition-all duration-300">
+                      {PROPERTY_TYPE_CARDS.filter(type => type.id === propertyType).map(type => (
+                        <PropertyCard
+                          key={type.id}
+                          icon={type.icon}
+                          label={type.label}
+                          selected={true}
+                          onClick={() => dispatch({ type: 'updateData', payload: { propertyType: type.id, postType: '', postSubCategory: '' } })}
+                        >
+                          <p className="text-[11px] font-bold text-[#445069] mb-1 mt-0 font-['Outfit'] tracking-wide">
+                            What do you want to do?
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-1">
+                            {SELLER_POST_TYPES.map(option => (
+                              <OptionButton
+                                key={option.value}
+                                label={option.label}
+                                selected={postType === option.value}
+                                onClick={(e: React.MouseEvent) => {
+                                  e.stopPropagation()
+                                  if (postType !== option.value) {
+                                    dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
+                                  }
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </PropertyCard>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -210,92 +397,77 @@ export default function PostType() {
         {/* ─── Location Section ─── */}
         <div
           ref={locationSectionRef}
-          className="px-2 md:px-4 mt-2 max-w-3xl mx-auto w-full"
+          className="px-2 md:px-4 mt-2 w-full"
         >
-          <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] p-2">
+          <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
 
-            <div className="flex items-center gap-2 md:gap-2.5 mb-2 md:mb-1.5">
-              <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-[#1C2A44] flex items-center justify-center">
+            {/* Header */}
+            <div className="flex items-center gap-2 md:gap-2.5 px-3 py-2.5 bg-[#1C2A44]">
+              <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-white/10 flex items-center justify-center">
                 <MapPin size={14} className="text-white" />
               </div>
-              <h2 className="text-[0.95rem] font-bold text-[#1C2A44] font-['Outfit']">
-                Location
-              </h2>
+              <h2 className="text-[0.95rem] font-bold text-white font-['Outfit']">Location</h2>
             </div>
 
-            {/* Map placeholder */}
-            <div className="w-full h-28 md:h-36 bg-[#f5f6f8] rounded-md mb-3 md:mb-4 relative overflow-hidden flex flex-col items-center justify-center border border-dashed border-[#dde0e7]">
-              <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #1C2A44 1px, transparent 0)', backgroundSize: '20px 20px' }} />
-              <MapPin size={28} className="text-[#C89B3C] mb-1.5" />
-              <span className="text-[0.8rem] font-semibold text-[#a0a8b5] z-10 font-['Outfit']">Pin drop selector will appear here</span>
-              <button className="mt-2.5 z-10 px-3 py-1.5 md:px-3.5 md:py-1.5 bg-white rounded-md shadow-sm text-[0.8rem] font-bold text-[#1C2A44] border border-[#e2e6ec] flex items-center gap-1.5 hover:bg-[#f8f9fb] transition-colors font-['Outfit']">
-                <Navigation size={12} className="text-[#3b82f6]" /> Auto-fetch Location
-              </button>
-            </div>
+            <div className="p-3 space-y-3">
 
-            {/* Location Form */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">City</label>
-                <input type="text" className="form-input" placeholder="e.g. Bangalore" value={city || ''} onChange={(e) => dispatch({ type: 'updateData', payload: { city: e.target.value } })} />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Micro Location</label>
-                <input type="text" className="form-input" placeholder="Search micro location..." value={localLocation.microLocation} onChange={(e) => setLocalLocation(s => ({ ...s, microLocation: e.target.value }))} />
-              </div>
-              <Dropdown
-                label="Corporation"
-                value={localLocation.corporation}
-                options={['BBMP', 'BMA', 'BDA']}
-                placeholder="Select Corporation"
-                onChange={(val) => setLocalLocation(s => ({ ...s, corporation: val }))}
-              />
-              <Dropdown
-                label="Zone"
-                value={localLocation.zone}
-                options={['East Zone', 'West Zone', 'North Zone', 'South Zone']}
-                placeholder="Select Zone"
-                onChange={(val) => setLocalLocation(s => ({ ...s, zone: val }))}
-              />
-              <Dropdown
-                label="Circle"
-                value={localLocation.circle}
-                options={['Domlur', 'Indiranagar', 'Koramangala']}
-                placeholder="Select Circle"
-                searchable
-                onChange={(val) => setLocalLocation(s => ({ ...s, circle: val }))}
-              />
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">ORR Zoning</label>
-                <input type="text" className="form-input" placeholder="Enter ORR Zoning (Optional)" value={localLocation.orrZoning} onChange={(e) => setLocalLocation(s => ({ ...s, orrZoning: e.target.value }))} />
-              </div>
-              {showColony && (
-                <div className="flex flex-col gap-1 md:col-span-2">
-                  <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Colony / Layout Name (Optional)</label>
-                  <input type="text" className="form-input bg-[rgba(255,255,255,0.5)] border-dashed border-[#dde0e7]" placeholder="e.g. Defence Colony" value={localLocation.colony} onChange={(e) => setLocalLocation(s => ({ ...s, colony: e.target.value }))} />
+              {/* Row 1 – Map Actions & Coordinates */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end">
+                <div className="flex flex-col gap-1 w-full">
+                  <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Map Location</label>
+                  <button type="button" onClick={openMap}
+                    className="h-[34px] w-full flex items-center justify-center gap-1.5 px-3 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] text-[12px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-200">
+                    <Globe size={13} className="shrink-0" /> Open Google Maps
+                  </button>
                 </div>
-              )}
-              {showBuildingType && (
-                <div className="md:col-span-2">
-                  <Dropdown
-                    label="Choose Building / Building Type"
-                    value={localLocation.buildingType}
-                    options={[
-                      'Standalone Building',
-                      'Tech Park',
-                      'Business Park',
-                      'Mall',
-                      'High Street',
-                      'Shopping Complex',
-                      'Independent House/Villa',
-                      'Other'
-                    ]}
-                    placeholder="Select Building Type"
-                    searchable
-                    onChange={(val) => setLocalLocation(s => ({ ...s, buildingType: val }))}
-                  />
-                </div>
-              )}
+                <TextField label="Latitude" value={localLocation.latitude} placeholder="e.g. 17.41898" readOnly onChange={() => {}} />
+                <TextField label="Longitude" value={localLocation.longitude} placeholder="e.g. 78.34377" readOnly onChange={() => {}} />
+              </div>
+
+              <div className="h-px w-full bg-[#F1F5F9]" />
+
+              {/* Row 2 – Administrative Details */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                <Dropdown label="Country" value={localLocation.country || 'India'} options={COUNTRIES} placeholder="Select country"
+                  onChange={val => setLocalLocation(s => ({ ...s, country: val }))} />
+                <Dropdown label="State" value={localLocation.state} options={STATES} placeholder="Select state" searchable
+                  onChange={val => setLocalLocation(s => ({ ...s, state: val }))} />
+                <TextField label="City" value={city || ''} placeholder="e.g. Hyderabad"
+                  onChange={val => dispatch({ type: 'updateData', payload: { city: val } })} />
+                <TextField label="District" value={localLocation.district} placeholder="e.g. Rangareddy"
+                  onChange={val => setLocalLocation(s => ({ ...s, district: val }))} />
+              </div>
+
+              <div className="h-px w-full bg-[#F1F5F9]" />
+
+              {/* Row 3 – Location Details */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                <TextField label="Location / Road" value={localLocation.location} placeholder="e.g. Honeywell Driveway"
+                  onChange={val => setLocalLocation(s => ({ ...s, location: val }))} />
+                <TextField label="Micro Location" value={localLocation.microLocation} placeholder="e.g. Financial District"
+                  onChange={val => setLocalLocation(s => ({ ...s, microLocation: val }))} />
+                <Dropdown label="Zone" value={localLocation.zone} options={ZONES} placeholder="Select zone"
+                  onChange={val => setLocalLocation(s => ({ ...s, zone: val }))} />
+                <Dropdown label="Corporation" value={localLocation.corporation} options={CORPORATIONS} placeholder="Select corporation" searchable
+                  onChange={val => setLocalLocation(s => ({ ...s, corporation: val }))} />
+              </div>
+
+              <div className="h-px w-full bg-[#F1F5F9]" />
+
+              {/* Row 4 – Zoning Details */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                <Dropdown label="Building Type" value={localLocation.buildingType}
+                  options={['Standalone Building', 'Tech Park', 'Business Park', 'Mall', 'High Street', 'Shopping Complex', 'Independent House/Villa', 'Other']}
+                  placeholder="Select Building Type" searchable
+                  onChange={val => setLocalLocation(s => ({ ...s, buildingType: val }))} />
+                <TextField label="Colony / Layout Name" value={localLocation.colonyLayout} placeholder="Optional"
+                  onChange={val => setLocalLocation(s => ({ ...s, colonyLayout: val }))} />
+                <Dropdown label="Circle" value={localLocation.circle} options={CIRCLES} placeholder="Select circle"
+                  onChange={val => setLocalLocation(s => ({ ...s, circle: val }))} />
+                <TextField label="Pincode" value={localLocation.pincode} placeholder="e.g. 500032"
+                  onChange={val => setLocalLocation(s => ({ ...s, pincode: val.replace(/\D/g, '').slice(0, 6) }))} />
+              </div>
+
             </div>
           </div>
         </div>
@@ -355,5 +527,6 @@ export default function PostType() {
         </div>
       </div>
     </div>
+    </>
   )
 }

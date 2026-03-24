@@ -59,7 +59,7 @@ export default function MappingApp() {
   }
 
   return (
-    <div className="flex flex-col h-auto">
+    <div className="flex flex-col h-full">
       {!state.designStepOverride && (
         <StepHeader
           steps={steps}

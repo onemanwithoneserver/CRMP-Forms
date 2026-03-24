@@ -153,14 +153,15 @@ function InnerApp() {
   const { device } = useDevice()
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--surface)' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--surface)' }}>
       <Header />
       <main
         data-device={device}
         className={
-          device === 'desktop' ? 'max-w-5xl mx-auto' :
-            device === 'mobile' ? 'max-w-[430px] mx-auto' : ''
+          device === 'desktop' ? 'max-w-5xl mx-auto w-full' :
+            device === 'mobile' ? 'max-w-[430px] mx-auto w-full' : 'w-full'
         }
+        style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
       >
         <Routes>
           <Route path="/" element={<MappingApp />} />

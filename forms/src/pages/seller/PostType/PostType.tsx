@@ -261,7 +261,7 @@ export default function PostType() {
         initialLat={localLocation.latitude}
         initialLng={localLocation.longitude}
       />
-      <div className="flex flex-col h-auto bg-[#fafafa]">
+      <div className="flex flex-col h-full bg-[#fafafa]">
       <div className="flex-1 overflow-y-auto scroll-smooth">
 
         {/* ─── Hero ─── */}
@@ -296,7 +296,7 @@ export default function PostType() {
               {isMobile ? (
                 <div className="flex flex-col gap-2">
                   {/* All unselected cards — 3-col grid (default) / 2-col grid (selection active) */}
-                  <div className={propertyType ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-3 gap-2'}>
+                  <div className={propertyType ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-2 gap-2'}>
                     {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
                       <PropertyCard
                         key={type.id}

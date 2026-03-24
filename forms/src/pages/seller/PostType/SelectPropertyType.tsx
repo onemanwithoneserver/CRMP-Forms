@@ -75,7 +75,7 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
             <div className="flex flex-col gap-2">
 
               {/* All unselected cards — 3-col grid (default) / 2-col grid (selection active) */}
-              <div className={propertyType ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-3 gap-2'}>
+              <div className={propertyType ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-2 gap-2'}>
                 {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
                   <PropertyCard
                     key={type.id}

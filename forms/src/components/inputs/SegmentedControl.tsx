@@ -10,11 +10,11 @@ export default function SegmentedControl({ options, value, onChange }: Props) {
   return (
     <div style={{
       display: 'flex',
-      borderRadius: '6px',
+      borderRadius: '4px',
       overflow: 'hidden',
       background: 'rgba(9, 9, 11, 0.04)',
-      padding: '4px',
-      gap: '4px'
+      padding: '2px',
+      gap: '2px'
     }}>
       {options.map(opt => {
         const isSelected = value === opt.value
@@ -25,10 +25,10 @@ export default function SegmentedControl({ options, value, onChange }: Props) {
             onClick={() => onChange(opt.value)}
             style={{
               flex: 1,
-              padding: '10px 0',
+              padding: '5px 0',
               background: isSelected ? '#1C2A44' : 'transparent',
               color: isSelected ? '#ffffff' : 'var(--text-secondary)',
-              fontSize: '0.9rem',
+              fontSize: '0.78rem',
               fontWeight: 600,
               border: 'none',
               borderRadius: '4px',

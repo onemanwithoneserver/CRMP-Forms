@@ -32,10 +32,10 @@ export default function SelectField({ label, value, onChange, options, placehold
     <div className="block" ref={containerRef} style={{ position: 'relative' }}>
       {label && (
         <div style={{
-          fontSize: '0.9rem',
+          fontSize: '0.82rem',
           fontWeight: 600,
           color: 'var(--text)',
-          marginBottom: '8px',
+          marginBottom: '3px',
         }}>
           {label}
         </div>
@@ -75,8 +75,8 @@ export default function SelectField({ label, value, onChange, options, placehold
           marginBottom: position === 'top' ? '4px' : 0,
           left: 0, right: 0,
           background: '#fff', border: '1px solid var(--border-light)',
-          borderRadius: '12px', boxShadow: 'var(--shadow-lg)',
-          zIndex: 50, overflow: 'hidden', padding: '4px'
+          borderRadius: '6px', boxShadow: 'var(--shadow-lg)',
+          zIndex: 50, overflow: 'hidden', padding: '2px'
         }}>
           {options.map(o => {
             const isSel = o.value === value
@@ -85,9 +85,9 @@ export default function SelectField({ label, value, onChange, options, placehold
                 key={o.value}
                 onClick={() => { onChange?.(o.value); setOpen(false); }}
                 style={{
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  fontSize: '0.95rem',
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  fontSize: '0.85rem',
                   fontWeight: isSel ? 600 : 500,
                   cursor: 'pointer',
                   background: isSel ? 'var(--accent)' : 'transparent',
@@ -103,7 +103,7 @@ export default function SelectField({ label, value, onChange, options, placehold
       )}
 
       {error && (
-        <div style={{ fontSize: '0.8rem', color: '#ef4444', marginTop: '6px', fontWeight: 500 }}>
+        <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '2px', fontWeight: 500 }}>
           {error}
         </div>
       )}

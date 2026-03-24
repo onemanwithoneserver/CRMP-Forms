@@ -6,8 +6,8 @@ function SummarySection({ title, stepIndex, children }: { title: string; stepInd
   const { goToStep } = useForm()
   return (
     <div className="flex flex-col gap-3">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #edf0f5', paddingBottom: '8px', marginBottom: '8px' }}>
-        <h2 className="text-[1.05rem] font-bold text-[#1C2A44] m-0">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #edf0f5', paddingBottom: '4px', marginBottom: '4px' }}>
+        <h2 className="text-[0.88rem] font-bold text-[#1C2A44] m-0">
           {title}
         </h2>
         <button type="button" className="edit-link" onClick={() => goToStep(stepIndex)} style={{
@@ -16,7 +16,7 @@ function SummarySection({ title, stepIndex, children }: { title: string; stepInd
           Edit
         </button>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#ffffff', borderRadius: '8px', padding: '12px 14px', border: '1px solid #edf0f5', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: '#ffffff', borderRadius: '6px', padding: '8px 10px', border: '1px solid #edf0f5', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
         {children}
       </div>
     </div>
@@ -59,7 +59,7 @@ export default function Review() {
       isLastStep
       nextLabel="Submit listing"
     >
-      <div className="flex flex-col gap-4 pb-4">
+      <div className="flex flex-col gap-3 pb-2">
 
         {/* Post Type */}
         <SummarySection title="Post type" stepIndex={getStepIndex('post-type')}>
@@ -156,7 +156,7 @@ export default function Review() {
         {/* Submit hint */}
         <div style={{
           textAlign: 'center',
-          padding: '16px',
+          padding: '8px',
           fontSize: '0.78rem',
           color: 'var(--text-tertiary)',
           lineHeight: 1.6,

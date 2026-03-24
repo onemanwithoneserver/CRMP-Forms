@@ -74,8 +74,8 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
         }}
         className="form-input"
         style={{
-          height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 12px', cursor: 'pointer', background: 'var(--surface-lowest)',
+          height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 8px', cursor: 'pointer', background: 'var(--surface-lowest)',
           borderColor: open ? 'var(--accent-gold)' : 'var(--border)',
           fontWeight: 600
         }}
@@ -102,10 +102,10 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
           width: '280px',
           background: '#fff',
           border: '1px solid var(--border-light)',
-          borderRadius: '12px',
+          borderRadius: '6px',
           boxShadow: 'var(--shadow-lg)',
           zIndex: 100,
-          padding: '16px',
+          padding: '10px',
         }}>
           <div className="flex justify-between items-center mb-4">
             <button type="button" onClick={prevMonth} style={{ background: 'transparent', border: 'none', fontSize: '1.2rem', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}>‹</button>

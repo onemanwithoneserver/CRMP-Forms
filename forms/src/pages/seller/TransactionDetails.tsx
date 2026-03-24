@@ -1,180 +1,21 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
-import SectionCard from '../../components/layout/SectionCard'
 import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
 
-// ─── Sale Type Card Selector ─────────────────────────────
+// ─── constants ────────────────────────────────────────────
 const SALE_TYPES = [
-  {
-    value: 'Vacant Space',
-    label: 'Vacant Space',
-    desc: 'Property is empty and ready for immediate use',
-  },
-  {
-    value: 'Pre-Leased',
-    label: 'Pre-Leased',
-    desc: 'Already leased with an existing tenant in place',
-  },
-  {
-    value: 'Fractional',
-    label: 'Fractional',
-    desc: 'Selling a portion or share of the property',
-  },
+  { label: 'Vacant Space', value: 'Vacant Space' },
+  { label: 'Pre-Leased', value: 'Pre-Leased' },
+  { label: 'Fractional', value: 'Fractional' },
 ]
 
-// ─── Helper renderers ─────────────────────────────────────
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="text-[13px] font-semibold text-[#445069] pl-0.5">
-      {children}
-    </label>
-  )
-}
-
-function NumericInput({
-  label,
-  value,
-  onChange,
-  placeholder = '0',
-  prefix,
-  suffix,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
-  prefix?: string
-  suffix?: string
-}) {
-  return (
-    <div className="flex flex-col gap-1.5 w-full">
-      <Label>{label}</Label>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-        {prefix && (
-          <span
-            style={{
-              padding: '0 10px',
-              background: 'var(--surface-lowest)',
-              border: '1px solid var(--border-light)',
-              borderRight: 'none',
-              borderRadius: '6px 0 0 6px',
-              fontSize: '0.85rem',
-              color: 'var(--text-secondary)',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {prefix}
-          </span>
-        )}
-        <input
-          type="number"
-          min={0}
-          style={{
-            borderRadius: prefix ? '0 6px 6px 0' : suffix ? '6px 0 0 6px' : '6px',
-            flex: 1,
-          }}
-          className="form-input bg-white border-[#e2e6ec] focus:border-[#C89B3C] focus:ring-1 focus:ring-[#C89B3C]/50 py-2.5 px-3 text-sm text-[#1C2A44] transition-all"
-          placeholder={placeholder}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-        />
-        {suffix && (
-          <span
-            style={{
-              padding: '0 10px',
-              background: 'var(--surface-lowest)',
-              border: '1px solid var(--border-light)',
-              borderLeft: 'none',
-              borderRadius: '0 6px 6px 0',
-              fontSize: '0.85rem',
-              color: 'var(--text-secondary)',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {suffix}
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function TenureInput({
-  label,
-  value,
-  unit,
-  onValueChange,
-  onUnitChange,
-}: {
-  label: string
-  value: string
-  unit: string
-  onValueChange: (v: string) => void
-  onUnitChange: (v: string) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1.5 w-full">
-      <Label>{label}</Label>
-      <div className="flex gap-2 items-center">
-        <input
-          type="number"
-          min={0}
-          className="form-input bg-white border-[#e2e6ec] focus:border-[#C89B3C] focus:ring-1 focus:ring-[#C89B3C]/50 py-2.5 px-3 text-sm text-[#1C2A44] rounded-[6px] transition-all"
-          style={{ flex: 1 }}
-          placeholder="0"
-          value={value}
-          onChange={e => onValueChange(e.target.value)}
-        />
-        <div style={{ minWidth: '120px' }}>
-          <SegmentedControl
-            options={[
-              { label: 'Months', value: 'Months' },
-              { label: 'Years', value: 'Years' },
-            ]}
-            value={unit}
-            onChange={onUnitChange}
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function YesNoRow({ label, field, value, onChange }: { label: string; field: string; value: string; onChange: (v: string) => void }) {
-  return (
-    <div className="flex items-center justify-between py-1 bg-white border border-[#edf0f5] px-3.5 rounded-lg">
-      <span className="text-[13.5px] font-medium text-[#1C2A44]">{label}</span>
-      <div className="w-[110px]">
-        <SegmentedControl
-          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-          value={value}
-          onChange={onChange}
-        />
-      </div>
-    </div>
-  )
-}
-
-// ─── visibility helper ────────────────────────────────────
-// Columns from spec: Land, Retail, Office, Coworking, Building
-// Using propertyType keys: land, retail, office, coworking, entire_building
-const ALL_COLS = ['land', 'retail', 'office', 'coworking', 'entire_building']
-
-// Pre-Leased fields visibility per property type:
-//   Vacant cols:       all YES
-//   Pre-Leased section: Yes for all cols
-//   Fractional - Min Sq Ft:  No for Land; Yes for rest
-//   Fractional - Assured Rent: No for Land; Yes for rest
-//   Fractional - Annual Yield: No for Land; Yes for rest
-//   Fractional - Is Pre-Leased: No for Land; Yes for rest
-//   Fractional - Remarks: No for Land; Yes for rest
+const PRICING_TYPES = [
+  { label: 'Per Sq Ft', value: 'Per Sq Ft' },
+  { label: 'Box Price', value: 'Box Price' },
+]
 
 const INDUSTRY_CATEGORIES = [
   'IT / Software', 'BFSI / Finance', 'Retail', 'Healthcare',
@@ -182,7 +23,7 @@ const INDUSTRY_CATEGORIES = [
   'E-commerce', 'Real Estate', 'Telecom', 'Media', 'Others',
 ]
 
-// ─── Main Component ───────────────────────────────────────
+// ─── main component ───────────────────────────────────────
 export default function TransactionDetails() {
   const { state, dispatch, next, back } = useForm()
   const d = state.formData
@@ -193,202 +34,232 @@ export default function TransactionDetails() {
 
   const pType = d.propertyType || 'office'
   const saleType = d.postSubCategory || 'Vacant Space'
-  const isLand = pType === 'land'
 
-  // ── Per Sq Ft label: "yard" for land
-  const sqFtLabel = isLand ? 'Per Sq Yd (Price)' : 'Per Sq Ft (Price)'
+  // Helper for numeric inputs with consistent branding
+  const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0', prefix?: string) => (
+    <div className="flex flex-col gap-1.5 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+      <div className="relative group">
+        {prefix && (
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[0.8rem] font-medium pointer-events-none z-10">
+            {prefix}
+          </span>
+        )}
+        <input
+          type="number"
+          className={`form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 ${prefix ? 'pl-6' : 'px-3'} pr-3 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all`}
+          value={d[field] as string}
+          onChange={e => onUpdate({ [field]: e.target.value })}
+          placeholder={placeholder}
+        />
+      </div>
+    </div>
+  )
+
+  const renderNumericWithUnit = (label: string, valField: keyof typeof state.formData, unitField: keyof typeof state.formData) => (
+    <div className="flex flex-col gap-1.5 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+      <div className="flex items-center gap-1.5">
+        <input
+          type="number"
+          className="form-input bg-white w-20 border-[#e2e6ec] rounded-[6px] py-1.5 px-3 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
+          value={d[valField] as string}
+          onChange={e => onUpdate({ [valField]: e.target.value })}
+          placeholder="0"
+        />
+        <div className="flex-1 min-w-[100px]">
+          <Dropdown
+            value={(d[unitField] as string) || 'Months'}
+            options={['Months', 'Years']}
+            onChange={v => onUpdate({ [unitField]: v })}
+            variant="compact"
+          />
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
+    <div className="flex flex-col gap-1.5 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+      <div className="w-[110px]">
+        <SegmentedControl
+          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+          value={d[field] as string || 'No'}
+          onChange={v => onUpdate({ [field]: v })}
+        />
+      </div>
+    </div>
+  )
 
   return (
     <FormPage title="Transactional Details" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-6 sm:gap-8 font-['Outfit'] pb-6">
+      <div className="flex flex-col gap-6 font-['Outfit'] pb-4">
 
-        {/* ── SALE TYPE SELECTOR ──────────────────────────── */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-            Sale Type
+        {/* SECTION: Top Selection */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1">
+            Sale Type & Pricing
           </h2>
-          <div className="flex flex-col gap-4">
-            {SALE_TYPES.map(option => {
-              const selected = saleType === option.value
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`selection-card ${selected ? 'selected' : ''}`}
-                  onClick={() => onUpdate({ postSubCategory: option.value })}
-                  aria-pressed={selected}
-                  style={{ display: 'flex', alignItems: 'center', padding: '18px 20px', gap: '16px', boxShadow: '0 4px 10px rgba(0,0,0,0.04)' }}
-                >
-                  <div className={`radio-circle ${selected ? 'active' : ''}`} style={{ marginTop: 0 }} />
-                  <div style={{ flex: 1, textAlign: 'left' }}>
-                    <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text)' }}>{option.label}</div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', marginTop: 2 }}>{option.desc}</div>
-                  </div>
-                </button>
-              )
-            })}
+
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Availability Type</label>
+              <div className="w-[320px]">
+                <SegmentedControl
+                  options={SALE_TYPES}
+                  value={saleType}
+                  onChange={v => onUpdate({ postSubCategory: v })}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Pricing Type</label>
+              <div className="w-[240px]">
+                <SegmentedControl
+                  options={PRICING_TYPES}
+                  value={d.rentPricingMode || 'Per Sq Ft'}
+                  onChange={v => onUpdate({ rentPricingMode: v })}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* ── PRICING ─────────────────────────────────────── */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-            Pricing
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* SECTION: Dynamic Details Grid */}
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+
+            {/* COMMON: Primary Pricing depending on type */}
             <div className="sm:col-span-2">
-              <NumericInput
-                label="Box Price (Total Asking Price)"
-                value={d.askingPriceTotal}
-                onChange={v => onUpdate({ askingPriceTotal: v })}
-                placeholder="e.g. 50000000"
-                prefix="₹"
-              />
+              {renderNumeric(
+                d.rentPricingMode === 'Box Price' ? 'Total Asking Price (Box Price)' : 'Price Per Sq Ft / Sq.yd',
+                d.rentPricingMode === 'Box Price' ? 'askingPriceTotal' : 'pricePerSqFt',
+                'e.g. ₹50000000',
+              )}
             </div>
-            <NumericInput
-              label={sqFtLabel}
-              value={d.pricePerSqFt}
-              onChange={v => onUpdate({ pricePerSqFt: v })}
-              placeholder="e.g. 8000"
-              prefix="₹"
-            />
-            <TextField
-              label="Additional Charges (excl. taxes)"
-              value={d.additionalCharges}
-              onChange={v => onUpdate({ additionalCharges: v })}
-              placeholder="e.g. Parking, CAM charges"
-            />
+            <div className="hidden lg:block lg:col-span-2"></div>
+
+            {/* VACANT TYPE */}
+            {saleType === 'Vacant Space' && (
+              <>
+                {/* Row 1 */}
+                {renderNumeric('Additional Charges', 'additionalCharges', 'e.g. ₹ 50000')}
+                {renderNumeric('Existing Monthly Rent', 'existingMonthlyRent', 'e.g. ₹ 150000')}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Expected Rental Yield (%)</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
+                      value={d.expectedRentalYield}
+                      onChange={e => onUpdate({ expectedRentalYield: e.target.value })}
+                      placeholder="0"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
+                  </div>
+                </div>
+                <div className="hidden lg:block"></div>
+
+                {/* Row 2 */}
+                {renderNumericWithUnit('Existing Lease Tenure', 'existingLeaseTenure', 'existingLeaseTenureUnit')}
+                {renderNumericWithUnit('Remaining Tenure', 'remainingTenure', 'existingLeaseTenureUnit')}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
+                      value={d.rentEscalation}
+                      onChange={e => onUpdate({ rentEscalation: e.target.value })}
+                      placeholder="0"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
+                  </div>
+                </div>
+                {renderNumericWithUnit('Rent Escalation Every', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
+              </>
+            )}
+
+            {/* PRE-LEASED TYPE */}
+            {saleType === 'Pre-Leased' && (
+              <>
+                {/* Row 1 */}
+                <div className="sm:col-span-2">
+                  <TextField
+                    label="Existing Tenant Company Name"
+                    value={d.existingTenantCompany}
+                    onChange={v => onUpdate({ existingTenantCompany: v })}
+                    placeholder="e.g. Google India"
+                  />
+                </div>
+                <Dropdown
+                  label="Tenant Category"
+                  value={d.tenantCategory}
+                  options={INDUSTRY_CATEGORIES}
+                  placeholder="Select industry"
+                  onChange={v => onUpdate({ tenantCategory: v })}
+                />
+                {renderNumeric('Existing Monthly Rent', 'existingMonthlyRent', 'e.g. ₹ 150000')}
+
+                {/* Row 2 */}
+                {renderNumericWithUnit('Existing Lease Tenure', 'existingLeaseTenure', 'existingLeaseTenureUnit')}
+                {renderNumericWithUnit('Remaining Tenure', 'remainingTenure', 'existingLeaseTenureUnit')}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
+                      value={d.rentEscalation}
+                      onChange={e => onUpdate({ rentEscalation: e.target.value })}
+                      placeholder="0"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
+                  </div>
+                </div>
+                {renderNumericWithUnit('Rent Escalation Every', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
+              </>
+            )}
+
+            {/* FRACTIONAL TYPE */}
+            {saleType === 'Fractional' && (
+              <>
+                {/* Row 1 */}
+                {renderNumeric('Minimum Sq Ft', 'minimumSqFt', 'e.g. ₹ 500')}
+                {renderNumeric('Assured Monthly Rent', 'assuredMonthlyRent', 'e.g. ₹ 50000')}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Annual Yield (%)</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
+                      value={d.annualYield}
+                      onChange={e => onUpdate({ annualYield: e.target.value })}
+                      placeholder="0"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
+                  </div>
+                </div>
+                {renderVerticalBoolean('Is it Pre-Leased', 'isPreLeased')}
+
+                {/* Row 2 */}
+                <div className="sm:col-span-2 lg:col-span-4 mt-2">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Remarks</label>
+                    <textarea
+                      className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-2 px-3 text-sm text-[#1C2A44] min-h-[80px] focus:outline-none"
+                      value={d.fractionalRemarks}
+                      onChange={e => onUpdate({ fractionalRemarks: e.target.value })}
+                      placeholder="Enter details about the fractional opportunity..."
+                    ></textarea>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
-
-        {/* ── VACANT SECTION ──────────────────────────────── */}
-        {saleType === 'Vacant Space' && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Vacant Space Details
-            </h2>
-            <div className="flex flex-col gap-4">
-              {/* Expected Rental Yield — NOT for Land */}
-              {!isLand && (
-                <NumericInput
-                  label="Expected Rental Yield"
-                  value={d.expectedRentalYield}
-                  onChange={v => onUpdate({ expectedRentalYield: v })}
-                  placeholder="e.g. 6"
-                  suffix="%"
-                />
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ── PRE-LEASED SECTION ──────────────────────────── */}
-        {saleType === 'Pre-Leased' && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Pre-Leased Details
-            </h2>
-            <div className="flex flex-col gap-4">
-              <NumericInput
-                label="Existing Monthly Rent"
-                value={d.existingMonthlyRent}
-                onChange={v => onUpdate({ existingMonthlyRent: v })}
-                placeholder="e.g. 150000"
-                prefix="₹"
-              />
-              <TenureInput
-                label="Existing Lease Tenure"
-                value={d.existingLeaseTenure}
-                unit={d.existingLeaseTenureUnit}
-                onValueChange={v => onUpdate({ existingLeaseTenure: v })}
-                onUnitChange={v => onUpdate({ existingLeaseTenureUnit: v })}
-              />
-              <TenureInput
-                label="Remaining Tenure"
-                value={d.remainingTenure}
-                unit="Months"
-                onValueChange={v => onUpdate({ remainingTenure: v })}
-                onUnitChange={() => { }}
-              />
-              <YesNoRow
-                label="Rent Escalation Clause"
-                field="rentEscalation"
-                value={d.rentEscalation || 'No'}
-                onChange={v => onUpdate({ rentEscalation: v })}
-              />
-              {d.rentEscalation === 'Yes' && (
-                <TenureInput
-                  label="Rent Escalation Every"
-                  value={d.rentEscalationEvery}
-                  unit={d.rentEscalationEveryUnit}
-                  onValueChange={v => onUpdate({ rentEscalationEvery: v })}
-                  onUnitChange={v => onUpdate({ rentEscalationEveryUnit: v })}
-                />
-              )}
-              <TextField
-                label="Existing Tenant Company Name"
-                value={d.existingTenantCompany}
-                onChange={v => onUpdate({ existingTenantCompany: v })}
-                placeholder="e.g. Infosys Ltd."
-              />
-              <Dropdown
-                label="Tenant Category (Industry)"
-                value={d.tenantCategory}
-                options={INDUSTRY_CATEGORIES}
-                placeholder="Select industry"
-                onChange={v => onUpdate({ tenantCategory: v })}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* ── FRACTIONAL SECTION ──────────────────────────── */}
-        {saleType === 'Fractional' && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Fractional Details
-            </h2>
-            <div className="flex flex-col gap-4">
-              {!isLand && (
-                <>
-                  <NumericInput
-                    label="Minimum Sq. Ft."
-                    value={d.minimumSqFt}
-                    onChange={v => onUpdate({ minimumSqFt: v })}
-                    placeholder="e.g. 500"
-                    suffix="sq.ft"
-                  />
-                  <NumericInput
-                    label="Assured Monthly Rent"
-                    value={d.assuredMonthlyRent}
-                    onChange={v => onUpdate({ assuredMonthlyRent: v })}
-                    placeholder="e.g. 50000"
-                    prefix="₹"
-                  />
-                  <NumericInput
-                    label="Annual Yield"
-                    value={d.annualYield}
-                    onChange={v => onUpdate({ annualYield: v })}
-                    placeholder="e.g. 8"
-                    suffix="%"
-                  />
-                  <YesNoRow
-                    label="Is it Pre-Leased?"
-                    field="isPreLeased"
-                    value={d.isPreLeased}
-                    onChange={v => onUpdate({ isPreLeased: v })}
-                  />
-                </>
-              )}
-              <TextField
-                label="Remarks"
-                value={d.fractionalRemarks}
-                onChange={v => onUpdate({ fractionalRemarks: v })}
-                placeholder="Any additional remarks"
-              />
-            </div>
-          </div>
-        )}
 
       </div>
     </FormPage>

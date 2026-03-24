@@ -30,7 +30,7 @@ export default function LocationPricing() {
       onBack={back}
       onNext={next}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <SectionCard title="Location">
           <div className="flex flex-col gap-3">
             <TextField

@@ -11,10 +11,10 @@ type Props = {
 export default function Button({ variant = 'primary', onClick, disabled, children, fullWidth }: Props) {
   const base: React.CSSProperties = {
     fontFamily: "'Outfit', sans-serif",
-    fontSize: '0.95rem',
+    fontSize: '0.85rem',
     fontWeight: 600,
-    borderRadius: '10px',
-    padding: '10px 20px',
+    borderRadius: '6px',
+    padding: '6px 14px',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.4 : 1,
     transition: 'all 300ms var(--ease-smooth)',

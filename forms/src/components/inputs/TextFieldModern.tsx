@@ -19,7 +19,7 @@ export function TextFieldModern({ label, value, placeholder, onChange, readOnly,
         type="text"
         readOnly={readOnly}
         className={`
-          w-full px-3 py-2 rounded-[7px] border text-[13px] font-['Outfit'] transition-colors duration-200
+          w-full px-2.5 py-1.5 rounded-[6px] border text-[13px] font-['Outfit'] transition-colors duration-200
           placeholder-[#94A3B8]
           ${readOnly
             ? 'border-[#F1F5F9] bg-[#F8FAFC] text-[#64748B] cursor-default'

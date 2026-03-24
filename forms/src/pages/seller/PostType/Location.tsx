@@ -42,10 +42,10 @@ export default function Location({ sectionRef }: LocationProps) {
 
   return (
     <div ref={sectionRef} className="px-2 md:px-3 mt-3 md:mt-4 max-w-6xl mx-auto w-full">
-      <div className="bg-white rounded-[7px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E2E8F0] overflow-hidden">
+      <div className="bg-white rounded-[6px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E2E8F0] overflow-hidden">
 
         <div className="bg-gradient-to-r from-[#F8FAFC] to-white border-b border-[#F1F5F9] px-3 py-2.5 md:px-4 md:py-3 flex items-center gap-2 md:gap-2.5">
-          <div className="w-6 h-6 md:w-7 md:h-7 rounded-[7px] bg-white flex items-center justify-center border border-[#E2E8F0] shadow-sm">
+          <div className="w-6 h-6 md:w-7 md:h-7 rounded-[6px] bg-white flex items-center justify-center border border-[#E2E8F0] shadow-sm">
             <Compass size={15} className="text-[#475569]" />
           </div>
           <div>
@@ -65,14 +65,14 @@ export default function Location({ sectionRef }: LocationProps) {
               <div className="flex flex-col gap-2">
                 <button
                   type="button"
-                  className="w-full flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 rounded-[7px] border border-[#E2E8F0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] text-[12px] md:text-[13px] font-medium text-[#334155] font-['Outfit'] hover:bg-[#F8FAFC] hover:border-[#CBD5E1] transition-colors duration-200"
+                  className="w-full flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 rounded-[6px] border border-[#E2E8F0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] text-[12px] md:text-[13px] font-medium text-[#334155] font-['Outfit'] hover:bg-[#F8FAFC] hover:border-[#CBD5E1] transition-colors duration-200"
                 >
                   <Globe size={15} className="text-[#3B82F6]" />
                   Open Google Maps
                 </button>
                 <button
                   type="button"
-                  className="w-full flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 rounded-[7px] border border-[#E2E8F0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] text-[12px] md:text-[13px] font-medium text-[#334155] font-['Outfit'] hover:bg-[#F8FAFC] hover:border-[#CBD5E1] transition-colors duration-200"
+                  className="w-full flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-2 rounded-[6px] border border-[#E2E8F0] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] text-[12px] md:text-[13px] font-medium text-[#334155] font-['Outfit'] hover:bg-[#F8FAFC] hover:border-[#CBD5E1] transition-colors duration-200"
                 >
                   <Navigation size={15} className="text-[#10B981]" />
                   Draw Polygon
@@ -151,7 +151,7 @@ export default function Location({ sectionRef }: LocationProps) {
               />
               <button
                 type="button"
-                className="flex items-center justify-center gap-1.5 w-max px-3 py-1.5 rounded-[7px] bg-[#2563EB] text-white text-[12px] font-medium font-['Outfit'] hover:bg-[#1D4ED8] shadow-[0_1px_2px_rgba(37,99,235,0.2)] transition-colors duration-200"
+                className="flex items-center justify-center gap-1.5 w-max px-3 py-1.5 rounded-[6px] bg-[#2563EB] text-white text-[12px] font-medium font-['Outfit'] hover:bg-[#1D4ED8] shadow-[0_1px_2px_rgba(37,99,235,0.2)] transition-colors duration-200"
               >
                 <Plus size={14} />
                 Add ORR Zoning

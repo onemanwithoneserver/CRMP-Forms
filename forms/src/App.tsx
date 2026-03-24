@@ -12,11 +12,10 @@ function Header() {
     { key: 'post-type',            label: '1. Post Type' },
     { key: 'unit-details',         label: '2. Unit Details' },
     { key: 'facilities',           label: '3. Facilities' },
-    { key: 'unit-availability',    label: '4. Unit Availability' },
-    { key: 'upload-photos',        label: '5. Media' },
-    { key: 'lease-info',           label: '6. Lease Information' },
-    { key: 'transaction-details',  label: '6. Transactional Details' },
-    { key: 'review',               label: '7. Review' },
+    { key: 'upload-photos',        label: '4. Media' },
+    { key: 'lease-info',           label: '5. Lease Information' },
+    { key: 'transaction-details',  label: '5. Transactional Details' },
+    { key: 'review',               label: '6. Review' },
   ]
 
 
@@ -34,7 +33,7 @@ function Header() {
       <div style={{
         maxWidth: '72rem',
         margin: '0 auto',
-        padding: '16px 24px',
+        padding: '8px 16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -42,7 +41,7 @@ function Header() {
         <h1 style={{
           fontFamily: "'Outfit', sans-serif",
           fontWeight: 700,
-          fontSize: '1.125rem',
+          fontSize: '1rem',
           color: 'var(--text)',
           margin: 0,
           flex: 1,
@@ -58,8 +57,8 @@ function Header() {
                dispatch({ type: 'setDesignOverride', key: e.target.value || null })
              }}
              style={{
-               padding: '8px 16px',
-               borderRadius: '8px',
+               padding: '4px 10px',
+               borderRadius: '6px',
                border: '1px solid var(--border)',
                background: 'var(--surface-lowest)',
                fontFamily: "'Outfit', sans-serif",
@@ -108,8 +107,8 @@ function Header() {
                 fontFamily: "'Outfit', sans-serif",
                 fontSize: '0.8125rem',
                 fontWeight: device === d ? 600 : 500,
-                padding: '8px 16px',
-                borderRadius: '8px',
+                padding: '4px 10px',
+                borderRadius: '6px',
                 border: device === d ? 'none' : '1px solid var(--border-light)',
                 background: device === d ? 'var(--accent)' : 'transparent',
                 color: device === d ? 'var(--text-inverse)' : 'var(--text-secondary)',
@@ -135,7 +134,10 @@ function InnerApp() {
       <Header />
       <main
         data-device={device}
-        className={device === 'desktop' ? 'max-w-5xl mx-auto' : ''}
+        className={
+          device === 'desktop' ? 'max-w-5xl mx-auto' :
+          device === 'mobile' ? 'max-w-[430px] mx-auto' : ''
+        }
       >
         <Routes>
           <Route path="/" element={<MappingApp />} />

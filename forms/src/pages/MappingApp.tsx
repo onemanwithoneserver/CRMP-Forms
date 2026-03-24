@@ -12,7 +12,6 @@ import LocationPricing from './seller/LocationPricing'
 
 import UnitDetails from './seller/UnitDetails'
 import Facilities from './seller/Facilities'
-import UnitAvailability from './seller/UnitAvailability'
 import LeaseInfo from './seller/LeaseInfo'
 import BusinessInfo from './seller/BusinessInfo'
 import TransactionDetails from './seller/TransactionDetails'
@@ -31,7 +30,6 @@ const COMPONENT_MAP: Record<string, React.ComponentType> = {
   'location-pricing': LocationPricing,
   'unit-details': UnitDetails,
   'facilities': Facilities,
-  'unit-availability': UnitAvailability,
   'lease-info': LeaseInfo,
   'business-info': BusinessInfo,
   'transaction-details': TransactionDetails,

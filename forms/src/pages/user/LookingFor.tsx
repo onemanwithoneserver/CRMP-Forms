@@ -50,10 +50,10 @@ export default function LookingFor() {
               style={{
                  display: 'flex',
                  alignItems: 'center',
-                 padding: '16px 20px',
-                 gap: '16px',
-                 borderRadius: '8px',
-                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.04)'
+                 padding: '8px 12px',
+                 gap: '10px',
+                 borderRadius: '6px',
+                 boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)'
               }}
             >
               <div className={`radio-circle ${isSelected ? 'active' : ''}`} style={{ marginTop: 0 }} />

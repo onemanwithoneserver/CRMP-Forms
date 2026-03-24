@@ -18,7 +18,7 @@ export default function BudgetArea() {
       onBack={back}
       onNext={next}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <SectionCard title="Budget Range (₹)">
           <div className="flex gap-3">
             <div style={{ flex: 1 }}>

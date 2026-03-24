@@ -9,6 +9,7 @@ import {
 import { useForm, SELLER_POST_TYPES, SELLER_SUB_CATEGORIES } from '../../../context/FormContext'
 import { PropertyCard } from '../../../components/inputs/PropertyCard'
 import { OptionButton } from '../../../components/inputs/OptionButton'
+import { useDevice } from '../../../context/DeviceContext'
 const PROPERTY_TYPE_CARDS = [
   { id: 'land', label: 'Land', icon: Map },
   { id: 'retail', label: 'Retail', icon: Store },
@@ -24,59 +25,63 @@ interface SelectPropertyTypeProps {
 export default function SelectPropertyType({ sectionRef }: SelectPropertyTypeProps) {
   const { state, dispatch } = useForm()
   const { postType, postSubCategory, propertyType } = state.formData
+  const { device } = useDevice()
+  const isMobile = device === 'mobile'
 
   return (
-    <div ref={sectionRef} className="relative -mt-4 md:-mt-6 px-0 md:px-4 max-w-3xl mx-auto w-full">
-      <div className="bg-white md:rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border-y md:border border-[var(--border-light)] overflow-hidden">
+    <div ref={sectionRef} className={`relative ${isMobile ? '-mt-4 px-0' : '-mt-6 px-4'} max-w-3xl mx-auto w-full`}>
+      <div className={`bg-white shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden ${isMobile ? 'border-y border-[var(--border-light)]' : 'rounded-lg border border-[var(--border-light)]'}`}>
         {/* Gradient accent bar */}
         <div className="h-1 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C]" />
 
-        <div className="p-4">
+        <div className={isMobile ? 'p-2' : 'p-3'}>
           {/* Section heading */}
-          <div className="flex items-center gap-2 md:gap-2.5 mb-3 md:mb-4">
-            <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-[#1C2A44] flex items-center justify-center">
-              <Building2 size={14} className="text-white" />
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <div className={`rounded-[4px] bg-[#1C2A44] flex items-center justify-center w-5 h-5`}>
+              <Building2 size={12} className="text-white" />
             </div>
-            <h2 className="text-[0.95rem] font-bold text-[#1C2A44] font-['Outfit']">
+            <h2 className="text-[0.85rem] font-bold text-[#1C2A44] font-['Outfit']">
               Select Property Type
             </h2>
           </div>
 
           {/* Unselected Property Cards Wrapper */}
           <div className={propertyType
-            ? "grid grid-cols-4 gap-1.5 md:gap-2.5"
-            : "flex flex-wrap justify-center gap-1.5 md:gap-2.5"
+            ? 'flex flex-wrap justify-center gap-1.5 md:gap-2.5 w-full h-full'
+            : (isMobile
+              ? 'flex flex-wrap justify-center gap-1'
+              : 'grid grid-cols-5 gap-1.5')
           }>
             {PROPERTY_TYPE_CARDS.map((type, index) => {
               if (propertyType === type.id) return null
 
-              const layoutClass = propertyType
+              const wrapClass = propertyType
                 ? "col-span-1"
-                : "w-[calc(33.333%-4px)] flex-none md:flex-1 md:w-auto md:max-w-none"
+                : (isMobile ? "w-[calc(33.333%-4px)] flex-none" : "col-span-1")
 
               return (
-                <PropertyCard
-                  key={type.id}
-                  icon={type.icon}
-                  label={type.label}
-                  selected={false}
-                  className={layoutClass}
-                  compact={!!propertyType}
-                  onClick={() => dispatch({
-                    type: 'updateData', payload: {
-                      propertyType: type.id,
-                      postType: '',
-                      postSubCategory: ''
-                    }
-                  })}
-                />
+                <div key={type.id} className={wrapClass}>
+                  <PropertyCard
+                    icon={type.icon}
+                    label={type.label}
+                    selected={false}
+                    compact={!!propertyType}
+                    onClick={() => dispatch({
+                      type: 'updateData', payload: {
+                        propertyType: type.id,
+                        postType: '',
+                        postSubCategory: ''
+                      }
+                    })}
+                  />
+                </div>
               )
             })}
           </div>
 
           {/* Selected Property Card */}
           {propertyType && (
-            <div className="mt-4 sm:mt-5 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
+            <div className={`${isMobile ? 'mt-2' : 'mt-2'} transition-all duration-300 animate-in fade-in slide-in-from-top-2`}>
               {PROPERTY_TYPE_CARDS.filter(type => type.id === propertyType).map(type => (
                 <PropertyCard
                   key={type.id}
@@ -85,11 +90,11 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
                   selected={true}
                   onClick={() => { }}
                 >
-                  <p className="text-[13px] font-bold text-[#445069] mb-3 mt-1 font-['Outfit'] tracking-wide">
+                  <p className="text-[13px] font-bold text-[#445069] font-['Outfit'] tracking-wide mb-2.5">
                     What do you want to do?
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                  <div className={`grid gap-2.5 ${isMobile ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-4'}`}>
                     {SELLER_POST_TYPES.map(option => (
                       <OptionButton
                         key={option.value}
@@ -108,7 +113,7 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
                   {/* Sub-category pills */}
                   {postType && SELLER_SUB_CATEGORIES[postType] && (
                     <div className="mt-4 pt-4 border-t border-[#C89B3C]/15">
-                      <p className="text-[12px] font-bold text-[#445069] mb-2.5 font-['Outfit'] tracking-wide">
+                      <p className="text-[12px] font-bold text-[#445069] mb-2 font-['Outfit'] tracking-wide">
                         Select Category
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -123,9 +128,9 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
                                 dispatch({ type: 'updateData', payload: { postSubCategory: sub } })
                               }}
                               className={`
-                                px-3.5 py-1.5 rounded-[5px] text-[12px] sm:text-[13px] font-semibold font-['Outfit'] transition-all duration-200 border
+                                px-4 py-1.5 rounded-[6px] text-[12px] font-bold font-['Outfit'] transition-all duration-200 border
                                 ${isSubSelected
-                                  ? 'bg-[#C89B3C] text-white border-[#C89B3C] shadow-sm'
+                                  ? 'bg-[#C89B3C] text-white border-[#C89B3C] shadow-md'
                                   : 'bg-white text-[#4a5568] border-[#D0D4DC] hover:border-[#C89B3C]/40 hover:bg-[#FFFBF0]/50'
                                 }
                               `}

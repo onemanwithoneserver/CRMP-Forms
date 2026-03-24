@@ -52,24 +52,24 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
   const prev = currentStep > 1 ? steps[currentStep - 2] : null
 
   return (
-    <div className="step-header-mobile" style={{ flexDirection: 'column', padding: '16px 0 0 0', display: 'flex' }}>
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60px', width: '100%', padding: '0 24px' }}>
+    <div className="step-header-mobile" style={{ flexDirection: 'column', padding: '8px 0 0 0', display: 'flex' }}>
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40px', width: '100%', padding: '0 12px' }}>
 
         <div
           onClick={() => prev && onStepClick?.(currentStep - 1)}
           className="step-mobile-prev"
           style={{
             position: 'absolute',
-            left: '16px',
-            fontSize: '1.75rem',
+            left: '8px',
+            fontSize: '1.5rem',
             color: '#1C2A44',
             cursor: prev ? 'pointer' : 'default',
             visibility: prev ? 'visible' : 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '48px',
-            height: '48px'
+            width: '36px',
+            height: '36px'
           }}
         >
           ←
@@ -77,13 +77,13 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
 
         <div className="step-mobile-current">
           <div className="step-circle active" style={{
-            width: 28, height: 28, minWidth: 28,
-            fontSize: '0.85rem',
+            width: 24, height: 24, minWidth: 24,
+            fontSize: '0.78rem',
             marginTop: 0
           }}>
             {currentStep}
           </div>
-          <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>
             {current?.label}
           </span>
         </div>

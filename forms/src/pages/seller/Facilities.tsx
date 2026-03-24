@@ -32,11 +32,11 @@ export default function Facilities() {
   }
 
   const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0') => (
-    <div className="flex flex-col gap-1.5 w-full">
-      <label className="text-[13px] font-semibold text-[#445069] pl-0.5">{label}</label>
+    <div className="flex flex-col gap-1 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
       <input
         type="number"
-        className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-2.5 px-3 text-sm text-[#1C2A44] transition-all"
+        className="form-input bg-white w-full border border-[var(--border-light)] rounded-[4px] py-1.5 px-2 text-[13px] text-[var(--text)] transition-all h-[34px] focus:border-[var(--accent-gold)] focus:outline-none"
         placeholder={placeholder}
         value={d[field] as string}
         onChange={e => onUpdate({ [field]: e.target.value })}
@@ -44,10 +44,10 @@ export default function Facilities() {
     </div>
   )
 
-  const renderYesNo = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex items-center justify-between py-2 bg-white border border-[#edf0f5] px-3.5 rounded-lg">
-      <span className="text-[13.5px] font-medium text-[#1C2A44]">{label}</span>
-      <div className="w-[110px]">
+  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
+    <div className="flex flex-col gap-1 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
+      <div className="w-full">
         <SegmentedControl
           options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
           value={(d[field] as string) || 'No'}
@@ -59,84 +59,69 @@ export default function Facilities() {
 
   return (
     <FormPage title="Facilities" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-6 sm:gap-8 font-['Outfit'] pb-2">
+      <div className="flex flex-col gap-4 font-['Outfit'] pb-2">
 
-        {/* SECTION: Parking */}
+        {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (
           <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Parking facilities
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">{renderYesNo('Designated parking', 'designatedParking')}</div>
-              {renderNumeric('No. of designated parkings', 'noOfParkings')}
+            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Parking</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {renderVerticalBoolean('Designated parking', 'designatedParking')}
+              {renderNumeric('No. of parkings', 'noOfParkings')}
               <Dropdown
                 label="Visitor parking"
                 value={d.visitorParking}
                 options={['Yes', 'No', 'Limited']}
-                placeholder="Select visitor parking"
+                placeholder="Select"
                 onChange={v => onUpdate({ visitorParking: v })}
               />
             </div>
           </div>
         )}
 
-        {/* SECTION: Power */}
+        {/* SECTION: Facilities - Power */}
         <div className="flex flex-col gap-3">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-            Power setup
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {show.powerBackup && (
-              <div className="sm:col-span-2">{renderYesNo('Power backup available', 'powerBackup')}</div>
-            )}
-            {renderNumeric('Power load (kW / kVA)', 'powerLoad')}
+          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Power</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
+            {renderNumeric('Power load (kW)', 'powerLoad')}
             <Dropdown
               label="Power phase"
               value={d.powerPhase}
               options={['Single', 'Three']}
-              placeholder="Select phase"
+              placeholder="Select"
               onChange={v => onUpdate({ powerPhase: v })}
             />
           </div>
         </div>
 
-        {/* SECTION: Washroom */}
-        {show.washrooms && (
+        {/* SECTION: Facilities - Hygiene & Utilities */}
+        {(show.washrooms || show.waterConnection) && (
           <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Washroom facilities
-            </h2>
-            <Dropdown
-              label="Washrooms"
-              value={d.washrooms}
-              options={['Yes, within unit', 'No', 'Common with building']}
-              placeholder="Select washroom setup"
-              onChange={v => onUpdate({ washrooms: v })}
-            />
-          </div>
-        )}
-
-        {/* SECTION: Fire Safety */}
-        {show.fireSprinklers && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Fire safety
-            </h2>
-            <div className="flex flex-col gap-3">
-              {renderYesNo('Fire sprinklers installed', 'fireSprinklers')}
-              {renderYesNo('Fire extinguishers present', 'fireExtinguishers')}
+            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Hygiene & Utilities</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {show.washrooms && (
+                <Dropdown
+                  label="Washroom"
+                  value={d.washrooms}
+                  options={['Yes, within unit', 'No', 'Common with building']}
+                  placeholder="Select setup"
+                  onChange={v => onUpdate({ washrooms: v })}
+                />
+              )}
+              {show.waterConnection && renderVerticalBoolean('Water connection', 'waterConnection')}
             </div>
           </div>
         )}
 
-        {/* SECTION: Water (Land only) */}
-        {show.waterConnection && (
+        {/* SECTION: Facilities - Fire Safety */}
+        {show.fireSprinklers && (
           <div className="flex flex-col gap-3">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2">
-              Water access
-            </h2>
-            {renderYesNo('Water connection available', 'waterConnection')}
+            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Fire Safety</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
+              {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
+            </div>
           </div>
         )}
 

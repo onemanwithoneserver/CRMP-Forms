@@ -10,9 +10,9 @@ export default function SectionCard({ title, children }: Props) {
     <section style={{
       background: '#ffffff',
       border: '1px solid #edf0f5',
-      borderRadius: '8px',
-      padding: '14px 14px 12px',
-      marginBottom: '8px',
+      borderRadius: '6px',
+      padding: '8px 10px 8px',
+      marginBottom: '4px',
       boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
     }}>
       {title && (
@@ -23,7 +23,7 @@ export default function SectionCard({ title, children }: Props) {
           color: '#8993a4',
           textTransform: 'none',
           letterSpacing: 0,
-          marginBottom: '10px',
+          marginBottom: '6px',
           textDecoration: 'none',
         }}>
           {title}

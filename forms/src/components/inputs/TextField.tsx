@@ -13,10 +13,10 @@ export default function TextField({ label, value, onChange, placeholder, error, 
   return (
     <label className="block">
       <div style={{
-        fontSize: '0.9rem',
+        fontSize: '0.78rem',
         fontWeight: 600,
         color: 'var(--text)',
-        marginBottom: '8px',
+        marginBottom: '3px',
       }}>
         {label}
       </div>
@@ -28,7 +28,7 @@ export default function TextField({ label, value, onChange, placeholder, error, 
         onChange={e => onChange?.(e.target.value)}
       />
       {error && (
-        <div style={{ fontSize: '0.8rem', color: '#ef4444', marginTop: '6px', fontWeight: 500 }}>
+        <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '2px', fontWeight: 500 }}>
           {error}
         </div>
       )}

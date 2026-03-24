@@ -14,9 +14,9 @@ export default function RadioGroup({ label, options, value, onChange, error }: P
   return (
     <div>
       {label && (
-        <div className="section-title" style={{ marginBottom: '16px' }}>{label}</div>
+        <div className="section-title" style={{ marginBottom: '8px' }}>{label}</div>
       )}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         {options.map(option => {
           const selected = value === option.value
           return (
@@ -29,7 +29,7 @@ export default function RadioGroup({ label, options, value, onChange, error }: P
             >
               <div className={`radio-circle ${selected ? 'active' : ''}`} />
               <span style={{
-                fontSize: '0.95rem',
+                fontSize: '0.85rem',
                 fontWeight: selected ? 600 : 500,
                 color: selected ? 'var(--text)' : 'var(--text-secondary)',
                 flex: 1,
@@ -41,7 +41,7 @@ export default function RadioGroup({ label, options, value, onChange, error }: P
         })}
       </div>
       {error && (
-        <div style={{ fontSize: '0.8rem', color: '#ef4444', marginTop: '10px', fontWeight: 500 }}>
+        <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '4px', fontWeight: 500 }}>
           {error}
         </div>
       )}

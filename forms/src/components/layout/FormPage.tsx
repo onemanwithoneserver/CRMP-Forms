@@ -53,7 +53,7 @@ export default function FormPage({
       {/* ── Dark hero header (matches PostType style) ── */}
       <div style={{
         background: 'linear-gradient(135deg, #1C2A44 0%, #243352 60%, #1a2740 100%)',
-        padding: '14px 16px 20px',
+        padding: '8px 12px 12px',
         flexShrink: 0,
         position: 'relative',
         overflow: 'hidden',
@@ -73,7 +73,7 @@ export default function FormPage({
         <div style={{ position: 'relative', maxWidth: '720px', margin: '0 auto' }}>
           <h1 style={{
             fontFamily: "'Outfit', sans-serif",
-            fontSize: '1.45rem',
+            fontSize: '1.15rem',
             fontWeight: 800,
             color: '#ffffff',
             margin: 0,
@@ -97,7 +97,7 @@ export default function FormPage({
       </div>
 
       {/* ── Scrollable content ── */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '12px 12px 4px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '6px 8px 4px' }}>
         {children}
       </div>
 
@@ -107,7 +107,7 @@ export default function FormPage({
         background: '#ffffff',
         borderTop: '1px solid #edf0f5',
         boxShadow: '0 -4px 20px rgba(0,0,0,0.04)',
-        padding: '10px 14px',
+        padding: '6px 10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -119,9 +119,9 @@ export default function FormPage({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '7px 14px',
-            borderRadius: '6px',
+            gap: '4px',
+            padding: '5px 10px',
+            borderRadius: '4px',
             border: '1.5px solid rgba(200,155,60,0.5)',
             background: 'rgba(200,155,60,0.05)',
             color: '#C89B3C',
@@ -145,9 +145,9 @@ export default function FormPage({
             disabled={backDisabled || isFirstStep}
             aria-label="Previous step"
             style={{
-              width: '34px',
-              height: '34px',
-              borderRadius: '6px',
+              width: '30px',
+              height: '30px',
+              borderRadius: '4px',
               border: '1.5px solid #e2e6ec',
               background: '#ffffff',
               display: 'flex',
@@ -168,10 +168,10 @@ export default function FormPage({
             onClick={onNext}
             aria-label={isLastStep ? 'Submit' : 'Next step'}
             style={{
-              height: '34px',
-              minWidth: isLastStep ? 'auto' : '48px',
-              padding: isLastStep ? '0 20px' : '0',
-              borderRadius: '6px',
+              height: '30px',
+              minWidth: isLastStep ? 'auto' : '42px',
+              padding: isLastStep ? '0 14px' : '0',
+              borderRadius: '4px',
               border: 'none',
               background: 'linear-gradient(135deg, #1C2A44 0%, #2a3f66 100%)',
               color: '#ffffff',

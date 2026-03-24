@@ -171,7 +171,6 @@ export const getDynamicSteps = (data: FormData) => {
     // Seller/Landlord flows
     steps.push({ key: 'unit-details', label: 'Unit details' })
     steps.push({ key: 'facilities', label: 'Facilities' })
-    steps.push({ key: 'unit-availability', label: 'Unit Availability' })
     steps.push({ key: 'upload-photos', label: 'Media' })
     
     if (post === 'Lease/Rent Property') {

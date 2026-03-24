@@ -37,8 +37,8 @@ function UploadTile({ accept, index }: { accept: string; index: number }) {
       onClick={() => inputRef.current?.click()}
       style={{
         border: `1.5px dashed ${isMain ? 'var(--accent-gold)' : 'var(--border)'}`,
-        borderRadius: '8px',
-        height: '48px',
+        borderRadius: '6px',
+        height: '38px',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -82,8 +82,8 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
   const addMoreRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="flex flex-col gap-3">
-      <label className="text-[13px] font-semibold text-[#445069] pl-0.5">{label}</label>
+    <div className="flex flex-col gap-1.5 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
 
       {/* 1×2 grid of upload tiles (responsive) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
@@ -98,7 +98,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
         onClick={() => addMoreRef.current?.click()}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-          height: '48px', borderRadius: '8px',
+          height: '38px', borderRadius: '6px',
           border: '1.5px dashed var(--border)',
           background: 'transparent',
           color: 'var(--text-secondary)',
@@ -156,63 +156,46 @@ export default function UploadPhotos() {
 
   return (
     <FormPage title="Media" onBack={back} onNext={handleNext}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 font-['Outfit'] pb-4">
-
-        {/* IMAGES */}
-        <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
-            Images
-          </h2>
-          <UploadZone
-            label="Upload Images"
-            description="Drag & drop photos here"
-            accept="image/jpeg,image/png,image/webp"
-            note="JPG, PNG, WEBP — Max 15 images"
-          />
-        </div>
-
-        {/* VIDEO */}
-        <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
-            Video
-          </h2>
-          <UploadZone
-            label="Upload Video"
-            description="Drag & drop a walkthrough video here"
-            accept="video/mp4,video/webm,video/quicktime"
-            note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
-          />
-        </div>
-
-        {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
-        {showFloorPlan && (
-          <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
-              Floor Plan
-            </h2>
+      <div className="flex flex-col gap-4 font-['Outfit'] pb-2">
+        
+        {/* Main Header: Media */}
+        <div className="flex flex-col gap-3">
+          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Media</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* IMAGES */}
             <UploadZone
-              label="Upload Floor Plan"
+              label="Upload Image (Description)"
+              description="Drag & drop photos here"
+              accept="image/jpeg,image/png,image/webp"
+              note="JPG, PNG, WEBP — Max 15 images"
+            />
+
+            {/* VIDEO */}
+            <UploadZone
+              label="Upload Video (Description)"
+              description="Drag & drop walkthrough video here"
+              accept="video/mp4,video/webm,video/quicktime"
+              note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
+            />
+
+            {/* FLOOR PLAN */}
+            <UploadZone
+              label="Floor Plan"
               description="Drag & drop floor plan here"
               accept="image/jpeg,image/png,application/pdf"
               note="JPG, PNG, PDF — architectural or space layout"
             />
-          </div>
-        )}
 
-        {/* LAYOUT PLAN — Land only */}
-        {showLayoutPlan && (
-          <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
-              Layout Plan
-            </h2>
+            {/* LAYOUT PLAN */}
             <UploadZone
-              label="Upload Layout Plan"
-              description="Drag & drop your layout / site plan here"
+              label="Layout Plan"
+              description="Drag & drop layout / site plan here"
               accept="image/jpeg,image/png,application/pdf"
               note="JPG, PNG, PDF — demarcation or survey plan"
             />
           </div>
-        )}
+        </div>
 
       </div>
     </FormPage>

@@ -2,15 +2,24 @@ import React, { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Search, Check, X } from 'lucide-react'
 
 export interface DropdownProps {
-  label: string
+  label?: string
   value: string
   options: string[]
   placeholder?: string
   searchable?: boolean
   onChange: (val: string) => void
+  variant?: 'default' | 'compact'
 }
 
-export function Dropdown({ label, value, options, placeholder = 'Select...', searchable = false, onChange }: DropdownProps) {
+export function Dropdown({ 
+  label, 
+  value, 
+  options, 
+  placeholder = 'Select...', 
+  searchable = false, 
+  onChange,
+  variant = 'default'
+}: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [focusedIndex, setFocusedIndex] = useState(-1)
@@ -92,18 +101,21 @@ export function Dropdown({ label, value, options, placeholder = 'Select...', sea
 
   return (
     <div className="relative flex flex-col gap-1 w-full" ref={ref} onKeyDown={handleKeyDown}>
-      <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">
-        {label}
-      </label>
+      {variant !== 'compact' && label && (
+        <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">
+          {label}
+        </label>
+      )}
 
       <button
         type="button"
         onClick={() => { setIsOpen(!isOpen); setSearch('') }}
         className={`
-          w-full flex items-center justify-between gap-1.5 px-3 py-2 border text-left text-[13px] font-['Outfit'] transition-all duration-300 cursor-pointer
+          w-full flex items-center justify-between gap-1.5 px-2.5 border text-left text-[13px] font-['Outfit'] transition-all duration-300 cursor-pointer
+          ${variant === 'compact' ? 'h-[34px] py-1' : 'py-1.5'}
           ${isOpen
-            ? 'border-[#C89B3C] bg-white rounded-t-[7px] rounded-b-none outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'
-            : 'border-[var(--border)] bg-[rgba(255,255,255,0.7)] text-[#1C2A44] rounded-[7px] hover:border-[#C89B3C]/60 hover:bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]'
+            ? 'border-[#C89B3C] bg-white rounded-t-[6px] rounded-b-none outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'
+            : 'border-[var(--border)] bg-[rgba(255,255,255,0.7)] text-[#1C2A44] rounded-[6px] hover:border-[#C89B3C]/60 hover:bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]'
           }
         `}
       >
@@ -113,9 +125,9 @@ export function Dropdown({ label, value, options, placeholder = 'Select...', sea
         <ChevronDown size={14} className={`transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-[#C89B3C]' : 'text-[#667085]'}`} />
       </button>
 
-      <div 
+      <div
         className={`
-          absolute z-50 w-full top-[100%] bg-white rounded-b-[7px] border border-[#C89B3C] border-t-0 shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
+          absolute z-50 w-full top-[100%] bg-white rounded-b-[6px] border border-[#C89B3C] border-t-0 shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
           transition-all duration-200 origin-top
           ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 -translate-y-1 pointer-events-none'}
         `}
@@ -154,7 +166,7 @@ export function Dropdown({ label, value, options, placeholder = 'Select...', sea
                 onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
                 onMouseEnter={() => setFocusedIndex(index)}
                 className={`
-                  w-full flex items-center justify-between px-3.5 py-2.5 text-left text-[13px] font-['Outfit'] transition-colors duration-150 cursor-pointer block
+                  w-full flex items-center justify-between px-3 py-2 text-left text-[13px] font-['Outfit'] transition-colors duration-150 cursor-pointer block
                   ${value === option
                     ? 'bg-[#FFFBF0] text-[#C89B3C] font-bold border-l-2 border-[#C89B3C]'
                     : focusedIndex === index

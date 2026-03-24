@@ -17,8 +17,8 @@ function UploadTile({ accept, index }: { accept: string; index: number }) {
       onClick={() => inputRef.current?.click()}
       style={{
         border: `1.5px dashed ${isMain ? 'var(--accent-gold)' : 'var(--border)'}`,
-        borderRadius: '8px',
-        height: '48px',
+        borderRadius: '6px',
+        height: '38px',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -78,7 +78,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
         onClick={() => addMoreRef.current?.click()}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-          height: '48px', borderRadius: '8px',
+          height: '38px', borderRadius: '6px',
           border: '1.5px dashed var(--border)',
           background: 'transparent',
           color: 'var(--text-secondary)',
@@ -130,11 +130,11 @@ export default function UploadPhotosMobile() {
 
   return (
     <FormPage title="Media" onBack={back} onNext={handleNext}>
-      <div className="flex flex-col gap-5 font-['Outfit'] pb-4">
+      <div className="flex flex-col gap-3 font-['Outfit'] pb-2">
 
         {/* IMAGES */}
-        <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
+        <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
             Images
           </h2>
           <UploadZone
@@ -146,8 +146,8 @@ export default function UploadPhotosMobile() {
         </div>
 
         {/* VIDEO */}
-        <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
+        <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
             Video
           </h2>
           <UploadZone
@@ -160,8 +160,8 @@ export default function UploadPhotosMobile() {
 
         {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
         {showFloorPlan && (
-          <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
+          <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
               Floor Plan
             </h2>
             <UploadZone
@@ -175,8 +175,8 @@ export default function UploadPhotosMobile() {
 
         {/* LAYOUT PLAN — Land only */}
         {showLayoutPlan && (
-          <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
+          <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
               Layout Plan
             </h2>
             <UploadZone

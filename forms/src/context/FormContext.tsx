@@ -178,6 +178,9 @@ export const getDynamicSteps = (data: FormData) => {
     
     if (post === 'Lease/Rent Property') {
       steps.push({ key: 'lease-info', label: 'Lease Information' })
+    } else if (post === 'Running Business') {
+      steps.push({ key: 'business-info', label: 'Business Info' })
+      steps.push({ key: 'transaction-details', label: 'Transactional Details' })
     } else {
       steps.push({ key: 'transaction-details', label: 'Transactional Details' })
     }
@@ -453,8 +456,10 @@ function validateStep(step: number, data: FormData): Record<string, string> {
   const currentStepKey = stepsList[step - 1]?.key
 
   if (currentStepKey === 'post-type') {
-    if (!data.postType) {
-      errors.postType = 'Please select a main category'
+    if (!data.propertyType) {
+      errors.propertyType = 'Please select a property type'
+    } else if (!data.postType) {
+      errors.postType = 'Please select what you want to do'
     } else if (SELLER_SUB_CATEGORIES[data.postType] && !data.postSubCategory) {
       errors.postType = 'Please select a sub-category to proceed'
     }

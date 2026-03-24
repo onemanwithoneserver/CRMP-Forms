@@ -111,7 +111,7 @@ function MapDialog({
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9] bg-gradient-to-r from-[#F8FAFC] to-white shrink-0">
           <div className="flex items-center gap-2">
-            <Globe size={15} className="text-[#3B82F6]" />
+            <MapPin size={15} className="text-[#C89B3C]" />
             <span className="text-[14px] font-semibold text-[#0F172A] font-['Outfit']">Select Location on Map</span>
           </div>
           <button type="button" onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-[6px] hover:bg-[#F1F5F9] transition-colors" aria-label="Close">
@@ -120,7 +120,7 @@ function MapDialog({
         </div>
         {/* Map Canvas */}
         <div ref={mapRef} onClick={handleMapClick}
-          className="relative w-full h-64 overflow-hidden select-none flex-1 min-h-0 cursor-pointer"
+          className="relative w-full overflow-hidden select-none cursor-pointer flex-1 min-h-[360px]"
           role="application" aria-label="Map canvas">
           <div className="absolute inset-0 bg-[#EEF1F6]" />
           <div className="absolute inset-0 map-dot-bg" />
@@ -149,26 +149,11 @@ function MapDialog({
             )}
           </svg>
         </div>
-        {/* Coordinate inputs */}
-        <div className="px-4 py-3 bg-[#F8FAFC] border-t border-[#F1F5F9] shrink-0">
-          {error && (
-            <div className="flex items-center gap-1.5 mb-2.5 text-[12px] font-['Outfit'] text-[#DC2626]">
-              <AlertCircle size={13} />{error}
-            </div>
-          )}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#475569] font-['Outfit']">Latitude</label>
-              <input type="text" value={lat} onChange={e => setLat(e.target.value)} placeholder="e.g. 17.418980"
-                className="w-full px-2.5 py-1.5 rounded-[6px] border border-[#E2E8F0] bg-white text-[13px] font-['Outfit'] text-[#0F172A] focus:outline-none focus:border-[#94A3B8] placeholder-[#94A3B8]" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#475569] font-['Outfit']">Longitude</label>
-              <input type="text" value={lng} onChange={e => setLng(e.target.value)} placeholder="e.g. 78.343770"
-                className="w-full px-2.5 py-1.5 rounded-[6px] border border-[#E2E8F0] bg-white text-[13px] font-['Outfit'] text-[#0F172A] focus:outline-none focus:border-[#94A3B8] placeholder-[#94A3B8]" />
-            </div>
+        {error && (
+          <div className="flex items-center gap-1.5 px-4 py-2 bg-[#FEF2F2] border-t border-[#FECACA] text-[12px] font-['Outfit'] text-[#DC2626] shrink-0">
+            <AlertCircle size={13} />{error}
           </div>
-        </div>
+        )}
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[#F1F5F9] shrink-0">
           <button type="button" onClick={onClose} className="px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] text-[#475569] border border-[#E2E8F0] hover:bg-[#F8FAFC] transition-colors">Cancel</button>
@@ -415,13 +400,22 @@ export default function PostType() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end">
                 <div className="flex flex-col gap-1 w-full">
                   <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Map Location</label>
-                  <button type="button" onClick={openMap}
-                    className="h-[34px] w-full flex items-center justify-center gap-1.5 px-3 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] text-[12px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-200">
-                    <Globe size={13} className="shrink-0" /> Open Google Maps
+                  <button
+                    type="button"
+                    onClick={openMap}
+                    className="h-[34px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#BFDBFE] bg-[#EFF6FF] text-[13px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-150"
+                  >
+                    <MapPin size={14} className="shrink-0 text-[#C89B3C]" />
+                    {localLocation.latitude && localLocation.longitude
+                      ? `${localLocation.latitude}, ${localLocation.longitude}`
+                      : 'Select Location on Map'}
+                    {localLocation.latitude && localLocation.longitude && (
+                      <span className="ml-auto text-[11px] font-normal text-[#64748B]">Change</span>
+                    )}
                   </button>
                 </div>
-                <TextField label="Latitude" value={localLocation.latitude} placeholder="e.g. 17.41898" readOnly onChange={() => {}} />
-                <TextField label="Longitude" value={localLocation.longitude} placeholder="e.g. 78.34377" readOnly onChange={() => {}} />
+                <TextField label="Latitude" value={localLocation.latitude} placeholder="e.g. 17.41898" onChange={val => setLocalLocation(s => ({ ...s, latitude: val }))} />
+                <TextField label="Longitude" value={localLocation.longitude} placeholder="e.g. 78.34377" onChange={val => setLocalLocation(s => ({ ...s, longitude: val }))} />
               </div>
 
               <div className="h-px w-full bg-[#F1F5F9]" />

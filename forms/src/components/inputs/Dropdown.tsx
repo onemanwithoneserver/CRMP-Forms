@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
+import ReactDOM from 'react-dom'
 import { ChevronDown, Search, Check, X } from 'lucide-react'
 
 export interface DropdownProps {
@@ -24,17 +25,28 @@ export function Dropdown({
   const [search, setSearch] = useState('')
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [openUpward, setOpenUpward] = useState(false)
+  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({})
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  // Compute upward direction whenever the dropdown opens
+  // Compute position for portal panel
   const computeDirection = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect()
       const spaceBelow = window.innerHeight - rect.bottom
-      setOpenUpward(spaceBelow < 220)
+      const goUp = spaceBelow < 220
+      setOpenUpward(goUp)
+      setPanelStyle({
+        position: 'fixed',
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+        ...(goUp
+          ? { bottom: window.innerHeight - rect.top }
+          : { top: rect.bottom }),
+      })
     }
   }, [])
 
@@ -118,11 +130,72 @@ export function Dropdown({
       : 'rounded-t-[6px] rounded-b-none'
     : 'rounded-[6px]'
 
-  // Dynamic panel positioning & border-radius
-  const panelPositionClass = openUpward ? 'bottom-[100%]' : 'top-[100%]'
+  // Dynamic panel border-radius (no positional class — portal uses fixed coords)
   const panelRadiusClass = openUpward
     ? 'rounded-t-[6px] rounded-b-none border-b-0 border-t border-x'
     : 'rounded-b-[6px] rounded-t-none border-t-0 border-b border-x'
+
+  const panelEl = (
+    <div
+      style={panelStyle}
+      className={`
+        bg-white ${panelRadiusClass} border-[#C89B3C] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
+        transition-all duration-200
+        ${openUpward ? 'origin-bottom' : 'origin-top'}
+        ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 pointer-events-none'}
+      `}
+    >
+      {searchable && (
+        <div className="p-2 border-b border-[#e2e6ec] bg-[#f8f9fb]">
+          <div className="relative">
+            <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#a0a8b5]" />
+            <input
+              ref={inputRef}
+              type="text"
+              className="w-full pl-7 pr-2 py-1.5 text-[12px] rounded-[5px] border border-[#d0d4dc] bg-white font-['Outfit'] font-medium placeholder-[#a0a8b5] text-[#1C2A44] focus:outline-none focus:border-[#C89B3C] focus:shadow-[0_0_0_2px_rgba(200,155,60,0.1)] transition-all duration-200"
+              placeholder="Search..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              tabIndex={isOpen ? 0 : -1}
+            />
+            {search && (
+              <button onClick={() => setSearch('')} tabIndex={isOpen ? 0 : -1} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#a0a8b5] hover:text-[#4a5568]">
+                <X size={12} />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="max-h-52 overflow-y-auto custom-scrollbar py-1" ref={listRef}>
+        {filtered.length === 0 ? (
+          <div className="px-3 py-4 text-center text-[12.5px] text-[#667085] font-semibold font-['Outfit']">No results</div>
+        ) : (
+          filtered.map((option, index) => (
+            <button
+              key={option}
+              type="button"
+              tabIndex={isOpen ? 0 : -1}
+              onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
+              onMouseEnter={() => setFocusedIndex(index)}
+              className={`
+                w-full flex items-center justify-between px-3 py-2 text-left text-[13px] font-['Outfit'] transition-colors duration-150 cursor-pointer block
+                ${value === option
+                  ? 'bg-[#FFFBF0] text-[#C89B3C] font-bold border-l-2 border-[#C89B3C]'
+                  : focusedIndex === index
+                    ? 'bg-[#f8f9fb] text-[#1C2A44] font-semibold border-l-2 border-transparent'
+                    : 'text-[#4a5568] font-semibold hover:bg-[#f8f9fb] hover:text-[#1C2A44] border-l-2 border-transparent'
+                }
+              `}
+            >
+              <span className="truncate">{option}</span>
+              {value === option && <Check size={14} className="text-[#C89B3C] shrink-0 ml-2 drop-shadow-sm" />}
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  )
 
   return (
     <div className="relative flex flex-col gap-1 w-full" ref={ref} onKeyDown={handleKeyDown}>
@@ -152,64 +225,7 @@ export function Dropdown({
         <ChevronDown size={14} className={`transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-[#C89B3C]' : 'text-[#667085]'}`} />
       </button>
 
-      <div
-        className={`
-          absolute z-50 w-full ${panelPositionClass} bg-white ${panelRadiusClass} border-[#C89B3C] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
-          transition-all duration-200
-          ${openUpward ? 'origin-bottom' : 'origin-top'}
-          ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 pointer-events-none'}
-        `}
-      >
-        {searchable && (
-          <div className="p-2 border-b border-[#e2e6ec] bg-[#f8f9fb]">
-            <div className="relative">
-              <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#a0a8b5]" />
-              <input
-                ref={inputRef}
-                type="text"
-                className="w-full pl-7 pr-2 py-1.5 text-[12px] rounded-[5px] border border-[#d0d4dc] bg-white font-['Outfit'] font-medium placeholder-[#a0a8b5] text-[#1C2A44] focus:outline-none focus:border-[#C89B3C] focus:shadow-[0_0_0_2px_rgba(200,155,60,0.1)] transition-all duration-200"
-                placeholder={`Search...`}
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                tabIndex={isOpen ? 0 : -1}
-              />
-              {search && (
-                <button onClick={() => setSearch('')} tabIndex={isOpen ? 0 : -1} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#a0a8b5] hover:text-[#4a5568]">
-                  <X size={12} />
-                </button>
-              )}
-            </div>
-          </div>
-        )}
-
-        <div className="max-h-52 overflow-y-auto custom-scrollbar py-1" ref={listRef}>
-          {filtered.length === 0 ? (
-            <div className="px-3 py-4 text-center text-[12.5px] text-[#667085] font-semibold font-['Outfit']">No results</div>
-          ) : (
-            filtered.map((option, index) => (
-              <button
-                key={option}
-                type="button"
-                tabIndex={isOpen ? 0 : -1}
-                onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
-                onMouseEnter={() => setFocusedIndex(index)}
-                className={`
-                  w-full flex items-center justify-between px-3 py-2 text-left text-[13px] font-['Outfit'] transition-colors duration-150 cursor-pointer block
-                  ${value === option
-                    ? 'bg-[#FFFBF0] text-[#C89B3C] font-bold border-l-2 border-[#C89B3C]'
-                    : focusedIndex === index
-                      ? 'bg-[#f8f9fb] text-[#1C2A44] font-semibold border-l-2 border-transparent'
-                      : 'text-[#4a5568] font-semibold hover:bg-[#f8f9fb] hover:text-[#1C2A44] border-l-2 border-transparent'
-                  }
-                `}
-              >
-                <span className="truncate">{option}</span>
-                {value === option && <Check size={14} className="text-[#C89B3C] shrink-0 ml-2 drop-shadow-sm" />}
-              </button>
-            ))
-          )}
-        </div>
-      </div>
+      {ReactDOM.createPortal(panelEl, document.body)}
     </div>
   )
 }

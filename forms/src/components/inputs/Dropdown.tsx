@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { ChevronDown, Search, Check, X } from 'lucide-react'
 
 export interface DropdownProps {
@@ -23,9 +23,20 @@ export function Dropdown({
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [focusedIndex, setFocusedIndex] = useState(-1)
+  const [openUpward, setOpenUpward] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
+
+  // Compute upward direction whenever the dropdown opens
+  const computeDirection = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      const spaceBelow = window.innerHeight - rect.bottom
+      setOpenUpward(spaceBelow < 220)
+    }
+  }, [])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -41,14 +52,15 @@ export function Dropdown({
 
   useEffect(() => {
     if (isOpen) {
+      computeDirection()
       setFocusedIndex(-1)
       if (searchable) {
         setTimeout(() => inputRef.current?.focus(), 50)
       }
     } else {
-      setTimeout(() => setSearch(''), 200) // Clear search after animation
+      setTimeout(() => setSearch(''), 200)
     }
-  }, [isOpen, searchable])
+  }, [isOpen, searchable, computeDirection])
 
   useEffect(() => {
     setFocusedIndex(0)
@@ -58,7 +70,6 @@ export function Dropdown({
     if (focusedIndex >= 0 && listRef.current) {
       const activeEl = listRef.current.children[focusedIndex] as HTMLElement;
       if (activeEl) {
-        // Scroll into view logic if needed
         const unscrollable = activeEl.offsetTop + activeEl.clientHeight > listRef.current.scrollTop + listRef.current.clientHeight;
         const above = activeEl.offsetTop < listRef.current.scrollTop;
         if (unscrollable) {
@@ -74,6 +85,7 @@ export function Dropdown({
     if (!isOpen) {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
         e.preventDefault()
+        computeDirection()
         setIsOpen(true)
       }
       return
@@ -99,6 +111,19 @@ export function Dropdown({
     }
   }
 
+  // Dynamic border-radius for trigger button
+  const triggerRadius = isOpen
+    ? openUpward
+      ? 'rounded-b-[6px] rounded-t-none'
+      : 'rounded-t-[6px] rounded-b-none'
+    : 'rounded-[6px]'
+
+  // Dynamic panel positioning & border-radius
+  const panelPositionClass = openUpward ? 'bottom-[100%]' : 'top-[100%]'
+  const panelRadiusClass = openUpward
+    ? 'rounded-t-[6px] rounded-b-none border-b-0 border-t border-x'
+    : 'rounded-b-[6px] rounded-t-none border-t-0 border-b border-x'
+
   return (
     <div className="relative flex flex-col gap-1 w-full" ref={ref} onKeyDown={handleKeyDown}>
       {variant !== 'compact' && label && (
@@ -108,14 +133,16 @@ export function Dropdown({
       )}
 
       <button
+        ref={triggerRef}
         type="button"
-        onClick={() => { setIsOpen(!isOpen); setSearch('') }}
+        onClick={() => { computeDirection(); setIsOpen(!isOpen); setSearch('') }}
         className={`
           w-full flex items-center justify-between gap-1.5 px-2.5 border text-left text-[13px] font-['Outfit'] transition-all duration-300 cursor-pointer
-          ${variant === 'compact' ? 'h-[34px] py-1' : 'py-1.5'}
+          ${variant === 'compact' ? 'h-[34px] py-1' : 'h-[34px] py-1.5'}
+          ${triggerRadius}
           ${isOpen
-            ? 'border-[#C89B3C] bg-white rounded-t-[6px] rounded-b-none outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'
-            : 'border-[var(--border)] bg-[rgba(255,255,255,0.7)] text-[#1C2A44] rounded-[6px] hover:border-[#C89B3C]/60 hover:bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]'
+            ? 'border-[#C89B3C] bg-white outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'
+            : 'border-[var(--border)] bg-[rgba(255,255,255,0.7)] text-[#1C2A44] hover:border-[#C89B3C]/60 hover:bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]'
           }
         `}
       >
@@ -127,9 +154,10 @@ export function Dropdown({
 
       <div
         className={`
-          absolute z-50 w-full top-[100%] bg-white rounded-b-[6px] border border-[#C89B3C] border-t-0 shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
-          transition-all duration-200 origin-top
-          ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 -translate-y-1 pointer-events-none'}
+          absolute z-50 w-full ${panelPositionClass} bg-white ${panelRadiusClass} border-[#C89B3C] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
+          transition-all duration-200
+          ${openUpward ? 'origin-bottom' : 'origin-top'}
+          ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 pointer-events-none'}
         `}
       >
         {searchable && (

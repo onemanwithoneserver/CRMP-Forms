@@ -1,9 +1,29 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
-import Toggle from '../../components/inputs/Toggle'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
 import SelectField from '../../components/inputs/SelectField'
+
+// Shared label + input helper
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1 w-full">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44]">{label}</label>
+      {children}
+    </div>
+  )
+}
+
+function TextInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
+  return (
+    <input
+      className="form-input bg-white border-[var(--border)] rounded-[6px] px-2.5 text-[13px] text-[var(--text)] h-[34px] focus:border-[var(--accent-gold)] focus:outline-none transition-all"
+      placeholder={placeholder}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+    />
+  )
+}
 
 export default function BuildingInfo() {
   const { state, dispatch, next, back } = useForm()
@@ -14,65 +34,84 @@ export default function BuildingInfo() {
   }
 
   return (
-    <FormPage
-      title="Building Information"
-      onBack={back}
-      onNext={next}
-    >
-      <div className="flex flex-col gap-4">
-        
-        <div>
-          <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Building Name</label>
-          <input className="form-input" style={{ height: '48px', borderColor: 'var(--border)' }} placeholder="Name of the" value={d.buildingName} onChange={e => onUpdate({ buildingName: e.target.value })} />
+    <FormPage title="Building Information" onBack={back} onNext={next}>
+      <div className="flex flex-col gap-4 font-['Outfit']">
+
+        {/* Row 1: Building Name – full width */}
+        <Field label="Building Name">
+          <TextInput value={d.buildingName} onChange={v => onUpdate({ buildingName: v })} placeholder="e.g. Infinity Towers" />
+        </Field>
+
+        {/* Row 2: Address – full width */}
+        <Field label="Address">
+          <TextInput value={d.address} onChange={v => onUpdate({ address: v })} placeholder="Street address or landmark" />
+        </Field>
+
+        {/* Row 3: City + Area in 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="City">
+            <TextInput value={d.city} onChange={v => onUpdate({ city: v })} placeholder="e.g. Mumbai" />
+          </Field>
+          <Field label="Area / Micro Market">
+            <TextInput value={d.area} onChange={v => onUpdate({ area: v })} placeholder="e.g. BKC, Whitefield" />
+          </Field>
         </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Address</label>
-          <input className="form-input" style={{ height: '48px', borderColor: 'var(--border)' }} placeholder="Name of the" value={d.address} onChange={e => onUpdate({ address: e.target.value })} />
-        </div>
-
-        <div>
-           <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>City</label>
-           <input className="form-input" style={{ height: '48px', borderColor: 'var(--border)' }} placeholder="Name of the" value={d.city} onChange={e => onUpdate({ city: e.target.value })} />
-        </div>
-
-        <div>
-           <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Area / Micro Market</label>
-           <input className="form-input" style={{ height: '48px', borderColor: 'var(--border)' }} placeholder="Name of the" value={d.area} onChange={e => onUpdate({ area: e.target.value })} />
-        </div>
-
-        <div className="flex gap-4">
-          <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Total Floors</label>
-            <input className="form-input" style={{ height: '48px', borderColor: 'var(--border)' }} placeholder="No.of floors" value={d.totalFloors} onChange={e => onUpdate({ totalFloors: e.target.value })} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', fontSize: '0.95rem', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Year of Construction</label>
-            <SegmentedControl 
-               options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-               value={d.underConstruction}
-               onChange={v => onUpdate({ underConstruction: v })}
+        {/* Row 4: Total Floors + Under Construction in 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Total Floors">
+            <input
+              type="number"
+              className="form-input bg-white border-[var(--border)] rounded-[6px] px-2.5 text-[13px] text-[var(--text)] h-[34px] focus:border-[var(--accent-gold)] focus:outline-none transition-all"
+              placeholder="e.g. 12"
+              value={d.totalFloors}
+              onChange={e => onUpdate({ totalFloors: e.target.value })}
             />
-          </div>
+          </Field>
+          <Field label="Under Construction">
+            <div className="h-[34px] flex items-center">
+              <SegmentedControl
+                compact
+                options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+                value={d.underConstruction || 'No'}
+                onChange={v => onUpdate({ underConstruction: v })}
+              />
+            </div>
+          </Field>
         </div>
 
-        <Toggle label="Lift Available" checked={d.liftAvailable} onChange={v => onUpdate({ liftAvailable: v })} />
-        
-        <Toggle label="Fire Compliant" checked={d.fireCompliant} onChange={v => onUpdate({ fireCompliant: v })} />
-
-        <div className="flex items-center justify-between py-2 mt-2">
-          <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)' }}>Ownership Type</span>
-          <div style={{ width: '180px' }}>
-            <SelectField
-              value={d.ownershipType}
-              onChange={v => onUpdate({ ownershipType: v })}
-              options={[
-                { value: 'Free Hold', label: 'Free Hold' },
-                { value: 'Lease Hold', label: 'Lease Hold' },
-                { value: 'Co-operative Society', label: 'Co-operative Society' },
-              ]}
-            />
-          </div>
+        {/* Row 5: Lift + Fire Compliance + Ownership in 3 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Field label="Lift Available">
+            <div className="h-[34px] flex items-center">
+              <SegmentedControl
+                compact
+                options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+                value={d.liftAvailable ? 'Yes' : 'No'}
+                onChange={v => onUpdate({ liftAvailable: v === 'Yes' })}
+              />
+            </div>
+          </Field>
+          <Field label="Fire Compliant">
+            <div className="h-[34px] flex items-center">
+              <SegmentedControl
+                compact
+                options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+                value={d.fireCompliant ? 'Yes' : 'No'}
+                onChange={v => onUpdate({ fireCompliant: v === 'Yes' })}
+              />
+            </div>
+          </Field>
+          <SelectField
+            label="Ownership Type"
+            value={d.ownershipType}
+            onChange={v => onUpdate({ ownershipType: v })}
+            options={[
+              { value: 'Free Hold', label: 'Free Hold' },
+              { value: 'Lease Hold', label: 'Lease Hold' },
+              { value: 'Co-operative Society', label: 'Co-operative Society' },
+            ]}
+          />
         </div>
 
       </div>

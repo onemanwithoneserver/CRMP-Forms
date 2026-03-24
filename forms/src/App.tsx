@@ -9,16 +9,14 @@ function Header() {
   const { state, resetToStart, dispatch } = useForm()
 
   const sellerPages = [
-    { key: 'post-type',            label: '1. Post Type' },
-    { key: 'unit-details',         label: '2. Unit Details' },
-    { key: 'facilities',           label: '3. Facilities' },
-    { key: 'upload-photos',        label: '4. Media' },
-    { key: 'lease-info',           label: '5. Lease Information' },
-    { key: 'transaction-details',  label: '5. Transactional Details' },
-    { key: 'review',               label: '6. Review' },
+    { key: 'post-type', label: '1. Post Type' },
+    { key: 'unit-details', label: '2. Unit Details' },
+    { key: 'facilities', label: '3. Facilities' },
+    { key: 'upload-photos', label: '4. Media' },
+    { key: 'lease-info', label: '5. Lease Information' },
+    { key: 'transaction-details', label: '5. Transactional Details' },
+    { key: 'review', label: '6. Review' },
   ]
-
-
 
   return (
     <header style={{
@@ -51,23 +49,23 @@ function Header() {
         </h1>
 
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
-          <select 
-             value={state.designStepOverride || ''}
-             onChange={(e) => {
-               dispatch({ type: 'setDesignOverride', key: e.target.value || null })
-             }}
-             style={{
-               padding: '4px 10px',
-               borderRadius: '6px',
-               border: '1px solid var(--border)',
-               background: 'var(--surface-lowest)',
-               fontFamily: "'Outfit', sans-serif",
-               fontSize: '0.85rem',
-               fontWeight: 600,
-               color: state.designStepOverride ? 'var(--accent)' : 'var(--text-secondary)',
-               cursor: 'pointer',
-               outline: 'none',
-             }}
+          <select
+            value={state.designStepOverride || ''}
+            onChange={(e) => {
+              dispatch({ type: 'setDesignOverride', key: e.target.value || null })
+            }}
+            style={{
+              padding: '4px 10px',
+              borderRadius: '6px',
+              border: '1px solid var(--border)',
+              background: 'var(--surface-lowest)',
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              color: state.designStepOverride ? 'var(--accent)' : 'var(--text-secondary)',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
           >
             <option value="">— Dynamic Flow (Default) —</option>
             {sellerPages.map(p => (
@@ -98,28 +96,7 @@ function Header() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-          {(['desktop', 'tablet', 'mobile'] as const).map(d => (
-            <button
-              key={d}
-              aria-pressed={device === d}
-              onClick={() => setDevice(d)}
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                fontSize: '0.8125rem',
-                fontWeight: device === d ? 600 : 500,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: device === d ? 'none' : '1px solid var(--border-light)',
-                background: device === d ? 'var(--accent)' : 'transparent',
-                color: device === d ? 'var(--text-inverse)' : 'var(--text-secondary)',
-                cursor: 'pointer',
-                transition: 'all 300ms ease',
-                boxShadow: device === d ? '0 4px 12px rgba(9, 9, 11, 0.15)' : 'none'
-              }}
-            >
-              {d.charAt(0).toUpperCase() + d.slice(1)}
-            </button>
-          ))}
+          {/* Viewport switcher removed */}
         </div>
       </div>
     </header>
@@ -136,7 +113,7 @@ function InnerApp() {
         data-device={device}
         className={
           device === 'desktop' ? 'max-w-5xl mx-auto' :
-          device === 'mobile' ? 'max-w-[430px] mx-auto' : ''
+            device === 'mobile' ? 'max-w-[430px] mx-auto' : ''
         }
       >
         <Routes>

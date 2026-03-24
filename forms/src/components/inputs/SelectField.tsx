@@ -13,8 +13,9 @@ type Props = {
 
 export default function SelectField({ label, value, onChange, options, placeholder, error }: Props) {
   const [open, setOpen] = useState(false)
-  const [position, setPosition] = useState<'bottom' | 'top'>('bottom')
+  const [openUpward, setOpenUpward] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -28,11 +29,19 @@ export default function SelectField({ label, value, onChange, options, placehold
 
   const selectedOption = options.find(o => o.value === value)
 
+  const handleToggle = () => {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      setOpenUpward(window.innerHeight - rect.bottom < 250)
+    }
+    setOpen(!open)
+  }
+
   return (
     <div className="block" ref={containerRef} style={{ position: 'relative' }}>
       {label && (
         <div style={{
-          fontSize: '0.82rem',
+          fontSize: '0.78rem',
           fontWeight: 600,
           color: 'var(--text)',
           marginBottom: '3px',
@@ -40,42 +49,41 @@ export default function SelectField({ label, value, onChange, options, placehold
           {label}
         </div>
       )}
-      
-      <div 
+
+      <div
+        ref={triggerRef}
         className={`form-input ${error ? 'error' : ''}`}
         style={{
-           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-           cursor: 'pointer', userSelect: 'none',
-           borderColor: open ? 'var(--accent-gold)' : undefined,
-           boxShadow: open ? '0 0 0 3px rgba(200, 155, 60, 0.15)' : undefined
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          cursor: 'pointer', userSelect: 'none', height: '34px',
+          borderColor: open ? 'var(--accent-gold)' : undefined,
+          boxShadow: open ? '0 0 0 3px rgba(200, 155, 60, 0.15)' : undefined,
+          borderRadius: open
+            ? openUpward ? '0 0 6px 6px' : '6px 6px 0 0'
+            : '6px',
         }}
-        onClick={() => {
-          if (!open && containerRef.current) {
-            const rect = containerRef.current.getBoundingClientRect()
-            const spaceBelow = window.innerHeight - rect.bottom
-            setPosition(spaceBelow < 250 && rect.top > spaceBelow ? 'top' : 'bottom')
-          }
-          setOpen(!open)
-        }}
+        onClick={handleToggle}
       >
-        <span style={{ color: selectedOption ? 'var(--text)' : 'var(--text-tertiary)' }}>
-           {selectedOption ? selectedOption.label : (placeholder || 'Select...')}
+        <span style={{ color: selectedOption ? 'var(--text)' : 'var(--text-tertiary)', fontSize: '13px', fontWeight: selectedOption ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {selectedOption ? selectedOption.label : (placeholder || 'Select...')}
         </span>
-        <svg width="12" height="7" viewBox="0 0 12 7" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
-           <path d="M1 1l5 5 5-5" stroke="#667085" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        <svg width="12" height="7" viewBox="0 0 12 7" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease', flexShrink: 0, marginLeft: '6px' }}>
+          <path d="M1 1l5 5 5-5" stroke="#667085" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
 
       {open && (
         <div style={{
-          position: 'absolute', 
-          top: position === 'bottom' ? '100%' : 'auto', 
-          bottom: position === 'top' ? '100%' : 'auto',
-          marginTop: position === 'bottom' ? '4px' : 0,
-          marginBottom: position === 'top' ? '4px' : 0,
+          position: 'absolute',
+          top: openUpward ? 'auto' : '100%',
+          bottom: openUpward ? '100%' : 'auto',
           left: 0, right: 0,
-          background: '#fff', border: '1px solid var(--border-light)',
-          borderRadius: '6px', boxShadow: 'var(--shadow-lg)',
+          background: '#fff',
+          border: '1px solid var(--accent-gold)',
+          borderTop: openUpward ? '1px solid var(--accent-gold)' : 'none',
+          borderBottom: openUpward ? 'none' : '1px solid var(--accent-gold)',
+          borderRadius: openUpward ? '6px 6px 0 0' : '0 0 6px 6px',
+          boxShadow: '0 8px 24px -4px rgba(200,155,60,0.15)',
           zIndex: 50, overflow: 'hidden', padding: '2px'
         }}>
           {options.map(o => {
@@ -87,12 +95,13 @@ export default function SelectField({ label, value, onChange, options, placehold
                 style={{
                   padding: '8px 12px',
                   borderRadius: '4px',
-                  fontSize: '0.85rem',
-                  fontWeight: isSel ? 600 : 500,
+                  fontSize: '0.82rem',
+                  fontWeight: isSel ? 700 : 500,
                   cursor: 'pointer',
-                  background: isSel ? 'var(--accent)' : 'transparent',
-                  color: isSel ? '#fff' : 'var(--text)',
-                  transition: 'all 200ms ease'
+                  background: isSel ? 'var(--accent-gold-subtle)' : 'transparent',
+                  color: isSel ? 'var(--accent-gold)' : 'var(--text)',
+                  borderLeft: isSel ? '2px solid var(--accent-gold)' : '2px solid transparent',
+                  transition: 'all 150ms ease'
                 }}
               >
                 {o.label}

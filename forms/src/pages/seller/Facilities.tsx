@@ -36,7 +36,7 @@ export default function Facilities() {
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
       <input
         type="number"
-        className="form-input bg-white w-full border border-[var(--border-light)] rounded-[4px] py-1.5 px-2 text-[13px] text-[var(--text)] transition-all h-[34px] focus:border-[var(--accent-gold)] focus:outline-none"
+        className="form-input bg-white w-full border border-[var(--border-light)] rounded-[4px] px-2 text-[13px] text-[var(--text)] transition-all h-[34px] focus:border-[var(--accent-gold)] focus:outline-none"
         placeholder={placeholder}
         value={d[field] as string}
         onChange={e => onUpdate({ [field]: e.target.value })}
@@ -47,8 +47,9 @@ export default function Facilities() {
   const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
     <div className="flex flex-col gap-1 w-full">
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
-      <div className="w-full">
+      <div className="h-[34px] flex items-center">
         <SegmentedControl
+          compact
           options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
           value={(d[field] as string) || 'No'}
           onChange={v => onUpdate({ [field]: v })}
@@ -65,7 +66,7 @@ export default function Facilities() {
         {show.designatedParking && (
           <div className="flex flex-col gap-3">
             <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Parking</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {renderVerticalBoolean('Designated parking', 'designatedParking')}
               {renderNumeric('No. of parkings', 'noOfParkings')}
               <Dropdown
@@ -82,7 +83,7 @@ export default function Facilities() {
         {/* SECTION: Facilities - Power */}
         <div className="flex flex-col gap-3">
           <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Power</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
             {renderNumeric('Power load (kW)', 'powerLoad')}
             <Dropdown
@@ -95,33 +96,40 @@ export default function Facilities() {
           </div>
         </div>
 
-        {/* SECTION: Facilities - Hygiene & Utilities */}
-        {(show.washrooms || show.waterConnection) && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Hygiene & Utilities</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {show.washrooms && (
-                <Dropdown
-                  label="Washroom"
-                  value={d.washrooms}
-                  options={['Yes, within unit', 'No', 'Common with building']}
-                  placeholder="Select setup"
-                  onChange={v => onUpdate({ washrooms: v })}
-                />
-              )}
-              {show.waterConnection && renderVerticalBoolean('Water connection', 'waterConnection')}
-            </div>
-          </div>
-        )}
+        {/* SECTIONS: Hygiene & Fire Safety — side by side on desktop */}
+        {(show.washrooms || show.waterConnection || show.fireSprinklers) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        {/* SECTION: Facilities - Fire Safety */}
-        {show.fireSprinklers && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Fire Safety</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
-              {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
-            </div>
+            {/* Facilities - Hygiene & Utilities */}
+            {(show.washrooms || show.waterConnection) && (
+              <div className="flex flex-col gap-3">
+                <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Hygiene & Utilities</h2>
+                <div className="flex flex-col gap-4">
+                  {show.washrooms && (
+                    <Dropdown
+                      label="Washroom"
+                      value={d.washrooms}
+                      options={['Yes, within unit', 'No', 'Common with building']}
+                      placeholder="Select setup"
+                      onChange={v => onUpdate({ washrooms: v })}
+                    />
+                  )}
+                  {show.waterConnection && renderVerticalBoolean('Water connection', 'waterConnection')}
+                </div>
+              </div>
+            )}
+
+            {/* Facilities - Fire Safety */}
+            {show.fireSprinklers && (
+              <div className="flex flex-col gap-3">
+                <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Fire Safety</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
+                  {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
+                </div>
+              </div>
+            )}
+
           </div>
         )}
 

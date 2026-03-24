@@ -102,10 +102,10 @@ export default function TransactionDetails() {
             Sale Type & Pricing
           </h2>
 
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Availability Type</label>
-              <div className="w-[320px]">
+              <div className="h-[34px] flex items-center">
                 <SegmentedControl
                   options={SALE_TYPES}
                   value={saleType}
@@ -116,7 +116,7 @@ export default function TransactionDetails() {
 
             <div className="flex flex-col gap-1.5">
               <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Pricing Type</label>
-              <div className="w-[240px]">
+              <div className="h-[34px] flex items-center">
                 <SegmentedControl
                   options={PRICING_TYPES}
                   value={d.rentPricingMode || 'Per Sq Ft'}
@@ -125,6 +125,7 @@ export default function TransactionDetails() {
               </div>
             </div>
           </div>
+
         </div>
 
         {/* SECTION: Dynamic Details Grid */}

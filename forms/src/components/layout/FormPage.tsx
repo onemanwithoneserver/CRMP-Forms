@@ -98,7 +98,9 @@ export default function FormPage({
 
       {/* ── Scrollable content ── */}
       <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '6px 8px 4px' }}>
-        {children}
+        <div style={{ maxWidth: '680px', margin: '0 auto', width: '100%' }}>
+          {children}
+        </div>
       </div>
 
       {/* ── Sticky footer ── */}

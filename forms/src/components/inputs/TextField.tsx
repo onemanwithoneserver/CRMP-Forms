@@ -23,6 +23,7 @@ export default function TextField({ label, value, onChange, placeholder, error, 
       <input
         type={type}
         className={`form-input ${error ? 'error' : ''}`}
+        style={{ height: '34px', fontSize: '13px' }}
         value={value || ''}
         placeholder={placeholder}
         onChange={e => onChange?.(e.target.value)}

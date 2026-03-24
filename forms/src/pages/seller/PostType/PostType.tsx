@@ -73,7 +73,7 @@ export default function PostType() {
   }, [postSubCategory])
 
   return (
-    <div className="flex flex-col h-full bg-[#fafafa]">
+    <div className="flex flex-col h-auto bg-[#fafafa]">
       <div className="flex-1 overflow-y-auto scroll-smooth">
 
         {/* ─── Hero ─── */}
@@ -212,93 +212,93 @@ export default function PostType() {
           ref={locationSectionRef}
           className="px-2 md:px-4 mt-2 max-w-3xl mx-auto w-full"
         >
-              <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] p-2">
+          <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] p-2">
 
-                <div className="flex items-center gap-2 md:gap-2.5 mb-2 md:mb-1.5">
-                  <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-[#1C2A44] flex items-center justify-center">
-                    <MapPin size={14} className="text-white" />
-                  </div>
-                  <h2 className="text-[0.95rem] font-bold text-[#1C2A44] font-['Outfit']">
-                    Location
-                  </h2>
-                </div>
-
-                {/* Map placeholder */}
-                <div className="w-full h-28 md:h-36 bg-[#f5f6f8] rounded-md mb-3 md:mb-4 relative overflow-hidden flex flex-col items-center justify-center border border-dashed border-[#dde0e7]">
-                  <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #1C2A44 1px, transparent 0)', backgroundSize: '20px 20px' }} />
-                  <MapPin size={28} className="text-[#C89B3C] mb-1.5" />
-                  <span className="text-[0.8rem] font-semibold text-[#a0a8b5] z-10 font-['Outfit']">Pin drop selector will appear here</span>
-                  <button className="mt-2.5 z-10 px-3 py-1.5 md:px-3.5 md:py-1.5 bg-white rounded-md shadow-sm text-[0.8rem] font-bold text-[#1C2A44] border border-[#e2e6ec] flex items-center gap-1.5 hover:bg-[#f8f9fb] transition-colors font-['Outfit']">
-                    <Navigation size={12} className="text-[#3b82f6]" /> Auto-fetch Location
-                  </button>
-                </div>
-
-                {/* Location Form */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">City</label>
-                    <input type="text" className="form-input" placeholder="e.g. Bangalore" value={city || ''} onChange={(e) => dispatch({ type: 'updateData', payload: { city: e.target.value } })} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Micro Location</label>
-                    <input type="text" className="form-input" placeholder="Search micro location..." value={localLocation.microLocation} onChange={(e) => setLocalLocation(s => ({ ...s, microLocation: e.target.value }))} />
-                  </div>
-                  <Dropdown
-                    label="Corporation"
-                    value={localLocation.corporation}
-                    options={['BBMP', 'BMA', 'BDA']}
-                    placeholder="Select Corporation"
-                    onChange={(val) => setLocalLocation(s => ({ ...s, corporation: val }))}
-                  />
-                  <Dropdown
-                    label="Zone"
-                    value={localLocation.zone}
-                    options={['East Zone', 'West Zone', 'North Zone', 'South Zone']}
-                    placeholder="Select Zone"
-                    onChange={(val) => setLocalLocation(s => ({ ...s, zone: val }))}
-                  />
-                  <Dropdown
-                    label="Circle"
-                    value={localLocation.circle}
-                    options={['Domlur', 'Indiranagar', 'Koramangala']}
-                    placeholder="Select Circle"
-                    searchable
-                    onChange={(val) => setLocalLocation(s => ({ ...s, circle: val }))}
-                  />
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">ORR Zoning</label>
-                    <input type="text" className="form-input" placeholder="Enter ORR Zoning (Optional)" value={localLocation.orrZoning} onChange={(e) => setLocalLocation(s => ({ ...s, orrZoning: e.target.value }))} />
-                  </div>
-                  {showColony && (
-                    <div className="flex flex-col gap-1 md:col-span-2">
-                      <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Colony / Layout Name (Optional)</label>
-                      <input type="text" className="form-input bg-[rgba(255,255,255,0.5)] border-dashed border-[#dde0e7]" placeholder="e.g. Defence Colony" value={localLocation.colony} onChange={(e) => setLocalLocation(s => ({ ...s, colony: e.target.value }))} />
-                    </div>
-                  )}
-                  {showBuildingType && (
-                    <div className="md:col-span-2">
-                      <Dropdown
-                        label="Choose Building / Building Type"
-                        value={localLocation.buildingType}
-                        options={[
-                          'Standalone Building',
-                          'Tech Park',
-                          'Business Park',
-                          'Mall',
-                          'High Street',
-                          'Shopping Complex',
-                          'Independent House/Villa',
-                          'Other'
-                        ]}
-                        placeholder="Select Building Type"
-                        searchable
-                        onChange={(val) => setLocalLocation(s => ({ ...s, buildingType: val }))}
-                      />
-                    </div>
-                  )}
-                </div>
+            <div className="flex items-center gap-2 md:gap-2.5 mb-2 md:mb-1.5">
+              <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-[#1C2A44] flex items-center justify-center">
+                <MapPin size={14} className="text-white" />
               </div>
+              <h2 className="text-[0.95rem] font-bold text-[#1C2A44] font-['Outfit']">
+                Location
+              </h2>
             </div>
+
+            {/* Map placeholder */}
+            <div className="w-full h-28 md:h-36 bg-[#f5f6f8] rounded-md mb-3 md:mb-4 relative overflow-hidden flex flex-col items-center justify-center border border-dashed border-[#dde0e7]">
+              <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #1C2A44 1px, transparent 0)', backgroundSize: '20px 20px' }} />
+              <MapPin size={28} className="text-[#C89B3C] mb-1.5" />
+              <span className="text-[0.8rem] font-semibold text-[#a0a8b5] z-10 font-['Outfit']">Pin drop selector will appear here</span>
+              <button className="mt-2.5 z-10 px-3 py-1.5 md:px-3.5 md:py-1.5 bg-white rounded-md shadow-sm text-[0.8rem] font-bold text-[#1C2A44] border border-[#e2e6ec] flex items-center gap-1.5 hover:bg-[#f8f9fb] transition-colors font-['Outfit']">
+                <Navigation size={12} className="text-[#3b82f6]" /> Auto-fetch Location
+              </button>
+            </div>
+
+            {/* Location Form */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">City</label>
+                <input type="text" className="form-input" placeholder="e.g. Bangalore" value={city || ''} onChange={(e) => dispatch({ type: 'updateData', payload: { city: e.target.value } })} />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Micro Location</label>
+                <input type="text" className="form-input" placeholder="Search micro location..." value={localLocation.microLocation} onChange={(e) => setLocalLocation(s => ({ ...s, microLocation: e.target.value }))} />
+              </div>
+              <Dropdown
+                label="Corporation"
+                value={localLocation.corporation}
+                options={['BBMP', 'BMA', 'BDA']}
+                placeholder="Select Corporation"
+                onChange={(val) => setLocalLocation(s => ({ ...s, corporation: val }))}
+              />
+              <Dropdown
+                label="Zone"
+                value={localLocation.zone}
+                options={['East Zone', 'West Zone', 'North Zone', 'South Zone']}
+                placeholder="Select Zone"
+                onChange={(val) => setLocalLocation(s => ({ ...s, zone: val }))}
+              />
+              <Dropdown
+                label="Circle"
+                value={localLocation.circle}
+                options={['Domlur', 'Indiranagar', 'Koramangala']}
+                placeholder="Select Circle"
+                searchable
+                onChange={(val) => setLocalLocation(s => ({ ...s, circle: val }))}
+              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">ORR Zoning</label>
+                <input type="text" className="form-input" placeholder="Enter ORR Zoning (Optional)" value={localLocation.orrZoning} onChange={(e) => setLocalLocation(s => ({ ...s, orrZoning: e.target.value }))} />
+              </div>
+              {showColony && (
+                <div className="flex flex-col gap-1 md:col-span-2">
+                  <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Colony / Layout Name (Optional)</label>
+                  <input type="text" className="form-input bg-[rgba(255,255,255,0.5)] border-dashed border-[#dde0e7]" placeholder="e.g. Defence Colony" value={localLocation.colony} onChange={(e) => setLocalLocation(s => ({ ...s, colony: e.target.value }))} />
+                </div>
+              )}
+              {showBuildingType && (
+                <div className="md:col-span-2">
+                  <Dropdown
+                    label="Choose Building / Building Type"
+                    value={localLocation.buildingType}
+                    options={[
+                      'Standalone Building',
+                      'Tech Park',
+                      'Business Park',
+                      'Mall',
+                      'High Street',
+                      'Shopping Complex',
+                      'Independent House/Villa',
+                      'Other'
+                    ]}
+                    placeholder="Select Building Type"
+                    searchable
+                    onChange={(val) => setLocalLocation(s => ({ ...s, buildingType: val }))}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
       </div>
 

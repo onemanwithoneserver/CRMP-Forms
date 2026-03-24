@@ -18,6 +18,12 @@ body,
   height: 100%;
   overflow-x: hidden;
   max-width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 body {

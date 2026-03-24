@@ -1,26 +1,6 @@
 import React, { useRef } from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
-import SectionCard from '../../components/layout/SectionCard'
-import { useDevice } from '../../context/DeviceContext'
-import UploadPhotosMobile from './UploadPhotosMobile'
-
-import iconOffice from '../../assets/Select Property Type/Office Space.svg'
-import iconRetail from '../../assets/Select Property Type/Rental  Commercial Space.svg'
-import iconHostel from '../../assets/Select Property Type/Hostel.svg'
-import iconLand from '../../assets/Select Property Type/Land.svg'
-import iconCoworking from '../../assets/Select Property Type/Co-Working.svg'
-
-const PROPERTY_TYPE_OPTIONS = [
-  { value: 'office', label: 'Office Space', icon: iconOffice },
-  { value: 'retail', label: 'Rental / Commercial Space', icon: iconRetail },
-  { value: 'hostel', label: 'Hostel / PG', icon: iconHostel },
-  { value: 'land', label: 'Land', icon: iconLand },
-  { value: 'coworking', label: 'Co-Working', icon: iconCoworking },
-  { value: 'entire_building', label: 'Entire Building', icon: iconOffice },
-]
-
-
 
 interface UploadZoneProps {
   label: string
@@ -86,7 +66,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
       <label className="text-[13px] font-semibold text-[#445069] pl-0.5">{label}</label>
 
       {/* 1×2 grid of upload tiles (responsive) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-1 gap-2.5">
         {[0, 1].map(i => (
           <UploadTile key={i} accept={accept} index={i} />
         ))}
@@ -130,13 +110,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
   )
 }
 
-export default function UploadPhotos() {
-  const { device } = useDevice()
-
-  if (device === 'mobile') {
-    return <UploadPhotosMobile />
-  }
-
+export default function UploadPhotosMobile() {
   const { state, dispatch, next, back } = useForm()
   const d = state.formData
 
@@ -156,11 +130,11 @@ export default function UploadPhotos() {
 
   return (
     <FormPage title="Media" onBack={back} onNext={handleNext}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 font-['Outfit'] pb-4">
+      <div className="flex flex-col gap-5 font-['Outfit'] pb-4">
 
         {/* IMAGES */}
-        <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
+        <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
             Images
           </h2>
           <UploadZone
@@ -172,8 +146,8 @@ export default function UploadPhotos() {
         </div>
 
         {/* VIDEO */}
-        <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
+        <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
             Video
           </h2>
           <UploadZone
@@ -186,8 +160,8 @@ export default function UploadPhotos() {
 
         {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
         {showFloorPlan && (
-          <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
+          <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
               Floor Plan
             </h2>
             <UploadZone
@@ -201,8 +175,8 @@ export default function UploadPhotos() {
 
         {/* LAYOUT PLAN — Land only */}
         {showLayoutPlan && (
-          <div className="flex flex-col gap-3 bg-white p-4 sm:p-0 rounded-xl sm:rounded-none border border-[#edf0f5] sm:border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-none">
-            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 sm:border-none sm:pb-0 text-center sm:text-left">
+          <div className="flex flex-col gap-3 bg-white p-4 rounded-xl border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <h2 className="text-[1.05rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-2 mb-2 text-center">
               Layout Plan
             </h2>
             <UploadZone

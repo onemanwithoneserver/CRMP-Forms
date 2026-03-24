@@ -122,7 +122,7 @@ export default function UnitDetails() {
 
         {/* SECTION 0: Unit Type */}
         <SectionCard title="Unit type">
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
             {UNIT_TYPES.map(ut => {
               const sel = d.unitType === ut.value
               return (
@@ -131,7 +131,7 @@ export default function UnitDetails() {
                   type="button"
                   onClick={() => onUpdate({ unitType: ut.value })}
                   aria-pressed={sel}
-                  className="flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-3 sm:gap-2 p-3 sm:p-2.5 rounded-lg border transition-all"
+                  className="flex flex-col items-center justify-center gap-2 p-2.5 rounded-lg border transition-all"
                   style={{
                     borderColor: sel ? 'var(--accent-gold)' : 'var(--border)',
                     background: sel ? 'rgba(200,155,60,0.04)' : '#ffffff',

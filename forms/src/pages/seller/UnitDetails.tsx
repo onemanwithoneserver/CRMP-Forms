@@ -1,5 +1,6 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
+import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
 import TextField from '../../components/inputs/TextField'
@@ -35,6 +36,8 @@ const MONTHS_OPTIONS = MONTHS.flatMap(m =>
 
 export default function UnitDetails() {
   const { state, dispatch, next, back } = useForm()
+  const { device } = useDevice()
+  const isMobile = device === 'mobile'
   const d = state.formData
   const [isApplianceModalOpen, setIsApplianceModalOpen] = React.useState(false)
 
@@ -100,7 +103,7 @@ export default function UnitDetails() {
 
   const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0') => (
     <div className="flex flex-col gap-1.5 w-full">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-2">{label}</label>
       <input
         type="number"
         className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 text-sm text-[#1C2A44] transition-all h-[34px]"
@@ -111,25 +114,42 @@ export default function UnitDetails() {
     </div>
   )
 
-  const renderYesNo = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex items-center justify-between py-1.5 bg-white border border-[#edf0f5] px-3.5 rounded-lg">
-      <span className="text-[13.5px] font-medium text-[#1C2A44]">{label}</span>
-      <div className="w-[110px]">
-        <SegmentedControl
-          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-          value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
-          onChange={v => {
-            const isBoolField = typeof d[field] === 'boolean'
-            onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
-          }}
-        />
+  const renderYesNo = (label: string, field: keyof typeof state.formData) =>
+    isMobile ? (
+      // Mobile: vertical — label on top, control below
+      <div className="flex items-center justify-between w-full py-1.5">
+        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+        <div className="w-[110px]">
+          <SegmentedControl
+            options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+            value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
+            onChange={v => {
+              const isBoolField = typeof d[field] === 'boolean'
+              onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
+            }}
+          />
+        </div>
       </div>
-    </div>
-  )
+    ) : (
+      // Desktop/Tablet: horizontal — label left, control right
+      <div className="flex items-center justify-between py-1.5 px-3.5">
+        <span className="text-[13.5px] font-medium text-[#1C2A44]">{label}</span>
+        <div className="w-[110px]">
+          <SegmentedControl
+            options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+            value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
+            onChange={v => {
+              const isBoolField = typeof d[field] === 'boolean'
+              onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
+            }}
+          />
+        </div>
+      </div>
+    )
 
   const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex flex-col gap-1.5 w-full">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+    <div className="flex items-center justify-between w-full py-1.5 px-0.5">
+      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5 ">{label}</label>
       <div className="w-[110px]">
         <SegmentedControl
           options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
@@ -198,7 +218,7 @@ export default function UnitDetails() {
           <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
             Unit Details - Size
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {isVisible('plotSize') && <TextField label="Plot size (sq. yards)" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" />}
             {isVisible('plotDimensions') && renderNumeric('Plot dimensions (L × B in ft)', 'plotDimensions')}
             {isVisible('builtUpArea') && renderNumeric('Built-up area (sq. ft)', 'totalBuiltUpArea')}
@@ -238,7 +258,7 @@ export default function UnitDetails() {
               Unit Specifications - Space Readiness
             </h2>
             {/* Desktop/Tablet specialized layout */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('spaceCondition') && <Dropdown label="Space condition" value={d.spaceCondition} options={['Bare shell', 'Warm shell', 'Semi-fitted', 'Fully fitted', 'Plug & play']} placeholder="Select condition" onChange={v => onUpdate({ spaceCondition: v })} />}
               {isVisible('flooring') && <Dropdown label="Flooring" value={d.flooring} options={['None', 'Basic', 'Premium']} placeholder="Select flooring" onChange={v => onUpdate({ flooring: v })} />}
               {isVisible('walls') && <Dropdown label="Walls" value={d.walls} options={['Bare', 'Painted', 'Panelled']} placeholder="Select wall finish" onChange={v => onUpdate({ walls: v })} />}
@@ -247,12 +267,13 @@ export default function UnitDetails() {
               {isVisible('hvac') && <Dropdown label="HVAC (AC)" value={d.hvac} options={['None', 'Provision only', 'Installed']} placeholder="Select HVAC" onChange={v => onUpdate({ hvac: v })} />}
               {isVisible('lighting') && <Dropdown label="Lighting" value={d.lighting} options={['None', 'Basic', 'Designer']} placeholder="Select lighting" onChange={v => onUpdate({ lighting: v })} />}
 
-              {/* Boolean Controls - Vertical Structure */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:col-span-4 mt-1 border-t border-[#edf0f5] pt-3">
-                {isVisible('glassFacade') && renderVerticalBoolean('Glass facade (suitable for external branding)', 'glassFacade')}
-                {isVisible('compoundWall') && renderVerticalBoolean('Compound wall available', 'compoundWall')}
-                {isVisible('waterConnection') && renderVerticalBoolean('Water connection available', 'waterConnection')}
-              </div>
+            </div>
+
+            {/* Boolean Controls - Vertical Structure */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-1 border-t border-[#edf0f5] pt-3">
+              {isVisible('glassFacade') && renderVerticalBoolean('Glass facade (suitable for external branding)', 'glassFacade')}
+              {isVisible('compoundWall') && renderVerticalBoolean('Compound wall available', 'compoundWall')}
+              {isVisible('waterConnection') && renderVerticalBoolean('Water connection available', 'waterConnection')}
             </div>
           </div>
         )}
@@ -263,20 +284,21 @@ export default function UnitDetails() {
             <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
               Unit Specifications - Interiors
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('partitionsType') && <Dropdown label="Partitions type" value={d.partitionsType} options={['None', 'Glass', 'Gypsum', 'Wall']} placeholder="Select partitions" onChange={v => onUpdate({ partitionsType: v })} />}
               {isVisible('externalBranding') && <Dropdown label="External branding options" value={d.externalBranding} options={['Space available outside', 'Available inside building', 'Both']} placeholder="Select branding option" onChange={v => onUpdate({ externalBranding: v })} />}
               {isVisible('numberOfRooms') && renderNumeric('No. of rooms / partitions', 'numberOfRooms')}
               {isVisible('meetingRooms') && renderNumeric('No. of meeting rooms', 'meetingRooms')}
               {isVisible('storageSpace') && <TextField label="Storage space (describe)" value={d.storageSpace} onChange={v => onUpdate({ storageSpace: v })} placeholder="e.g. 50 sq ft separate pantry" />}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 lg:col-span-4 mt-1 border-t border-[#edf0f5] pt-3">
-                {isVisible('conferenceRoom') && renderVerticalBoolean('Conference room', 'conferenceRoom')}
-                {isVisible('receptionArea') && renderVerticalBoolean('Reception area', 'receptionArea')}
-                {isVisible('brandingSpace') && renderVerticalBoolean('Branding space available', 'brandingSpace')}
-                {isVisible('falseCeiling') && renderVerticalBoolean('False ceiling installed', 'falseCeiling')}
-                {isVisible('columnFree') && renderVerticalBoolean('Column-free layout', 'columnFree')}
-              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-1 border-t border-[#edf0f5] pt-3">
+              {isVisible('conferenceRoom') && renderVerticalBoolean('Conference room', 'conferenceRoom')}
+              {isVisible('receptionArea') && renderVerticalBoolean('Reception area', 'receptionArea')}
+              {isVisible('brandingSpace') && renderVerticalBoolean('Branding space available', 'brandingSpace')}
+              {isVisible('falseCeiling') && renderVerticalBoolean('False ceiling installed', 'falseCeiling')}
+              {isVisible('columnFree') && renderVerticalBoolean('Column-free layout', 'columnFree')}
             </div>
           </div>
         )}
@@ -287,41 +309,42 @@ export default function UnitDetails() {
             <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
               Unit Specifications - Furniture & Appliances
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('workstations') && renderNumeric('Workstations / tables', 'workstations')}
               {isVisible('chairs') && renderNumeric('Chairs', 'chairs')}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:col-span-4 mt-1 border-t border-[#edf0f5] pt-3">
-                {isVisible('storageCupboards') && renderVerticalBoolean('Storage / cupboards', 'storageCupboards')}
-                {isVisible('sofaLounge') && renderVerticalBoolean('Sofa / lounge area', 'sofaLounge')}
-                {isVisible('receptionDesk') && renderVerticalBoolean('Reception desk', 'receptionDesk')}
-                {isVisible('pantryEquipment') && renderVerticalBoolean('Pantry equipment', 'pantryEquipment')}
-              </div>
-
-              {isVisible('appliances') && (
-                <div className="lg:col-span-4 pt-2 border-t border-[#edf0f5]">
-                  <button
-                    type="button"
-                    onClick={() => setIsApplianceModalOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#1C2A44] text-white rounded-md text-sm font-semibold hover:bg-[#2a3f66] transition-all shadow-md"
-                  >
-                    <span>Add / Edit Appliances</span>
-                  </button>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {(d.appliances || []).map(app => (
-                      <span key={app} className="px-2.5 py-1 bg-[#f0f4f8] text-[#445069] text-[12px] font-medium rounded-full border border-[#dbe3eb]">
-                        {app}
-                      </span>
-                    ))}
-                    {d.appliancesOthers && (
-                      <span className="px-2.5 py-1 bg-[#fff8e6] text-[#c89b3c] text-[12px] font-medium rounded-full border border-[#fbebc3]">
-                        Other: {d.appliancesOthers}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-1 border-t border-[#edf0f5] pt-3">
+              {isVisible('storageCupboards') && renderVerticalBoolean('Storage / cupboards', 'storageCupboards')}
+              {isVisible('sofaLounge') && renderVerticalBoolean('Sofa / lounge area', 'sofaLounge')}
+              {isVisible('receptionDesk') && renderVerticalBoolean('Reception desk', 'receptionDesk')}
+              {isVisible('pantryEquipment') && renderVerticalBoolean('Pantry equipment', 'pantryEquipment')}
+            </div>
+
+            {isVisible('appliances') && (
+              <div className="pt-3 mt-1 border-t border-[#edf0f5]">
+                <button
+                  type="button"
+                  onClick={() => setIsApplianceModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#1C2A44] text-white rounded-md text-sm font-semibold hover:bg-[#2a3f66] transition-all shadow-md"
+                >
+                  <span>Add / Edit Appliances</span>
+                </button>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {(d.appliances || []).map(app => (
+                    <span key={app} className="px-2.5 py-1 bg-[#f0f4f8] text-[#445069] text-[12px] font-medium rounded-[4px] border border-[#dbe3eb]">
+                      {app}
+                    </span>
+                  ))}
+                  {d.appliancesOthers && (
+                    <span className="px-2.5 py-1 bg-[#fff8e6] text-[#c89b3c] text-[12px] font-medium rounded-full border border-[#fbebc3]">
+                      Other: {d.appliancesOthers}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -391,43 +414,34 @@ export default function UnitDetails() {
           <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
             Unit Availability
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-            <div className="sm:col-span-2 lg:col-span-2">
-              {renderYesNo('Is it immediately available?', 'isImmediatelyAvailable')}
-            </div>
+          <div className="grid grid-cols-2 gap-2">
+            {renderYesNo('Is it immediately available?', 'isImmediatelyAvailable')}
 
             {d.isImmediatelyAvailable === 'No' && (
-              <div className="sm:col-span-2 lg:col-span-2">
-                <Dropdown
-                  label="Tentative Available Month"
-                  value={d.tentativeMonth}
-                  options={MONTHS_OPTIONS}
-                  placeholder="Select month"
-                  onChange={v => onUpdate({ tentativeMonth: v })}
-                />
-              </div>
+              <Dropdown
+                label="Tentative Available Month"
+                value={d.tentativeMonth}
+                options={MONTHS_OPTIONS}
+                placeholder="Select month"
+                onChange={v => onUpdate({ tentativeMonth: v })}
+              />
             )}
 
-            {/* Use sm:col-span-2 md:col-span-2 to ensure 4-column alignment but still group nicely */}
             {['land', 'retail', 'office', 'coworking'].includes(pType) && (
-              <div className="sm:col-span-2 lg:col-span-2">
-                <TextField
-                  label="Unit No. (If any)"
-                  value={d.unitNo}
-                  onChange={v => onUpdate({ unitNo: v })}
-                  placeholder="e.g. A-204, Shop 12"
-                />
-              </div>
+              <TextField
+                label="Unit No. (If any)"
+                value={d.unitNo}
+                onChange={v => onUpdate({ unitNo: v })}
+                placeholder="e.g. A-204, Shop 12"
+              />
             )}
 
             {['retail', 'office', 'coworking'].includes(pType) && (
-              <div className="sm:col-span-2 lg:col-span-2">
-                {renderNumeric('No. of Units Available', 'numberOfUnitsAvailable', 'e.g. 3')}
-              </div>
+              renderNumeric('No. of Units Available', 'numberOfUnitsAvailable', 'e.g. 3')
             )}
 
             {pType === 'land' && (
-              <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">
                   No. of Units Available
                 </label>

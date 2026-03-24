@@ -12,12 +12,12 @@ export interface DropdownProps {
   variant?: 'default' | 'compact'
 }
 
-export function Dropdown({ 
-  label, 
-  value, 
-  options, 
-  placeholder = 'Select...', 
-  searchable = false, 
+export function Dropdown({
+  label,
+  value,
+  options,
+  placeholder = 'Select...',
+  searchable = false,
   onChange,
   variant = 'default'
 }: DropdownProps) {

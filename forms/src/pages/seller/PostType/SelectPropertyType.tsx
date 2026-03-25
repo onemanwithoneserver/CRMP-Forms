@@ -1,9 +1,12 @@
 import React from 'react'
 import {
   Building2,
+  Building,
   Store,
   Map,
-  Landmark
+  Users,
+  Landmark,
+  LayoutGrid
 } from 'lucide-react'
 import { useForm, SELLER_POST_TYPES } from '../../../context/FormContext'
 import { useDevice } from '../../../context/DeviceContext'
@@ -13,9 +16,9 @@ import { OptionButton } from '../../../components/inputs/OptionButton'
 const PROPERTY_TYPE_CARDS = [
   { id: 'land', label: 'Land', icon: Map },
   { id: 'retail', label: 'Retail', icon: Store },
-  { id: 'office', label: 'Office', icon: Building2 },
-  { id: 'coworking', label: 'Coworking', icon: Building2 },
-  { id: 'entire_building', label: 'Entire Building', icon: Landmark },
+  { id: 'office', label: 'Office', icon: Building },
+  { id: 'coworking', label: 'Coworking', icon: Users },
+  { id: 'entire_building', label: 'Entire Building', icon: Building2 },
 ]
 
 interface SelectPropertyTypeProps {
@@ -30,12 +33,14 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
 
   // Shared children rendered inside the expanded selected card
   const selectedCardContent = (
-    <>
-      <p className="text-[11px] font-bold text-[#445069] mb-1 mt-0 font-['Outfit'] tracking-wide">
-        What do you want to do?
-      </p>
+    <div className="flex flex-col gap-3">
+      <div className="">
+        <p className="text-[11px] font-bold text-[#445069] m-0 font-['Outfit'] tracking-wide leading-tight uppercase opacity-80">
+          What do you want to do?
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-1">
+      <div className={`grid grid-cols-1 ${isMobile ? '' : 'md:grid-cols-2'} gap-1.5 sm:gap-2`}>
         {SELLER_POST_TYPES.map(option => (
           <OptionButton
             key={option.value}
@@ -50,7 +55,7 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
           />
         ))}
       </div>
-    </>
+    </div>
   )
 
   return (
@@ -63,7 +68,7 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
           {/* Section heading */}
           <div className="flex items-center gap-3 mb-5 md:mb-6">
             <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-[#1C2A44]/5 backdrop-blur-md border border-[#1C2A44]/15 flex items-center justify-center shadow-sm">
-              <Building2 size={18} className="text-[#1C2A44]" />
+              <LayoutGrid size={18} className="text-[#1C2A44]" />
             </div>
             <h2 className="text-[1.1rem] font-bold text-[#1C2A44] font-['Outfit'] tracking-tight">
               Select Property Type

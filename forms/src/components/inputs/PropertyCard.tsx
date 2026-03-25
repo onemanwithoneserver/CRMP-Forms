@@ -89,9 +89,9 @@ export function PropertyCard({ label, icon: Icon, selected, compact, row, classN
         rounded-[4px] bg-[#1C2A44]/5 border border-[#1C2A44]/10 shadow-sm flex items-center justify-center transition-colors
         ${compact
           ? 'w-7 h-7 mb-0'
-          : (isMobile ? 'w-8 h-8 mb-0.5' : 'w-11 h-11 mb-1.5')}
+          : (isMobile ? 'w-7 h-7 mb-0.5' : 'w-11 h-11 mb-1.5')}
       `}>
-        <Icon size={compact ? 14 : (isMobile ? 18 : 22)} className="text-[#445069]" />
+        <Icon size={compact ? 14 : (isMobile ? 16 : 22)} className="text-[#445069]" />
       </div>
       <span className={`
         font-bold text-[#445069] font-['Outfit'] text-center w-full px-0.5 break-words tracking-tight

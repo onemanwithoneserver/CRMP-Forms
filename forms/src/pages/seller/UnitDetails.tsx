@@ -167,7 +167,7 @@ export default function UnitDetails() {
       <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
 
         {/* SECTION 1: Unit Details - Size */}
-        <SectionCard title="Unit Details - Size">
+        <SectionCard title="📐 Unit Details - Size">
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {isVisible('plotSize') && <TextField label="Plot size (sq. yards)" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" />}
             {isVisible('plotDimensions') && renderNumeric('Plot dimensions (L × B in ft)', 'plotDimensions')}
@@ -203,7 +203,7 @@ export default function UnitDetails() {
 
         {/* SECTION 2: Unit Specifications - Space Readiness */}
         {isBuiltSpace && (
-          <SectionCard title="Unit Specifications - Space Readiness">
+          <SectionCard title="🏗️ Unit Specifications - Space Readiness">
             {/* Desktop/Tablet specialized layout */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('spaceCondition') && <Dropdown label="Space condition" value={d.spaceCondition} options={['Bare shell', 'Warm shell', 'Semi-fitted', 'Fully fitted', 'Plug & play']} placeholder="Select condition" onChange={v => onUpdate({ spaceCondition: v })} />}
@@ -227,7 +227,7 @@ export default function UnitDetails() {
 
         {/* SECTION 3: Unit Specifications - Interiors */}
         {isBuiltSpace && (
-          <SectionCard title="Unit Specifications - Interiors">
+          <SectionCard title="🛋️ Unit Specifications - Interiors">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('partitionsType') && <Dropdown label="Partitions type" value={d.partitionsType} options={['None', 'Glass', 'Gypsum', 'Wall']} placeholder="Select partitions" onChange={v => onUpdate({ partitionsType: v })} />}
               {isVisible('externalBranding') && <Dropdown label="External branding options" value={d.externalBranding} options={['Space available outside', 'Available inside building', 'Both']} placeholder="Select branding option" onChange={v => onUpdate({ externalBranding: v })} />}
@@ -249,7 +249,7 @@ export default function UnitDetails() {
 
         {/* SECTION 4: Unit Specifications - Furniture & Appliances */}
         {isBuiltSpace && (
-          <SectionCard title="Unit Specifications - Furniture & Appliances">
+          <SectionCard title="🖥️ Unit Specifications - Furniture & Appliances">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('workstations') && renderNumeric('Workstations / tables', 'workstations')}
               {isVisible('chairs') && renderNumeric('Chairs', 'chairs')}
@@ -297,9 +297,9 @@ export default function UnitDetails() {
                 <h3 className="text-lg font-bold text-[#1C2A44]">Add / Edit Appliances</h3>
                 <button
                   onClick={() => setIsApplianceModalOpen(false)}
-                  className="p-2 hover:bg-[#f0f4f8] rounded-full text-[#8993a4] transition-colors"
+                  className="p-2 hover:bg-[#f0f4f8] rounded-full text-[#8993a4] transition-colors text-lg leading-none"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  ✖️
                 </button>
               </div>
 
@@ -351,7 +351,7 @@ export default function UnitDetails() {
         )}
 
         {/* SECTION 5: Unit Availability */}
-        <SectionCard title="Unit Availability">
+        <SectionCard title="📅 Unit Availability">
 
           {isMobile ? (
             /* ── Mobile layout ── */

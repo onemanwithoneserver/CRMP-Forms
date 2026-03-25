@@ -79,7 +79,7 @@ export default function Facilities() {
 
         {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (
-          <SectionCard title="Facilities - Parking">
+          <SectionCard title="🚗 Facilities - Parking">
             {isMobile ? (
               <>
                 {/* Mobile: boolean full-width, then paired 2-col row */}
@@ -116,7 +116,7 @@ export default function Facilities() {
         )}
 
         {/* SECTION: Facilities - Power */}
-        <SectionCard title="Facilities - Power">
+        <SectionCard title="⚡ Facilities - Power">
           {isMobile ? (
             <>
               {/* Mobile: boolean full-width, then paired 2-col row */}
@@ -157,7 +157,7 @@ export default function Facilities() {
 
             {/* Facilities - Hygiene & Utilities */}
             {(show.washrooms || show.waterConnection) && (
-              <SectionCard title="Facilities - Hygiene & Utilities">
+              <SectionCard title="💧 Facilities - Hygiene & Utilities">
                 {show.washrooms && (
                   <div className="w-1/2">
                     <Dropdown
@@ -175,7 +175,7 @@ export default function Facilities() {
 
             {/* Facilities - Fire Safety */}
             {show.fireSprinklers && (
-              <SectionCard title="Facilities - Fire Safety">
+              <SectionCard title="🧯 Facilities - Fire Safety">
                 {isMobile ? (
                   <>
                     {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}

@@ -98,7 +98,7 @@ export default function LeaseInfo() {
       <div className={`flex flex-col font-['Outfit'] pb-4 gap-[2px]`}>
 
         {/* SECTION 1: Lease Type & Pricing */}
-        <SectionCard title="Lease Type & Pricing">
+        <SectionCard title="🤝 Lease Type & Pricing">
 
           {isMobile ? (
             <>
@@ -174,7 +174,7 @@ export default function LeaseInfo() {
         </SectionCard>
 
         {/* SECTION 2: Financial & Terms */}
-        <SectionCard title="Financial & Terms">
+        <SectionCard title="💰 Financial & Terms">
 
           {isMobile ? (
             <>

@@ -110,7 +110,7 @@ export default function TransactionDetails() {
     <FormPage title="Transactional Details" onBack={back} onNext={next}>
       <div className="flex flex-col gap-[2px] font-['Outfit'] pb-4">
         
-        <SectionCard title="Sale Type & Pricing">
+        <SectionCard title="🏷️ Sale Type & Pricing">
           {isMobile ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
@@ -176,7 +176,7 @@ export default function TransactionDetails() {
           )}
         </SectionCard>
 
-        <SectionCard>
+        <SectionCard title="📋 Additional Details">
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             
             {saleType === 'Vacant Space' && (

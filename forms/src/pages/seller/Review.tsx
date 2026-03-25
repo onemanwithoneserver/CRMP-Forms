@@ -76,7 +76,6 @@ export default function Review() {
 
         {/* Unit Details */}
         <SummarySection title="Unit details" stepIndex={getStepIndex('unit-details')}>
-          <Row label="Unit type" value={d.unitType} />
           {!isLand && <Row label="Built-up area" value={d.totalBuiltUpArea ? `${d.totalBuiltUpArea} sq. ft` : null} />}
           {!isLand && <Row label="Carpet area" value={d.carpetArea ? `${d.carpetArea} sq. ft` : null} />}
           {isLand && <Row label="Plot size" value={d.plotSize ? `${d.plotSize} sq. yd` : null} />}

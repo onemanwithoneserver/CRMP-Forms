@@ -73,7 +73,6 @@ export type FormData = {
   photosUploaded: boolean
 
   // Unit Details
-  unitType: string
   totalBuiltUpArea: string
   numberOfRooms: string
   numberOfBeds: string
@@ -289,7 +288,6 @@ const initialFormData: FormData = {
 
   photosUploaded: false,
 
-  unitType: 'Entire Building',
   totalBuiltUpArea: '',
   numberOfRooms: '',
   numberOfBeds: '',

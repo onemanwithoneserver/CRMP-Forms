@@ -8,19 +8,6 @@ import { Dropdown } from '../../components/inputs/Dropdown'
 import CheckboxField from '../../components/inputs/CheckboxField'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
 
-import iconEntireUnit from '../../assets/Unit Type/Entire Unit.svg'
-import iconPartialFloor from '../../assets/Unit Type/Partial Floor.svg'
-import iconFullFloor from '../../assets/Unit Type/Full Floor.svg'
-import iconEntireBuilding from '../../assets/Unit Type/Entire Building.svg'
-import iconShop from '../../assets/Unit Type/Shop.svg'
-
-const UNIT_TYPES = [
-  { value: 'Entire Unit', label: 'Entire unit', icon: iconEntireUnit },
-  { value: 'Partial Floor', label: 'Partial floor', icon: iconPartialFloor },
-  { value: 'Full Floor', label: 'Full floor', icon: iconFullFloor },
-  { value: 'Entire Building', label: 'Entire building', icon: iconEntireBuilding },
-  { value: 'Shop', label: 'Shop', icon: iconShop },
-]
 
 const APPLIANCE_LIST = ['AC', 'Fridge', 'Water dispenser', 'Microwave', 'Printer', 'Internet modem']
 
@@ -178,51 +165,6 @@ export default function UnitDetails() {
   return (
     <FormPage title="Unit details" onBack={back} onNext={next}>
       <div className="flex flex-col gap-2 sm:gap-3 font-['Outfit'] pb-2">
-
-        {/* SECTION 0: Unit Type */}
-        <SectionCard title="Unit type">
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
-            {UNIT_TYPES.map(ut => {
-              const sel = d.unitType === ut.value
-              return (
-                <button
-                  key={ut.value}
-                  type="button"
-                  onClick={() => onUpdate({ unitType: ut.value })}
-                  aria-pressed={sel}
-                  className="flex flex-col items-center justify-center gap-1.5 p-2 rounded-md border transition-all"
-                  style={{
-                    borderColor: sel ? 'var(--accent-gold)' : 'var(--border)',
-                    background: sel ? 'rgba(200,155,60,0.04)' : '#ffffff',
-                    boxShadow: sel ? '0 2px 12px rgba(200,155,60,0.18)' : '0 1px 3px rgba(0,0,0,0.04)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {ut.icon && (
-                    <img
-                      src={ut.icon}
-                      alt={ut.label}
-                      style={{
-                        width: 24, height: 24,
-                        opacity: sel ? 1 : 0.65,
-                        transition: 'opacity 200ms',
-                      }}
-                    />
-                  )}
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: sel ? 700 : 500,
-                    color: sel ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                    textAlign: 'center',
-                    lineHeight: 1.2,
-                  }}>
-                    {ut.label}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </SectionCard>
 
         {/* SECTION 1: Unit Details - Size */}
         <div className="flex flex-col gap-2">

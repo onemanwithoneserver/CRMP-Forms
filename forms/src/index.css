@@ -344,12 +344,12 @@ textarea:focus-visible {
   border: 1px solid var(--border);
   border-radius: 4px;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text);
   background: #ffffff;
   transition: all 200ms ease;
-  height: 34px;
+  height: 32px;
 }
 
 .form-input::placeholder {

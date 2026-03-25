@@ -1,5 +1,6 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
+import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
 import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
@@ -26,6 +27,8 @@ const INDUSTRY_CATEGORIES = [
 // ─── main component ───────────────────────────────────────
 export default function TransactionDetails() {
   const { state, dispatch, next, back } = useForm()
+  const { device } = useDevice()
+  const isMobile = device === 'mobile'
   const d = state.formData
 
   const onUpdate = (payload: Partial<typeof state.formData>) => {
@@ -79,18 +82,31 @@ export default function TransactionDetails() {
     </div>
   )
 
-  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex items-center justify-between w-full py-1.5 px-0.5">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="w-[110px]">
-        <SegmentedControl
-          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-          value={d[field] as string || 'No'}
-          onChange={v => onUpdate({ [field]: v })}
-        />
+  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => {
+    const control = (
+      <SegmentedControl
+        options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+        value={d[field] as string || 'No'}
+        onChange={v => onUpdate({ [field]: v })}
+      />
+    )
+
+    if (isMobile) {
+      return (
+        <div className="flex items-center justify-between w-full py-1.5 px-0.5">
+          <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+          <div className="w-[110px]">{control}</div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-2 w-full py-1.5 px-0.5">
+        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+        <div className="w-[110px]">{control}</div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <FormPage title="Transactional Details" onBack={back} onNext={next}>
@@ -101,46 +117,77 @@ export default function TransactionDetails() {
           <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1">
             Sale Type & Pricing
           </h2>
+          {isMobile ? (
+            /* ── Mobile: Row 1 = Availability Type; Row 2 = Pricing Type + Price ── */
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Availability Type</label>
+                <div className="h-[32px] flex items-center">
+                  <SegmentedControl
+                    options={SALE_TYPES}
+                    value={saleType}
+                    onChange={v => onUpdate({ postSubCategory: v })}
+                  />
+                </div>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Availability Type</label>
-              <div className="h-[34px] flex items-center">
-                <SegmentedControl
-                  options={SALE_TYPES}
-                  value={saleType}
-                  onChange={v => onUpdate({ postSubCategory: v })}
-                />
+              <div className="grid grid-cols-2 gap-4 items-end">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Pricing Type</label>
+                  <div className="h-[32px] flex items-center">
+                    <SegmentedControl
+                      options={PRICING_TYPES}
+                      value={d.rentPricingMode || 'Per Sq Ft'}
+                      onChange={v => onUpdate({ rentPricingMode: v })}
+                    />
+                  </div>
+                </div>
+
+                {renderNumeric(
+                  d.rentPricingMode === 'Box Price' ? 'Total Asking Price (Box Price)' : 'Price Per Sq Ft / Sq.yd',
+                  d.rentPricingMode === 'Box Price' ? 'askingPriceTotal' : 'pricePerSqFt',
+                  'e.g. ₹50000000',
+                )}
               </div>
             </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Pricing Type</label>
-              <div className="h-[34px] flex items-center">
-                <SegmentedControl
-                  options={PRICING_TYPES}
-                  value={d.rentPricingMode || 'Per Sq Ft'}
-                  onChange={v => onUpdate({ rentPricingMode: v })}
-                />
+          ) : (
+            /* ── Desktop: all three in a single row, Availability Type gets more space ── */
+            <div className="grid grid-cols-[2fr_1fr_1fr] gap-4 items-end">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Availability Type</label>
+                <div className="h-[32px] flex items-center">
+                  <SegmentedControl
+                    options={SALE_TYPES}
+                    value={saleType}
+                    onChange={v => onUpdate({ postSubCategory: v })}
+                  />
+                </div>
               </div>
-            </div>
-          </div>
 
-        </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Pricing Type</label>
+                <div className="h-[32px] flex items-center">
+                  <SegmentedControl
+                    options={PRICING_TYPES}
+                    value={d.rentPricingMode || 'Per Sq Ft'}
+                    onChange={v => onUpdate({ rentPricingMode: v })}
+                  />
+                </div>
+              </div>
 
-        {/* SECTION: Dynamic Details Grid */}
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-
-            {/* COMMON: Primary Pricing depending on type */}
-            <div className="sm:col-span-2">
               {renderNumeric(
                 d.rentPricingMode === 'Box Price' ? 'Total Asking Price (Box Price)' : 'Price Per Sq Ft / Sq.yd',
                 d.rentPricingMode === 'Box Price' ? 'askingPriceTotal' : 'pricePerSqFt',
                 'e.g. ₹50000000',
               )}
             </div>
-            <div className="hidden lg:block lg:col-span-2"></div>
+          )}
+
+        </div>
+
+        {/* SECTION: Dynamic Details Grid */}
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
 
             {/* VACANT TYPE */}
             {saleType === 'Vacant Space' && (

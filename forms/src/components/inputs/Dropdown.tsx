@@ -198,9 +198,9 @@ export function Dropdown({
   )
 
   return (
-    <div className="relative flex flex-col gap-1 w-full" ref={ref} onKeyDown={handleKeyDown}>
+    <div className="relative flex flex-col gap-1.5 w-full" ref={ref} onKeyDown={handleKeyDown}>
       {variant !== 'compact' && label && (
-        <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">
+        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5 font-['Outfit']">
           {label}
         </label>
       )}
@@ -210,8 +210,8 @@ export function Dropdown({
         type="button"
         onClick={() => { computeDirection(); setIsOpen(!isOpen); setSearch('') }}
         className={`
-          w-full flex items-center justify-between gap-1.5 px-2.5 border text-left text-[13px] font-['Outfit'] transition-all duration-300 cursor-pointer
-          ${variant === 'compact' ? 'h-[34px] py-1' : 'h-[34px] py-1.5'}
+          w-full flex items-center justify-between gap-1.5 px-2.5 border text-left text-[12px] font-['Outfit'] transition-all duration-300 cursor-pointer
+          ${variant === 'compact' ? 'h-[32px] py-1' : 'h-[32px] py-1'}
           ${triggerRadius}
           ${isOpen
             ? 'border-[#C89B3C] bg-white outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'

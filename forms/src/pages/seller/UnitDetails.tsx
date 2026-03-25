@@ -114,54 +114,65 @@ export default function UnitDetails() {
     </div>
   )
 
-  const renderYesNo = (label: string, field: keyof typeof state.formData) =>
-    isMobile ? (
-      // Mobile: vertical — label on top, control below
-      <div className="flex items-center justify-between w-full py-1.5">
-        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-        <div className="w-[110px]">
-          <SegmentedControl
-            options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-            value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
-            onChange={v => {
-              const isBoolField = typeof d[field] === 'boolean'
-              onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
-            }}
-          />
-        </div>
-      </div>
-    ) : (
-      // Desktop/Tablet: horizontal — label left, control right
-      <div className="flex items-center justify-between py-1.5 px-3.5">
-        <span className="text-[13.5px] font-medium text-[#1C2A44]">{label}</span>
-        <div className="w-[110px]">
-          <SegmentedControl
-            options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-            value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
-            onChange={v => {
-              const isBoolField = typeof d[field] === 'boolean'
-              onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
-            }}
-          />
-        </div>
-      </div>
+  const renderYesNo = (label: string, field: keyof typeof state.formData) => {
+    const control = (
+      <SegmentedControl
+        options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+        value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
+        onChange={v => {
+          const isBoolField = typeof d[field] === 'boolean'
+          onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
+        }}
+      />
     )
 
-  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex items-center justify-between w-full py-1.5 px-0.5">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5 ">{label}</label>
-      <div className="w-[110px]">
-        <SegmentedControl
-          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-          value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
-          onChange={v => {
-            const isBoolField = typeof d[field] === 'boolean'
-            onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
-          }}
-        />
+    if (isMobile) {
+      // Mobile: label left, control right
+      return (
+        <div className="flex items-center justify-between w-full py-1.5">
+          <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+          <div className="w-[110px]">{control}</div>
+        </div>
+      )
+    }
+
+    // Desktop: label on top, control below
+    return (
+      <div className="flex flex-col gap-2 w-full py-1.5 px-0.5">
+        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+        <div className="w-[110px]">{control}</div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => {
+    const control = (
+      <SegmentedControl
+        options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+        value={typeof d[field] === 'boolean' ? (d[field] ? 'Yes' : 'No') : ((d[field] as string) || 'No')}
+        onChange={v => {
+          const isBoolField = typeof d[field] === 'boolean'
+          onUpdate({ [field]: isBoolField ? v === 'Yes' : v } as any)
+        }}
+      />
+    )
+
+    if (isMobile) {
+      return (
+        <div className="flex items-center justify-between w-full py-1.5 px-0.5">
+          <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+          <div className="w-[110px]">{control}</div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-2 w-full py-1.5 px-0.5">
+        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+        <div className="w-[110px]">{control}</div>
+      </div>
+    )
+  }
 
 
   return (
@@ -270,7 +281,7 @@ export default function UnitDetails() {
             </div>
 
             {/* Boolean Controls - Vertical Structure */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-1 border-t border-[#edf0f5] pt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 mt-1 border-t border-[#edf0f5] pt-3">
               {isVisible('glassFacade') && renderVerticalBoolean('Glass facade (suitable for external branding)', 'glassFacade')}
               {isVisible('compoundWall') && renderVerticalBoolean('Compound wall available', 'compoundWall')}
               {isVisible('waterConnection') && renderVerticalBoolean('Water connection available', 'waterConnection')}
@@ -293,7 +304,7 @@ export default function UnitDetails() {
 
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-1 border-t border-[#edf0f5] pt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-1 border-t border-[#edf0f5] pt-3">
               {isVisible('conferenceRoom') && renderVerticalBoolean('Conference room', 'conferenceRoom')}
               {isVisible('receptionArea') && renderVerticalBoolean('Reception area', 'receptionArea')}
               {isVisible('brandingSpace') && renderVerticalBoolean('Branding space available', 'brandingSpace')}
@@ -315,7 +326,7 @@ export default function UnitDetails() {
 
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-1 border-t border-[#edf0f5] pt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 mt-1 border-t border-[#edf0f5] pt-3">
               {isVisible('storageCupboards') && renderVerticalBoolean('Storage / cupboards', 'storageCupboards')}
               {isVisible('sofaLounge') && renderVerticalBoolean('Sofa / lounge area', 'sofaLounge')}
               {isVisible('receptionDesk') && renderVerticalBoolean('Reception desk', 'receptionDesk')}
@@ -414,50 +425,105 @@ export default function UnitDetails() {
           <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
             Unit Availability
           </h2>
-          <div className="grid grid-cols-2 gap-2">
-            {renderYesNo('Is it immediately available?', 'isImmediatelyAvailable')}
 
-            {d.isImmediatelyAvailable === 'No' && (
-              <Dropdown
-                label="Tentative Available Month"
-                value={d.tentativeMonth}
-                options={MONTHS_OPTIONS}
-                placeholder="Select month"
-                onChange={v => onUpdate({ tentativeMonth: v })}
-              />
-            )}
+          {isMobile ? (
+            /* ── Mobile layout ── */
+            <div className="flex flex-col gap-2">
+              {/* Row 1: Yes/No — full width */}
+              {renderYesNo('Is it immediately available?', 'isImmediatelyAvailable')}
 
-            {['land', 'retail', 'office', 'coworking'].includes(pType) && (
-              <TextField
-                label="Unit No. (If any)"
-                value={d.unitNo}
-                onChange={v => onUpdate({ unitNo: v })}
-                placeholder="e.g. A-204, Shop 12"
-              />
-            )}
-
-            {['retail', 'office', 'coworking'].includes(pType) && (
-              renderNumeric('No. of Units Available', 'numberOfUnitsAvailable', 'e.g. 3')
-            )}
-
-            {pType === 'land' && (
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">
-                  No. of Units Available
-                </label>
-                <div className="w-full">
-                  <SegmentedControl
-                    options={[
-                      { label: 'Single', value: 'Single' },
-                      { label: 'Multiple', value: 'Multiple' },
-                    ]}
-                    value={d.numberOfUnitsAvailable || 'Single'}
-                    onChange={v => onUpdate({ numberOfUnitsAvailable: v })}
+              {/* Remaining fields: 2 per row */}
+              <div className="grid grid-cols-2 gap-2">
+                {d.isImmediatelyAvailable === 'No' && (
+                  <Dropdown
+                    label="Tentative Available Month"
+                    value={d.tentativeMonth}
+                    options={MONTHS_OPTIONS}
+                    placeholder="Select month"
+                    onChange={v => onUpdate({ tentativeMonth: v })}
                   />
-                </div>
+                )}
+
+                {['land', 'retail', 'office', 'coworking'].includes(pType) && (
+                  <TextField
+                    label="Unit No. (If any)"
+                    value={d.unitNo}
+                    onChange={v => onUpdate({ unitNo: v })}
+                    placeholder="e.g. A-204, Shop 12"
+                  />
+                )}
+
+                {['retail', 'office', 'coworking'].includes(pType) && (
+                  renderNumeric('No. of Units Available', 'numberOfUnitsAvailable', 'e.g. 3')
+                )}
+
+                {pType === 'land' && (
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">
+                      No. of Units Available
+                    </label>
+                    <div className="w-full">
+                      <SegmentedControl
+                        options={[
+                          { label: 'Single', value: 'Single' },
+                          { label: 'Multiple', value: 'Multiple' },
+                        ]}
+                        value={d.numberOfUnitsAvailable || 'Single'}
+                        onChange={v => onUpdate({ numberOfUnitsAvailable: v })}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            /* ── Desktop layout ── */
+            /* 3 cols when Yes (no Tentative Month), 4 cols when No (Tentative Month shown) */
+            <div className={`grid gap-2 ${d.isImmediatelyAvailable === 'No' ? 'grid-cols-4' : 'grid-cols-3'}`}>
+              {renderYesNo('Is it immediately available?', 'isImmediatelyAvailable')}
+
+              {d.isImmediatelyAvailable === 'No' && (
+                <Dropdown
+                  label="Tentative Available Month"
+                  value={d.tentativeMonth}
+                  options={MONTHS_OPTIONS}
+                  placeholder="Select month"
+                  onChange={v => onUpdate({ tentativeMonth: v })}
+                />
+              )}
+
+              {['land', 'retail', 'office', 'coworking'].includes(pType) && (
+                <TextField
+                  label="Unit No. (If any)"
+                  value={d.unitNo}
+                  onChange={v => onUpdate({ unitNo: v })}
+                  placeholder="e.g. A-204, Shop 12"
+                />
+              )}
+
+              {['retail', 'office', 'coworking'].includes(pType) && (
+                renderNumeric('No. of Units Available', 'numberOfUnitsAvailable', 'e.g. 3')
+              )}
+
+              {pType === 'land' && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">
+                    No. of Units Available
+                  </label>
+                  <div className="w-full">
+                    <SegmentedControl
+                      options={[
+                        { label: 'Single', value: 'Single' },
+                        { label: 'Multiple', value: 'Multiple' },
+                      ]}
+                      value={d.numberOfUnitsAvailable || 'Single'}
+                      onChange={v => onUpdate({ numberOfUnitsAvailable: v })}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
       </div>

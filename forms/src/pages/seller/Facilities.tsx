@@ -39,7 +39,7 @@ export default function Facilities() {
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
       <input
         type="number"
-        className="form-input bg-white w-full border border-[var(--border-light)] rounded-[4px] px-2 text-[13px] text-[var(--text)] transition-all h-[34px] focus:border-[var(--accent-gold)] focus:outline-none"
+        className="form-input bg-white w-full border border-[var(--border-light)] rounded-[4px] px-2 text-[12px] text-[var(--text)] transition-all h-[32px] focus:border-[var(--accent-gold)] focus:outline-none"
         placeholder={placeholder}
         value={d[field] as string}
         onChange={e => onUpdate({ [field]: e.target.value })}
@@ -47,18 +47,31 @@ export default function Facilities() {
     </div>
   )
 
-  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex items-center justify-between w-full py-1.5 px-0.5">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="w-[110px]">
-        <SegmentedControl
-          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-          value={(d[field] as string) || 'No'}
-          onChange={v => onUpdate({ [field]: v })}
-        />
+  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => {
+    const control = (
+      <SegmentedControl
+        options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
+        value={(d[field] as string) || 'No'}
+        onChange={v => onUpdate({ [field]: v })}
+      />
+    )
+
+    if (isMobile) {
+      return (
+        <div className="flex items-center justify-between w-full py-1.5 px-0.5">
+          <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+          <div className="w-[110px]">{control}</div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-2 w-full py-1.5 px-0.5">
+        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
+        <div className="w-[110px]">{control}</div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <FormPage title="Facilities" onBack={back} onNext={next}>

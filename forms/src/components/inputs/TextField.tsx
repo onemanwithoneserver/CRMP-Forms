@@ -16,14 +16,14 @@ export default function TextField({ label, value, onChange, placeholder, error, 
         fontSize: '0.78rem',
         fontWeight: 600,
         color: 'var(--text)',
-        marginBottom: '3px',
+        marginBottom: '6px',
       }}>
         {label}
       </div>
       <input
         type={type}
         className={`form-input ${error ? 'error' : ''}`}
-        style={{ height: '34px', fontSize: '13px' }}
+        style={{ height: '32px', fontSize: '12px' }}
         value={value || ''}
         placeholder={placeholder}
         onChange={e => onChange?.(e.target.value)}

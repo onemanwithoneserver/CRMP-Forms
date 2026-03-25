@@ -75,12 +75,11 @@ export default function Facilities() {
 
   return (
     <FormPage title="Facilities" onBack={back} onNext={next}>
-      <div className={`flex flex-col font-['Outfit'] pb-2 ${isMobile ? 'gap-3' : 'gap-4'}`}>
+      <div className={`flex flex-col font-['Outfit'] pb-2 gap-[2px]`}>
 
         {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (
-          <div className={`flex flex-col ${isMobile ? 'gap-1.5' : 'gap-3'}`}>
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Parking</h2>
+          <SectionCard title="Facilities - Parking">
             {isMobile ? (
               <>
                 {/* Mobile: boolean full-width, then paired 2-col row */}
@@ -113,12 +112,11 @@ export default function Facilities() {
               </div>
             </div>
             )}
-          </div>
+          </SectionCard>
         )}
 
         {/* SECTION: Facilities - Power */}
-        <div className={`flex flex-col ${isMobile ? 'gap-1.5' : 'gap-3'}`}>
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Power</h2>
+        <SectionCard title="Facilities - Power">
           {isMobile ? (
             <>
               {/* Mobile: boolean full-width, then paired 2-col row */}
@@ -151,16 +149,15 @@ export default function Facilities() {
               </div>
             </div>
           )}
-        </div>
+        </SectionCard>
 
         {/* SECTIONS: Hygiene & Fire Safety — side by side on desktop */}
         {(show.washrooms || show.waterConnection || show.fireSprinklers) && (
-          <div className={`grid grid-cols-1 sm:grid-cols-2 ${isMobile ? 'gap-3' : 'gap-4'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[2px]">
 
             {/* Facilities - Hygiene & Utilities */}
             {(show.washrooms || show.waterConnection) && (
-              <div className={`flex flex-col ${isMobile ? 'gap-1.5' : 'gap-3'}`}>
-                <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Hygiene & Utilities</h2>
+              <SectionCard title="Facilities - Hygiene & Utilities">
                 {show.washrooms && (
                   <div className="w-1/2">
                     <Dropdown
@@ -173,13 +170,12 @@ export default function Facilities() {
                   </div>
                 )}
                 {show.waterConnection && renderVerticalBoolean('Water connection', 'waterConnection')}
-              </div>
+              </SectionCard>
             )}
 
             {/* Facilities - Fire Safety */}
             {show.fireSprinklers && (
-              <div className={`flex flex-col ${isMobile ? 'gap-1.5' : 'gap-3'}`}>
-                <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Facilities - Fire Safety</h2>
+              <SectionCard title="Facilities - Fire Safety">
                 {isMobile ? (
                   <>
                     {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
@@ -191,7 +187,7 @@ export default function Facilities() {
                     {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
                   </div>
                 )}
-              </div>
+              </SectionCard>
             )}
 
           </div>

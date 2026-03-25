@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm } from '../../context/FormContext'
 import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
+import SectionCard from '../../components/layout/SectionCard'
 import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
@@ -107,12 +108,9 @@ export default function TransactionDetails() {
 
   return (
     <FormPage title="Transactional Details" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-6 font-['Outfit'] pb-4">
+      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-4">
         
-        <div className="flex flex-col gap-4">
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1">
-            Sale Type & Pricing
-          </h2>
+        <SectionCard title="Sale Type & Pricing">
           {isMobile ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
@@ -176,9 +174,9 @@ export default function TransactionDetails() {
               )}
             </div>
           )}
-        </div>
+        </SectionCard>
 
-        <div className="flex flex-col gap-4">
+        <SectionCard>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             
             {saleType === 'Vacant Space' && (
@@ -292,7 +290,7 @@ export default function TransactionDetails() {
               </div>
             </div>
           )}
-        </div>
+        </SectionCard>
 
       </div>
     </FormPage>

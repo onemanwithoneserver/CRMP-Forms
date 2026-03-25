@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
+import SectionCard from '../../components/layout/SectionCard'
 
 interface UploadZoneProps {
   label: string
@@ -130,62 +131,50 @@ export default function UploadPhotosMobile() {
 
   return (
     <FormPage title="Media" onBack={back} onNext={handleNext}>
-      <div className="flex flex-col gap-3 font-['Outfit'] pb-2">
+      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
 
         {/* IMAGES */}
-        <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
-            Images
-          </h2>
+        <SectionCard title="Images">
           <UploadZone
             label="Upload Images"
             description="Drag & drop photos here"
             accept="image/jpeg,image/png,image/webp"
             note="JPG, PNG, WEBP — Max 15 images"
           />
-        </div>
+        </SectionCard>
 
         {/* VIDEO */}
-        <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
-            Video
-          </h2>
+        <SectionCard title="Video">
           <UploadZone
             label="Upload Video"
             description="Drag & drop a walkthrough video here"
             accept="video/mp4,video/webm,video/quicktime"
             note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
           />
-        </div>
+        </SectionCard>
 
         {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
         {showFloorPlan && (
-          <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
-              Floor Plan
-            </h2>
+          <SectionCard title="Floor Plan">
             <UploadZone
               label="Upload Floor Plan"
               description="Drag & drop floor plan here"
               accept="image/jpeg,image/png,application/pdf"
               note="JPG, PNG, PDF — architectural or space layout"
             />
-          </div>
+          </SectionCard>
         )}
 
         {/* LAYOUT PLAN — Land only */}
         {showLayoutPlan && (
-          <div className="flex flex-col gap-2 bg-white p-3 rounded-md border border-[#edf0f5] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1 text-center">
-              Layout Plan
-            </h2>
+          <SectionCard title="Layout Plan">
             <UploadZone
               label="Upload Layout Plan"
               description="Drag & drop your layout / site plan here"
               accept="image/jpeg,image/png,application/pdf"
               note="JPG, PNG, PDF — demarcation or survey plan"
             />
-          </div>
+          </SectionCard>
         )}
 
       </div>

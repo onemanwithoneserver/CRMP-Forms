@@ -156,12 +156,10 @@ export default function UploadPhotos() {
 
   return (
     <FormPage title="Media" onBack={back} onNext={handleNext}>
-      <div className="flex flex-col gap-4 font-['Outfit'] pb-2">
+      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
         
         {/* Main Header: Media */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">Media</h2>
-          
+        <SectionCard title="Media">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* IMAGES */}
             <UploadZone
@@ -195,7 +193,7 @@ export default function UploadPhotos() {
               note="JPG, PNG, PDF — demarcation or survey plan"
             />
           </div>
-        </div>
+        </SectionCard>
 
       </div>
     </FormPage>

@@ -164,13 +164,10 @@ export default function UnitDetails() {
 
   return (
     <FormPage title="Unit details" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-2 sm:gap-3 font-['Outfit'] pb-2">
+      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
 
         {/* SECTION 1: Unit Details - Size */}
-        <div className="flex flex-col gap-2">
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
-            Unit Details - Size
-          </h2>
+        <SectionCard title="Unit Details - Size">
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {isVisible('plotSize') && <TextField label="Plot size (sq. yards)" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" />}
             {isVisible('plotDimensions') && renderNumeric('Plot dimensions (L × B in ft)', 'plotDimensions')}
@@ -202,14 +199,11 @@ export default function UnitDetails() {
               </div>
             )}
           </div>
-        </div>
+        </SectionCard>
 
         {/* SECTION 2: Unit Specifications - Space Readiness */}
         {isBuiltSpace && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
-              Unit Specifications - Space Readiness
-            </h2>
+          <SectionCard title="Unit Specifications - Space Readiness">
             {/* Desktop/Tablet specialized layout */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('spaceCondition') && <Dropdown label="Space condition" value={d.spaceCondition} options={['Bare shell', 'Warm shell', 'Semi-fitted', 'Fully fitted', 'Plug & play']} placeholder="Select condition" onChange={v => onUpdate({ spaceCondition: v })} />}
@@ -228,15 +222,12 @@ export default function UnitDetails() {
               {isVisible('compoundWall') && renderVerticalBoolean('Compound wall available', 'compoundWall')}
               {isVisible('waterConnection') && renderVerticalBoolean('Water connection available', 'waterConnection')}
             </div>
-          </div>
+          </SectionCard>
         )}
 
         {/* SECTION 3: Unit Specifications - Interiors */}
         {isBuiltSpace && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
-              Unit Specifications - Interiors
-            </h2>
+          <SectionCard title="Unit Specifications - Interiors">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('partitionsType') && <Dropdown label="Partitions type" value={d.partitionsType} options={['None', 'Glass', 'Gypsum', 'Wall']} placeholder="Select partitions" onChange={v => onUpdate({ partitionsType: v })} />}
               {isVisible('externalBranding') && <Dropdown label="External branding options" value={d.externalBranding} options={['Space available outside', 'Available inside building', 'Both']} placeholder="Select branding option" onChange={v => onUpdate({ externalBranding: v })} />}
@@ -253,15 +244,12 @@ export default function UnitDetails() {
               {isVisible('falseCeiling') && renderVerticalBoolean('False ceiling installed', 'falseCeiling')}
               {isVisible('columnFree') && renderVerticalBoolean('Column-free layout', 'columnFree')}
             </div>
-          </div>
+          </SectionCard>
         )}
 
         {/* SECTION 4: Unit Specifications - Furniture & Appliances */}
         {isBuiltSpace && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
-              Unit Specifications - Furniture & Appliances
-            </h2>
+          <SectionCard title="Unit Specifications - Furniture & Appliances">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('workstations') && renderNumeric('Workstations / tables', 'workstations')}
               {isVisible('chairs') && renderNumeric('Chairs', 'chairs')}
@@ -298,7 +286,7 @@ export default function UnitDetails() {
                 </div>
               </div>
             )}
-          </div>
+          </SectionCard>
         )}
 
         {/* APPLIANCE MODAL */}
@@ -363,10 +351,7 @@ export default function UnitDetails() {
         )}
 
         {/* SECTION 5: Unit Availability */}
-        <div className="flex flex-col gap-2">
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-0.5">
-            Unit Availability
-          </h2>
+        <SectionCard title="Unit Availability">
 
           {isMobile ? (
             /* ── Mobile layout ── */
@@ -466,7 +451,7 @@ export default function UnitDetails() {
               )}
             </div>
           )}
-        </div>
+        </SectionCard>
 
       </div>
     </FormPage>

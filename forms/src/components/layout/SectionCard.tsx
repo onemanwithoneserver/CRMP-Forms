@@ -7,29 +7,15 @@ type Props = {
 
 export default function SectionCard({ title, children }: Props) {
   return (
-    <section style={{
-      background: '#ffffff',
-      border: '1px solid #edf0f5',
-      borderRadius: '6px',
-      padding: '8px 10px 8px',
-      marginBottom: '4px',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-    }}>
+    <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
       {title && (
-        <div style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontSize: '0.78rem',
-          fontWeight: 700,
-          color: '#8993a4',
-          textTransform: 'none',
-          letterSpacing: 0,
-          marginBottom: '6px',
-          textDecoration: 'none',
-        }}>
+        <h2 className="text-[#C99E41] text-[16px] md:text-[18px] font-semibold px-[14px] py-[10px] m-0 border-t border-[#1C2943] rounded-t-[5px]">
           {title}
-        </div>
+        </h2>
       )}
-      {children}
-    </section>
+      <div className="p-1 md:p-1">
+        {children}
+      </div>
+    </div>
   )
 }

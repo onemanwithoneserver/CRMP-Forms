@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm } from '../../context/FormContext'
 import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
+import SectionCard from '../../components/layout/SectionCard'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
 import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
@@ -94,13 +95,10 @@ export default function LeaseInfo() {
 
   return (
     <FormPage title="Lease Information" onBack={back} onNext={next}>
-      <div className={`flex flex-col font-['Outfit'] pb-4 ${isMobile ? 'gap-3' : 'gap-6'}`}>
+      <div className={`flex flex-col font-['Outfit'] pb-4 gap-[2px]`}>
 
         {/* SECTION 1: Lease Type & Pricing */}
-        <div className={`flex flex-col ${isMobile ? 'gap-2' : 'gap-4'}`}>
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1">
-            Lease Type &amp; Pricing
-          </h2>
+        <SectionCard title="Lease Type & Pricing">
 
           {isMobile ? (
             <>
@@ -173,13 +171,10 @@ export default function LeaseInfo() {
               <div className="hidden lg:block"></div>
             </div>
           )}
-        </div>
+        </SectionCard>
 
         {/* SECTION 2: Financial & Terms */}
-        <div className={`flex flex-col ${isMobile ? 'gap-2' : 'gap-4'}`}>
-          <h2 className="text-[0.88rem] font-bold text-[#1C2A44] border-b border-[#edf0f5] pb-1 mb-1">
-            Financial &amp; Terms
-          </h2>
+        <SectionCard title="Financial & Terms">
 
           {isMobile ? (
             <>
@@ -263,7 +258,7 @@ export default function LeaseInfo() {
               )}
             </div>
           )}
-        </div>
+        </SectionCard>
 
       </div>
     </FormPage>

@@ -153,7 +153,7 @@ function InnerApp() {
   const { device } = useDevice()
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--surface)' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--surface)' }}>
       <Header />
       <main
         data-device={device}

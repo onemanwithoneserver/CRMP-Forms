@@ -262,17 +262,17 @@ export default function PostType() {
 
         {/* ─── Select Property Type Card ─── */}
         <div ref={postTypeSectionRef} className="relative -mt-4 px-2 md:px-4 w-full">
-          <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
-            {/* Gradient accent bar */}
-            <div className="h-1 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C]" />
+        <div className="bg-white md:rounded-[4px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] border-y md:border border-[var(--border-light)] overflow-hidden">
+          {/* Premium Gradient accent bar */}
+          <div className="h-1.5 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C] shadow-sm" />
 
             <div className="p-3">
               {/* Section heading */}
-              <div className="flex items-center gap-2 md:gap-2.5 mb-3 md:mb-4">
-                <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-[#1C2A44] flex items-center justify-center">
-                  <Building2 size={14} className="text-white" />
+              <div className="flex items-center gap-3 mb-5 md:mb-6">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-[#1C2A44]/5 backdrop-blur-md border border-[#1C2A44]/15 flex items-center justify-center shadow-sm">
+                  <Building2 size={18} className="text-[#1C2A44]" />
                 </div>
-                <h2 className="text-[0.95rem] font-bold text-[#1C2A44] font-['Outfit']">
+                <h2 className="text-[1.1rem] font-bold text-[#1C2A44] font-['Outfit'] tracking-tight">
                   Select Property Type
                 </h2>
               </div>
@@ -305,7 +305,12 @@ export default function PostType() {
                         What do you want to do?
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-1">
-                        {SELLER_POST_TYPES.map(option => (
+                        {SELLER_POST_TYPES.filter(option => {
+                          if (type.id === 'land') {
+                            return option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+                          }
+                          return true
+                        }).map(option => (
                           <OptionButton
                             key={option.value}
                             label={option.label}
@@ -355,7 +360,12 @@ export default function PostType() {
                             What do you want to do?
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-4 gap-1.5 sm:gap-1">
-                            {SELLER_POST_TYPES.map(option => (
+                            {SELLER_POST_TYPES.filter(option => {
+                              if (type.id === 'land') {
+                                return option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+                              }
+                              return true
+                            }).map(option => (
                               <OptionButton
                                 key={option.value}
                                 label={option.label}
@@ -387,11 +397,11 @@ export default function PostType() {
           <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
 
             {/* Header */}
-            <div className="flex items-center gap-2 md:gap-2.5 px-3 py-2.5 bg-[#1C2A44]">
-              <div className="w-6 h-6 md:w-7 md:h-7 rounded-md bg-white/10 flex items-center justify-center">
-                <MapPin size={14} className="text-white" />
+            <div className="flex items-center gap-3 px-4 py-3 bg-[#1C2A44]">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-sm">
+                <MapPin size={18} className="text-white" />
               </div>
-              <h2 className="text-[0.95rem] font-bold text-white font-['Outfit']">Location</h2>
+              <h2 className="text-[1.1rem] font-bold text-white font-['Outfit'] tracking-tight">Location</h2>
             </div>
 
             <div className="p-3 space-y-3">

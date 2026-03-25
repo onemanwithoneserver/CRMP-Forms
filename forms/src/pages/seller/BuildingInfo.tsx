@@ -117,7 +117,7 @@ export default function BuildingInfo() {
       </div>
 
       {state.errors.city && (
-        <div style={{ fontSize: '0.75rem', color: '#d32f2f', marginTop: '12px' }}>
+        <div className="text-[0.75rem] text-[#d32f2f] mt-[12px]">
           {state.errors.city}
         </div>
       )}

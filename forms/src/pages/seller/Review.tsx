@@ -6,17 +6,15 @@ function SummarySection({ title, stepIndex, children }: { title: string; stepInd
   const { goToStep } = useForm()
   return (
     <div className="flex flex-col gap-3">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #edf0f5', paddingBottom: '4px', marginBottom: '4px' }}>
+      <div className="flex justify-between items-center border-b border-[#edf0f5] pb-1 mb-1">
         <h2 className="text-[0.88rem] font-bold text-[#1C2A44] m-0">
           {title}
         </h2>
-        <button type="button" className="edit-link" onClick={() => goToStep(stepIndex)} style={{
-          color: 'var(--accent-gold)', fontSize: '0.8rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', borderRadius: '4px'
-        }}>
+        <button type="button" className="edit-link text-[var(--accent-gold)] text-[0.8rem] font-[600] bg-none border-none cursor-pointer p-[4px_8px] rounded-[4px]" onClick={() => goToStep(stepIndex)}>
           Edit
         </button>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: '#ffffff', borderRadius: '6px', padding: '8px 10px', border: '1px solid #edf0f5', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+      <div className="flex flex-col gap-1 bg-white rounded-[6px] p-[8px_10px] border border-[#edf0f5] shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         {children}
       </div>
     </div>
@@ -28,8 +26,8 @@ function Row({ label, value }: { label: string; value?: string | boolean | null 
   if (!displayVal || displayVal === '—') return null
   return (
     <div className="summary-row">
-      <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{label}</span>
-      <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text)', textAlign: 'right', maxWidth: '55%' }}>{String(displayVal)}</span>
+      <span className="text-[0.8125rem] text-[var(--text-secondary)]">{label}</span>
+      <span className="text-[0.875rem] font-[500] text-[var(--text)] text-right max-w-[55%]">{String(displayVal)}</span>
     </div>
   )
 }
@@ -115,7 +113,7 @@ export default function Review() {
         </SummarySection>
 
         {/* Media */}
-        <SummarySection title="Media" stepIndex={getStepIndex('upload-photos')}>
+        <SummarySection title="Property Gallery" stepIndex={getStepIndex('upload-photos')}>
           <Row label="Photos" value={d.photosUploaded ? 'Uploaded' : 'Not uploaded'} />
         </SummarySection>
 
@@ -153,13 +151,7 @@ export default function Review() {
         )}
 
         {/* Submit hint */}
-        <div className="md:col-span-2" style={{
-          textAlign: 'center',
-          padding: '8px',
-          fontSize: '0.78rem',
-          color: 'var(--text-tertiary)',
-          lineHeight: 1.6,
-        }}>
+        <div className="md:col-span-2 text-center p-2 text-[0.78rem] text-[var(--text-tertiary)] leading-[1.6]">
           By submitting, you agree to our listing terms and confirm all information is accurate.
         </div>
 

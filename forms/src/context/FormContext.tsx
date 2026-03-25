@@ -173,8 +173,8 @@ export const getDynamicSteps = (data: FormData) => {
     // Seller/Landlord flows
     steps.push({ key: 'unit-details', label: 'Unit details' })
     steps.push({ key: 'facilities', label: 'Facilities' })
-    steps.push({ key: 'upload-photos', label: 'Media' })
-    
+    steps.push({ key: 'upload-photos', label: 'Property Gallery' })
+
     if (post === 'Lease/Rent Property') {
       steps.push({ key: 'lease-info', label: 'Lease Information' })
     } else if (post === 'Running Business') {
@@ -192,7 +192,7 @@ export const getDynamicSteps = (data: FormData) => {
 /* ─── Options Data ─── */
 export const SELLER_POST_TYPES = [
   { value: 'Property Sale', label: 'Sell Property' },
-  { value: 'Lease/Rent Property', label: 'Lease/Rent Property' },
+  { value: 'Lease/Rent Property', label: 'Lease/Rent' },
   { value: 'Offer Franchise', label: 'Offer Franchisee' },
   { value: 'Running Business', label: 'Sell/Lease Running Business' },
 ] as const
@@ -449,7 +449,7 @@ function reducer(state: State, action: Action): State {
 /* ─── Validation ─── */
 function validateStep(step: number, data: FormData): Record<string, string> {
   const errors: Record<string, string> = {}
-  
+
   const stepsList = getDynamicSteps(data)
   const currentStepKey = stepsList[step - 1]?.key
 
@@ -470,7 +470,7 @@ function validateStep(step: number, data: FormData): Record<string, string> {
     if (['land', 'entire_building'].includes(pType)) {
       if (!data.plotSize) errors.plotSize = 'Plot size is required'
     }
-    
+
     if (isBuiltSpace) {
       if (!data.totalBuiltUpArea) errors.totalBuiltUpArea = 'Built up area is required'
     }

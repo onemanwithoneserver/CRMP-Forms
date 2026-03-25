@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
 
 type Props = {
   value: string
@@ -62,7 +63,7 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
   }
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+    <div ref={containerRef} className="relative w-full">
       <div
         onClick={() => {
           if (!open && containerRef.current) {
@@ -72,56 +73,49 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
           }
           setOpen(!open)
         }}
-        className="form-input"
-        style={{
-          height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 8px', cursor: 'pointer', background: 'var(--surface-lowest)',
-          borderColor: open ? 'var(--accent-gold)' : 'var(--border)',
-          fontWeight: 600
-        }}
+        className={`form-input h-[34px] flex items-center justify-between px-2 cursor-pointer bg-[var(--surface-lowest)] font-[600] border ${
+          open ? 'border-[var(--accent-gold)]' : 'border-[var(--border)]'
+        }`}
       >
-        <span style={{ color: value ? 'var(--text)' : 'var(--text-tertiary)' }}>
+        <span className={value ? 'text-[var(--text)]' : 'text-[var(--text-tertiary)]'}>
           {value ? formatDate(value) : placeholder}
         </span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
+        <Calendar size={18} className="text-[var(--text-tertiary)]" />
       </div>
 
       {open && (
-        <div style={{
-          position: 'absolute',
-          top: position === 'bottom' ? '100%' : 'auto',
-          bottom: position === 'top' ? '100%' : 'auto',
-          marginTop: position === 'bottom' ? '8px' : 0,
-          marginBottom: position === 'top' ? '8px' : 0,
-          right: 0, 
-          width: '280px',
-          background: '#fff',
-          border: '1px solid var(--border-light)',
-          borderRadius: '6px',
-          boxShadow: 'var(--shadow-lg)',
-          zIndex: 100,
-          padding: '10px',
-        }}>
+        <div 
+          className={`absolute right-0 w-[280px] bg-white border border-[var(--border-light)] rounded-[6px] shadow-[var(--shadow-lg)] z-[100] p-[10px] ${
+            position === 'bottom' ? 'top-full mt-2' : 'bottom-full mb-2'
+          }`}
+        >
           <div className="flex justify-between items-center mb-4">
-            <button type="button" onClick={prevMonth} style={{ background: 'transparent', border: 'none', fontSize: '1.2rem', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}>‹</button>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text)' }}>
+            <button 
+              type="button" 
+              onClick={prevMonth} 
+              className="bg-transparent border-none text-[1.2rem] text-[var(--text-secondary)] cursor-pointer p-1 flex items-center justify-center h-8 w-8 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <span className="font-[700] text-[0.95rem] text-[var(--text)]">
               {viewDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
             </span>
-            <button type="button" onClick={nextMonth} style={{ background: 'transparent', border: 'none', fontSize: '1.2rem', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}>›</button>
+            <button 
+              type="button" 
+              onClick={nextMonth} 
+              className="bg-transparent border-none text-[1.2rem] text-[var(--text-secondary)] cursor-pointer p-1 flex items-center justify-center h-8 w-8 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', marginBottom: '8px' }}>
+          <div className="grid grid-cols-7 gap-1 text-center mb-2">
             {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-              <div key={d} style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)' }}>{d}</div>
+              <div key={d} className="text-[0.75rem] font-[600] text-[var(--text-tertiary)]">{d}</div>
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+          <div className="grid grid-cols-7 gap-1">
             {days.map((day, idx) => {
               if (!day) return <div key={`empty-${idx}`} />
               
@@ -146,17 +140,15 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
                       setOpen(false)
                     }
                   }}
-                  style={{
-                    padding: '8px 0',
-                    background: isSelected ? 'var(--accent)' : 'transparent',
-                    color: isSelected ? '#fff' : (disabled ? 'var(--text-tertiary)' : (isToday ? 'var(--accent)' : 'var(--text)')),
-                    border: isToday && !isSelected ? '1px solid var(--accent)' : '1px solid transparent',
-                    borderRadius: '6px',
-                    cursor: disabled ? 'not-allowed' : 'pointer',
-                    opacity: disabled ? 0.4 : 1,
-                    fontSize: '0.85rem',
-                    fontWeight: isSelected || isToday ? 700 : 500,
-                  }}
+                  className={`p-[8px_0] rounded-[6px] transition-all duration-200 text-[0.85rem] ${
+                    disabled ? 'opacity-40 cursor-not-allowed text-[var(--text-tertiary)]' : 'cursor-pointer'
+                  } ${
+                    isSelected 
+                      ? 'bg-[var(--accent)] text-white font-[700]' 
+                      : isToday 
+                        ? 'border border-[var(--accent)] text-[var(--accent)] font-[700]' 
+                        : 'bg-transparent text-[var(--text)] font-[500]'
+                  }`}
                 >
                   {day}
                 </button>
@@ -165,8 +157,8 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
           </div>
           
           <div className="flex justify-between mt-4 pt-3 border-t border-gray-100">
-             <button type="button" onClick={(e) => { e.stopPropagation(); onChange(''); setOpen(false) }} style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer' }}>Clear</button>
-             <button type="button" onClick={(e) => { e.stopPropagation(); onChange(new Date().toISOString().split('T')[0]); setOpen(false) }} style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent)', background: 'transparent', border: 'none', cursor: 'pointer' }}>Today</button>
+             <button type="button" onClick={(e) => { e.stopPropagation(); onChange(''); setOpen(false) }} className="text-[0.8rem] font-[600] text-[var(--text-secondary)] bg-transparent border-none cursor-pointer">Clear</button>
+             <button type="button" onClick={(e) => { e.stopPropagation(); onChange(new Date().toISOString().split('T')[0]); setOpen(false) }} className="text-[0.8rem] font-[600] text-[var(--accent)] bg-transparent border-none cursor-pointer">Today</button>
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDevice } from '../../context/DeviceContext'
+import { ChevronLeft } from 'lucide-react'
 
 type Step = { key: string; label: string }
 
@@ -61,7 +62,6 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
           style={{
             position: 'absolute',
             left: '8px',
-            fontSize: '1.5rem',
             color: '#1C2A44',
             cursor: prev ? 'pointer' : 'default',
             visibility: prev ? 'visible' : 'hidden',
@@ -72,7 +72,7 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
             height: '36px'
           }}
         >
-          ←
+          <ChevronLeft size={20} strokeWidth={2.5} />
         </div>
 
         <div className="step-mobile-current">

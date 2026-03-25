@@ -16,19 +16,15 @@ export default function CheckboxField({ label, checked, onChange }: Props) {
   return (
     <button
       type="button"
-      className="flex items-center gap-2.5"
+      className="flex items-center gap-2.5 bg-none border-none cursor-pointer py-[2px] text-left"
       onClick={() => onChange(!checked)}
-      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px 0', textAlign: 'left' }}
     >
       <div className={`custom-checkbox ${checked ? 'checked' : ''}`}>
         {checked && <CheckIcon />}
       </div>
-      <span style={{
-        fontSize: '0.82rem',
-        fontWeight: 500,
-        color: checked ? 'var(--text)' : 'var(--text-secondary)',
-        transition: 'color 300ms var(--ease-smooth)'
-      }}>
+      <span className={`text-[0.82rem] font-[500] transition-colors duration-300 ${
+        checked ? 'text-[var(--text)]' : 'text-[var(--text-secondary)]'
+      }`}>
         {label}
       </span>
     </button>

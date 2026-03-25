@@ -4,6 +4,7 @@ import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
 import { useDevice } from '../../context/DeviceContext'
 import UploadPhotosMobile from './UploadPhotosMobile'
+import { Library, Camera, Plus, Upload } from 'lucide-react'
 
 import iconOffice from '../../assets/Select Property Type/Office Space.svg'
 import iconRetail from '../../assets/Select Property Type/Rental  Commercial Space.svg'
@@ -60,8 +61,8 @@ function UploadTile({ accept, index }: { accept: string; index: number }) {
     >
       <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
       {/* Camera / image icon */}
-      <span className="text-lg leading-none" style={{ filter: isMain ? 'grayscale(0) brightness(1.1)' : 'grayscale(100%) opacity(50%)' }}>
-        📸
+      <span className="flex items-center justify-center" style={{ filter: isMain ? 'grayscale(0) brightness(1.1)' : 'grayscale(100%) opacity(50%)' }}>
+        <Camera size={18} color={isMain ? '#C89B3C' : '#8993a4'} />
       </span>
       <span style={{
         fontSize: '0.75rem',
@@ -114,7 +115,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
         }}
       >
         <input ref={addMoreRef} type="file" accept={accept} multiple style={{ display: 'none' }} />
-        <span className="text-[14px] leading-none">➕</span>
+        <Plus size={16} />
         {description}
       </button>
 
@@ -150,11 +151,11 @@ export default function UploadPhotos() {
   }
 
   return (
-    <FormPage title="Media" onBack={back} onNext={handleNext}>
+    <FormPage title="Property Gallery" icon={<Library size={22} />} onBack={back} onNext={handleNext}>
       <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
         
-        {/* Main Header: Media */}
-        <SectionCard title="📷 Media">
+        {/* Main Header: Photos, Videos & Plans */}
+        <SectionCard title="Photos, Videos & Plans" icon={<Upload size={18} />}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* IMAGES */}
             <UploadZone

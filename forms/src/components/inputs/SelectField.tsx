@@ -38,71 +38,52 @@ export default function SelectField({ label, value, onChange, options, placehold
   }
 
   return (
-    <div className="block" ref={containerRef} style={{ position: 'relative' }}>
+    <div className="block relative" ref={containerRef}>
       {label && (
-        <div style={{
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          color: 'var(--text)',
-          marginBottom: '3px',
-        }}>
+        <div className="text-[0.78rem] font-[600] text-[var(--text)] mb-[3px]">
           {label}
         </div>
       )}
 
       <div
         ref={triggerRef}
-        className={`form-input ${error ? 'error' : ''}`}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          cursor: 'pointer', userSelect: 'none', height: '34px',
-          borderColor: open ? 'var(--accent-gold)' : undefined,
-          boxShadow: open ? '0 0 0 3px rgba(200, 155, 60, 0.15)' : undefined,
-          borderRadius: open
-            ? openUpward ? '0 0 6px 6px' : '6px 6px 0 0'
-            : '6px',
-        }}
+        className={`form-input ${error ? 'error' : ''} flex items-center justify-between cursor-pointer select-none h-[34px] ${
+          open ? 'border-[var(--accent-gold)] shadow-[0_0_0_3px_rgba(200,155,60,0.15)]' : ''
+        } ${
+          open 
+            ? openUpward ? 'rounded-b-[6px] rounded-t-0' : 'rounded-t-[6px] rounded-b-0'
+            : 'rounded-[6px]'
+        }`}
         onClick={handleToggle}
       >
-        <span style={{ color: selectedOption ? 'var(--text)' : 'var(--text-tertiary)', fontSize: '13px', fontWeight: selectedOption ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span className={`text-[13px] ${selectedOption ? 'text-[var(--text)] font-[600]' : 'text-[var(--text-tertiary)] font-[400]'} overflow-hidden text-ellipsis whitespace-nowrap`}>
           {selectedOption ? selectedOption.label : (placeholder || 'Select...')}
         </span>
-        <svg width="12" height="7" viewBox="0 0 12 7" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease', flexShrink: 0, marginLeft: '6px' }}>
+        <svg 
+          width="12" height="7" viewBox="0 0 12 7" 
+          className={`transition-transform duration-200 ease-in-out shrink-0 ml-[6px] ${open ? 'rotate-180' : 'rotate-0'}`}
+        >
           <path d="M1 1l5 5 5-5" stroke="#667085" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
 
       {open && (
-        <div style={{
-          position: 'absolute',
-          top: openUpward ? 'auto' : '100%',
-          bottom: openUpward ? '100%' : 'auto',
-          left: 0, right: 0,
-          background: '#fff',
-          border: '1px solid var(--accent-gold)',
-          borderTop: openUpward ? '1px solid var(--accent-gold)' : 'none',
-          borderBottom: openUpward ? 'none' : '1px solid var(--accent-gold)',
-          borderRadius: openUpward ? '6px 6px 0 0' : '0 0 6px 6px',
-          boxShadow: '0 8px 24px -4px rgba(200,155,60,0.15)',
-          zIndex: 50, overflow: 'hidden', padding: '2px'
-        }}>
+        <div 
+          className={`absolute left-0 right-0 bg-white border border-[var(--accent-gold)] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] z-[50] overflow-hidden p-[2px] ${
+            openUpward ? 'bottom-full rounded-t-[6px] border-b-0' : 'top-full rounded-b-[6px] border-t-0'
+          }`}
+        >
           {options.map(o => {
             const isSel = o.value === value
             return (
               <div
                 key={o.value}
                 onClick={() => { onChange?.(o.value); setOpen(false); }}
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  fontSize: '0.82rem',
-                  fontWeight: isSel ? 700 : 500,
-                  cursor: 'pointer',
-                  background: isSel ? 'var(--accent-gold-subtle)' : 'transparent',
-                  color: isSel ? 'var(--accent-gold)' : 'var(--text)',
-                  borderLeft: isSel ? '2px solid var(--accent-gold)' : '2px solid transparent',
-                  transition: 'all 150ms ease'
-                }}
+                className={`p-[8px_12px] rounded-[4px] text-[0.82rem] cursor-pointer transition-all duration-150 ease-in-out border-l-2 ${
+                  isSel 
+                    ? 'font-[700] bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)] border-[var(--accent-gold)]' 
+                    : 'font-[500] bg-transparent text-[var(--text)] border-transparent'
+                }`}
               >
                 {o.label}
               </div>
@@ -112,7 +93,7 @@ export default function SelectField({ label, value, onChange, options, placehold
       )}
 
       {error && (
-        <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '2px', fontWeight: 500 }}>
+        <div className="text-[0.75rem] text-[#ef4444] mt-[2px] font-[500]">
           {error}
         </div>
       )}

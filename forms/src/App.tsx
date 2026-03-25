@@ -19,53 +19,20 @@ function Header() {
   ]
 
   return (
-    <header style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 40,
-      background: 'rgba(255,255,255,0.85)',
-      backdropFilter: 'blur(24px) saturate(150%)',
-      WebkitBackdropFilter: 'blur(24px) saturate(150%)',
-      borderBottom: '1px solid var(--border-light)',
-    }}>
-      <div style={{
-        maxWidth: '72rem',
-        margin: '0 auto',
-        padding: '8px 16px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
-        <h1 style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontWeight: 700,
-          fontSize: '1rem',
-          color: 'var(--text)',
-          margin: 0,
-          flex: 1,
-          letterSpacing: '-0.02em'
-        }}>
+    <header className="sticky top-0 z-40 bg-[rgba(255,255,255,0.85)] backdrop-blur-[24px] backdrop-saturate-[150%] border-b border-[var(--border-light)]">
+      <div className="max-w-[72rem] mx-auto p-[8px_16px] flex items-center justify-between">
+        <h1 className="font-['Outfit'] font-[700] text-[1rem] text-[var(--text)] m-0 flex-1 tracking-[-0.02em]">
           CRMP Forms
         </h1>
 
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
+        <div className="flex-1 flex justify-center items-center gap-4">
           <select
             value={state.designStepOverride || ''}
             onChange={(e) => {
               dispatch({ type: 'setDesignOverride', key: e.target.value || null })
             }}
-            style={{
-              padding: '4px 10px',
-              borderRadius: '6px',
-              border: '1px solid var(--border)',
-              background: 'var(--surface-lowest)',
-              fontFamily: "'Outfit', sans-serif",
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              color: state.designStepOverride ? 'var(--accent)' : 'var(--text-secondary)',
-              cursor: 'pointer',
-              outline: 'none',
-            }}
+            className={`p-[4px_10px] rounded-[6px] border border-[var(--border)] bg-[var(--surface-lowest)] font-['Outfit'] text-[0.85rem] font-[600] cursor-pointer outline-none ${state.designStepOverride ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'
+              }`}
           >
             <option value="">— Dynamic Flow (Default) —</option>
             {sellerPages.map(p => (
@@ -77,25 +44,14 @@ function Header() {
             <button
               type="button"
               onClick={resetToStart}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                color: 'var(--text-tertiary)',
-                fontFamily: "'Outfit', sans-serif",
-                display: 'flex',
-                alignItems: 'center',
-                padding: '4px',
-              }}
+              className="bg-transparent border-none cursor-pointer text-[0.85rem] font-[600] text-[var(--text-tertiary)] font-['Outfit'] flex items-center p-1"
             >
               Start Over
             </button>
           )}
         </div>
 
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+        <div className="flex-1 flex items-center justify-end gap-1">
           {(['desktop', 'tablet', 'mobile'] as const).map((d) => {
             const icons: Record<string, React.ReactElement> = {
               desktop: (
@@ -124,20 +80,8 @@ function Header() {
                 type="button"
                 onClick={() => setDevice(d)}
                 title={d.charAt(0).toUpperCase() + d.slice(1)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '32px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  border: isActive ? '1.5px solid var(--accent-gold)' : '1.5px solid var(--border)',
-                  background: isActive ? 'var(--accent-gold-subtle)' : 'transparent',
-                  color: isActive ? 'var(--accent-gold)' : 'var(--text-tertiary)',
-                  cursor: 'pointer',
-                  transition: 'all 200ms ease',
-                  padding: 0,
-                }}
+                className={`flex items-center justify-center w-[32px] h-[28px] rounded-[4px] cursor-pointer transition-all duration-200 p-0 border-[1.5px] ${isActive ? 'border-[var(--accent-gold)] bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)]' : 'border-[var(--border)] bg-transparent text-[var(--text-tertiary)]'
+                  }`}
               >
                 {icons[d]}
               </button>
@@ -153,15 +97,13 @@ function InnerApp() {
   const { device } = useDevice()
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--surface)' }}>
+    <div className="h-full flex flex-col overflow-hidden bg-[var(--surface)]">
       <Header />
       <main
         data-device={device}
-        className={
-          device === 'desktop' ? 'max-w-5xl mx-auto w-full' :
+        className={`flex-1 overflow-hidden flex flex-col ${device === 'desktop' ? 'max-w-5xl mx-auto w-full' :
             device === 'mobile' ? 'max-w-[430px] mx-auto w-full' : 'w-full'
-        }
-        style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+          }`}
       >
         <Routes>
           <Route path="/" element={<MappingApp />} />

@@ -9,34 +9,21 @@ type Props = {
 export default function Toggle({ label, checked, onChange }: Props) {
   return (
     <div className="flex items-center justify-between py-1">
-      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)' }}>{label}</span>
+      <span className="text-[0.85rem] font-[600] text-[var(--text)]">{label}</span>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        style={{
-          width: '42px',
-          height: '26px',
-          borderRadius: '4px',
-          background: checked ? '#1C2A44' : 'rgba(9, 9, 11, 0.2)',
-          position: 'relative',
-          transition: 'background 300ms var(--ease-smooth)',
-          border: 'none',
-          cursor: 'pointer',
-        }}
+        className={`w-[42px] h-[26px] rounded-[4px] relative transition-colors duration-300 border-none cursor-pointer ${
+          checked ? 'bg-[#1C2A44]' : 'bg-[rgba(9,9,11,0.2)]'
+        }`}
       >
-        <div style={{
-          width: '20px',
-          height: '20px',
-          borderRadius: '3px',
-          background: '#ffffff',
-          position: 'absolute',
-          top: '3px',
-          left: checked ? '19px' : '3px',
-          transition: 'left 300ms var(--ease-spring)',
-          boxShadow: '0 2px 8px rgba(9, 9, 11, 0.15)'
-        }} />
+        <div 
+          className={`w-[20px] h-[20px] rounded-[3px] bg-white absolute top-[3px] transition-all duration-300 shadow-[0_2px_8px_rgba(9,9,11,0.15)] ${
+            checked ? 'left-[19px]' : 'left-[3px]'
+          }`}
+        />
       </button>
     </div>
   )

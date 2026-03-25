@@ -5,6 +5,7 @@ import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
 import { Dropdown } from '../../components/inputs/Dropdown'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
+import { Settings, Car, Zap, Droplets, Flame } from 'lucide-react'
 
 export default function Facilities() {
   const { state, dispatch, next, back } = useForm()
@@ -35,7 +36,7 @@ export default function Facilities() {
   }
 
   const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0') => (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-1 w-full max-w-[200px]">
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
       <input
         type="number"
@@ -74,12 +75,12 @@ export default function Facilities() {
   }
 
   return (
-    <FormPage title="Facilities" onBack={back} onNext={next}>
+    <FormPage title="Facilities" icon={<Settings size={22} />} onBack={back} onNext={next}>
       <div className={`flex flex-col font-['Outfit'] pb-2 gap-[2px]`}>
 
         {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (
-          <SectionCard title="🚗 Facilities - Parking">
+          <SectionCard title="Facilities - Parking" icon={<Car size={18} />}>
             {isMobile ? (
               <>
                 {/* Mobile: boolean full-width, then paired 2-col row */}
@@ -98,10 +99,10 @@ export default function Facilities() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {renderVerticalBoolean('Designated parking', 'designatedParking')}
-                <div className="w-2/3">
+                <div className="max-w-[140px]">
                   {renderNumeric('No. of parkings', 'noOfParkings')}
                 </div>
-              <div className="w-2/3">
+              <div className="max-w-[200px]">
                 <Dropdown
                   label="Visitor parking"
                   value={d.visitorParking}
@@ -116,7 +117,7 @@ export default function Facilities() {
         )}
 
         {/* SECTION: Facilities - Power */}
-        <SectionCard title="⚡ Facilities - Power">
+        <SectionCard title="Facilities - Power" icon={<Zap size={18} />}>
           {isMobile ? (
             <>
               {/* Mobile: boolean full-width, then paired 2-col row */}
@@ -135,10 +136,10 @@ export default function Facilities() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
-              <div className="w-2/3">
+              <div className="max-w-[140px]">
                 {renderNumeric('Power load (kW)', 'powerLoad')}
               </div>
-              <div className="w-2/3">
+              <div className="max-w-[200px]">
                 <Dropdown
                   label="Power phase"
                   value={d.powerPhase}
@@ -157,9 +158,9 @@ export default function Facilities() {
 
             {/* Facilities - Hygiene & Utilities */}
             {(show.washrooms || show.waterConnection) && (
-              <SectionCard title="💧 Facilities - Hygiene & Utilities">
+              <SectionCard title="Facilities - Hygiene & Utilities" icon={<Droplets size={18} />}>
                 {show.washrooms && (
-                  <div className="w-1/2">
+                  <div className="max-w-[200px]">
                     <Dropdown
                       label="Washroom"
                       value={d.washrooms}
@@ -175,7 +176,7 @@ export default function Facilities() {
 
             {/* Facilities - Fire Safety */}
             {show.fireSprinklers && (
-              <SectionCard title="🧯 Facilities - Fire Safety">
+              <SectionCard title="Facilities - Fire Safety" icon={<Flame size={18} />}>
                 {isMobile ? (
                   <>
                     {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}

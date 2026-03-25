@@ -9,18 +9,11 @@ type Props = {
 
 export default function SegmentedControl({ options, value, onChange, compact = false }: Props) {
   return (
-    <div style={{
-      display: 'inline-flex',
-      borderRadius: '4px',
-      overflow: 'hidden',
-      background: 'rgba(9, 9, 11, 0.04)',
-      padding: '2px',
-      gap: '2px',
-      height: '32px',
-      width: compact ? 'fit-content' : '100%',
-      minWidth: compact ? '110px' : undefined,
-      boxSizing: 'border-box',
-    }}>
+    <div 
+      className={`inline-flex rounded-[4px] overflow-hidden bg-[rgba(9,9,11,0.04)] p-[2px] gap-[2px] h-[32px] box-border ${
+        compact ? 'w-fit min-w-[110px]' : 'w-full'
+      }`}
+    >
       {options.map(opt => {
         const isSelected = value === opt.value
         return (
@@ -28,21 +21,11 @@ export default function SegmentedControl({ options, value, onChange, compact = f
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            style={{
-              flex: compact ? undefined : 1,
-              minWidth: compact ? '50px' : undefined,
-              padding: compact ? '0 12px' : '5px 0',
-              background: isSelected ? '#1C2A44' : 'transparent',
-              color: isSelected ? '#ffffff' : 'var(--text-secondary)',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              border: 'none',
-              borderRadius: '3px',
-              cursor: 'pointer',
-              transition: 'all 300ms var(--ease-smooth)',
-              boxShadow: isSelected ? '0 2px 8px rgba(9, 9, 11, 0.08)' : 'none',
-              whiteSpace: 'nowrap',
-            }}
+            className={`flex-1 rounded-[3px] cursor-pointer transition-all duration-300 ease-in-out whitespace-nowrap text-[0.78rem] font-[600] border-none ${
+              isSelected ? 'bg-[#1C2A44] text-white shadow-[0_2px_8px_rgba(9,9,11,0.08)]' : 'bg-transparent text-[var(--text-secondary)]'
+            } ${
+              compact ? 'flex-none min-w-[50px] px-[12px]' : 'flex-1 py-[5px]'
+            }`}
           >
             {opt.label}
           </button>

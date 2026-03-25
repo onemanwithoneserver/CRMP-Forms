@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
+import { Camera, Plus, Library, Image, Video, Map, MapPin } from 'lucide-react'
 
 interface UploadZoneProps {
   label: string
@@ -41,8 +42,8 @@ function UploadTile({ accept, index }: { accept: string; index: number }) {
     >
       <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
       {/* Camera / image icon */}
-      <span className="text-lg leading-none" style={{ filter: isMain ? 'grayscale(0) brightness(1.1)' : 'grayscale(100%) opacity(50%)' }}>
-        📸
+      <span className="flex items-center justify-center" style={{ filter: isMain ? 'grayscale(0) brightness(1.1)' : 'grayscale(100%) opacity(50%)' }}>
+        <Camera size={18} color={isMain ? '#C89B3C' : '#8993a4'} />
       </span>
       <span style={{
         fontSize: '0.75rem',
@@ -95,7 +96,7 @@ function UploadZone({ label, description, accept, note }: UploadZoneProps) {
         }}
       >
         <input ref={addMoreRef} type="file" accept={accept} multiple style={{ display: 'none' }} />
-        <span className="text-[14px] leading-none">➕</span>
+        <Plus size={16} />
         {description}
       </button>
 
@@ -125,11 +126,11 @@ export default function UploadPhotosMobile() {
   }
 
   return (
-    <FormPage title="Media" onBack={back} onNext={handleNext}>
+    <FormPage title="Property Gallery" icon={<Library size={22} />} onBack={back} onNext={handleNext}>
       <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
 
         {/* IMAGES */}
-        <SectionCard title="🖼️ Images">
+        <SectionCard title="Images" icon={<Image size={18} />}>
           <UploadZone
             label="Upload Images"
             description="Drag & drop photos here"
@@ -139,7 +140,7 @@ export default function UploadPhotosMobile() {
         </SectionCard>
 
         {/* VIDEO */}
-        <SectionCard title="🎥 Video">
+        <SectionCard title="Video" icon={<Video size={18} />}>
           <UploadZone
             label="Upload Video"
             description="Drag & drop a walkthrough video here"
@@ -150,7 +151,7 @@ export default function UploadPhotosMobile() {
 
         {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
         {showFloorPlan && (
-          <SectionCard title="🗺️ Floor Plan">
+          <SectionCard title="Floor Plan" icon={<Map size={18} />}>
             <UploadZone
               label="Upload Floor Plan"
               description="Drag & drop floor plan here"
@@ -162,7 +163,7 @@ export default function UploadPhotosMobile() {
 
         {/* LAYOUT PLAN — Land only */}
         {showLayoutPlan && (
-          <SectionCard title="📍 Layout Plan">
+          <SectionCard title="Layout Plan" icon={<MapPin size={18} />}>
             <UploadZone
               label="Upload Layout Plan"
               description="Drag & drop your layout / site plan here"

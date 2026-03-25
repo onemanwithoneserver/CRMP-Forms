@@ -6,6 +6,7 @@ import SectionCard from '../../components/layout/SectionCard'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
 import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
+import { Handshake, Coins } from 'lucide-react'
 
 // ─── constants ────────────────────────────────────────────
 const LEASE_SUB_TYPES = [
@@ -38,7 +39,7 @@ export default function LeaseInfo() {
   const isSubLease = d.leaseSubType === 'Sub Lease'
 
   const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0', prefix?: string) => (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
       <div className="relative group">
         {prefix && (
@@ -58,7 +59,7 @@ export default function LeaseInfo() {
   )
 
   const renderNumericWithUnit = (label: string, valField: keyof typeof state.formData, unitField: keyof typeof state.formData) => (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
       <div className="flex items-center gap-1.5">
         <input
@@ -94,11 +95,11 @@ export default function LeaseInfo() {
   )
 
   return (
-    <FormPage title="Lease Information" onBack={back} onNext={next}>
+    <FormPage title="Lease Information" icon={<Handshake size={22} />} onBack={back} onNext={next}>
       <div className={`flex flex-col font-['Outfit'] pb-4 gap-[2px]`}>
 
         {/* SECTION 1: Lease Type & Pricing */}
-        <SectionCard title="🤝 Lease Type & Pricing">
+        <SectionCard title="Lease Type & Pricing" icon={<Handshake size={18} />}>
 
           {isMobile ? (
             <>
@@ -146,7 +147,7 @@ export default function LeaseInfo() {
                 />
               </div>
 
-              <div className="sm:col-span-2 lg:col-span-2">
+              <div className="sm:col-span-2 lg:col-span-2 max-w-md">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Monthly Lease / Rent Type</label>
                   <div className="w-full">
@@ -174,7 +175,7 @@ export default function LeaseInfo() {
         </SectionCard>
 
         {/* SECTION 2: Financial & Terms */}
-        <SectionCard title="💰 Financial & Terms">
+        <SectionCard title="Financial & Terms" icon={<Coins size={18} />}>
 
           {isMobile ? (
             <>
@@ -217,7 +218,7 @@ export default function LeaseInfo() {
             </>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-              <div className="flex flex-col gap-1.5 w-full">
+              <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
                 <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
                 <div className="relative">
                   <input

@@ -7,7 +7,7 @@ import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
 import CheckboxField from '../../components/inputs/CheckboxField'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
-
+import { LayoutGrid, Ruler, Construction, Armchair, Monitor, Calendar, X, Plus, Camera } from 'lucide-react'
 
 const APPLIANCE_LIST = ['AC', 'Fridge', 'Water dispenser', 'Microwave', 'Printer', 'Internet modem']
 
@@ -89,7 +89,7 @@ export default function UnitDetails() {
   }
 
   const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0') => (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col gap-1.5 w-full max-w-[200px]">
       <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-2">{label}</label>
       <input
         type="number"
@@ -163,13 +163,17 @@ export default function UnitDetails() {
 
 
   return (
-    <FormPage title="Unit details" onBack={back} onNext={next}>
-      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
+    <FormPage title="Unit details" icon={<LayoutGrid size={22} />} onBack={back} onNext={next}>
+      <div className="flex flex-col gap-[2px] font-['Outfit'] relative z-20">
 
         {/* SECTION 1: Unit Details - Size */}
-        <SectionCard title="📐 Unit Details - Size">
+        <SectionCard title="Unit Details - Size" icon={<Ruler size={18} />}>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-            {isVisible('plotSize') && <TextField label="Plot size (sq. yards)" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" />}
+            {isVisible('plotSize') && (
+              <div className="max-w-[200px]">
+                <TextField label="Plot size (sq. yards)" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" />
+              </div>
+            )}
             {isVisible('plotDimensions') && renderNumeric('Plot dimensions (L × B in ft)', 'plotDimensions')}
             {isVisible('builtUpArea') && renderNumeric('Built-up area (sq. ft)', 'totalBuiltUpArea')}
             {isVisible('carpetArea') && renderNumeric('Carpet area (sq. ft)', 'carpetArea')}
@@ -187,10 +191,14 @@ export default function UnitDetails() {
             {isVisible('ceilingHeight') && renderNumeric('Ceiling height (ft)', 'ceilingHeight')}
 
             {isVisible('unitFacing') && (
-              <Dropdown label="Unit facing" value={d.unitFacing} options={['North', 'North-East', 'East', 'South-East', 'South', 'South-West', 'West', 'North-West']} placeholder="Select facing direction" onChange={v => onUpdate({ unitFacing: v })} />
+              <div className="max-w-[200px]">
+                <Dropdown label="Unit facing" value={d.unitFacing} options={['North', 'North-East', 'East', 'South-East', 'South', 'South-West', 'West', 'North-West']} placeholder="Select facing direction" onChange={v => onUpdate({ unitFacing: v })} />
+              </div>
             )}
             {isVisible('idealFor') && (
-              <Dropdown label="Ideal for" value={d.idealFor} options={['Retail shop', 'Showroom', 'Office space', 'Restaurant', 'Clinic', 'Logistics / Warehouse', 'Education', 'Other']} placeholder="Select business category" onChange={v => onUpdate({ idealFor: v })} />
+              <div className="max-w-[200px]">
+                <Dropdown label="Ideal for" value={d.idealFor} options={['Retail shop', 'Showroom', 'Office space', 'Restaurant', 'Clinic', 'Logistics / Warehouse', 'Education', 'Other']} placeholder="Select business category" onChange={v => onUpdate({ idealFor: v })} />
+              </div>
             )}
 
             {isVisible('cornerUnit') && (
@@ -203,7 +211,7 @@ export default function UnitDetails() {
 
         {/* SECTION 2: Unit Specifications - Space Readiness */}
         {isBuiltSpace && (
-          <SectionCard title="🏗️ Unit Specifications - Space Readiness">
+          <SectionCard title="Unit Specifications - Space Readiness" icon={<Construction size={18} />}>
             {/* Desktop/Tablet specialized layout */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('spaceCondition') && <Dropdown label="Space condition" value={d.spaceCondition} options={['Bare shell', 'Warm shell', 'Semi-fitted', 'Fully fitted', 'Plug & play']} placeholder="Select condition" onChange={v => onUpdate({ spaceCondition: v })} />}
@@ -227,13 +235,15 @@ export default function UnitDetails() {
 
         {/* SECTION 3: Unit Specifications - Interiors */}
         {isBuiltSpace && (
-          <SectionCard title="🛋️ Unit Specifications - Interiors">
+          <SectionCard title="Unit Specifications - Interiors" icon={<Armchair size={18} />}>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('partitionsType') && <Dropdown label="Partitions type" value={d.partitionsType} options={['None', 'Glass', 'Gypsum', 'Wall']} placeholder="Select partitions" onChange={v => onUpdate({ partitionsType: v })} />}
               {isVisible('externalBranding') && <Dropdown label="External branding options" value={d.externalBranding} options={['Space available outside', 'Available inside building', 'Both']} placeholder="Select branding option" onChange={v => onUpdate({ externalBranding: v })} />}
               {isVisible('numberOfRooms') && renderNumeric('No. of rooms / partitions', 'numberOfRooms')}
               {isVisible('meetingRooms') && renderNumeric('No. of meeting rooms', 'meetingRooms')}
-              {isVisible('storageSpace') && <TextField label="Storage space (describe)" value={d.storageSpace} onChange={v => onUpdate({ storageSpace: v })} placeholder="e.g. 50 sq ft separate pantry" />}
+              <div className="max-w-md">
+                {isVisible('storageSpace') && <TextField label="Storage space (describe)" value={d.storageSpace} onChange={v => onUpdate({ storageSpace: v })} placeholder="e.g. 50 sq ft separate pantry" />}
+              </div>
 
             </div>
 
@@ -249,7 +259,7 @@ export default function UnitDetails() {
 
         {/* SECTION 4: Unit Specifications - Furniture & Appliances */}
         {isBuiltSpace && (
-          <SectionCard title="🖥️ Unit Specifications - Furniture & Appliances">
+          <SectionCard title="Unit Specifications - Furniture & Appliances" icon={<Monitor size={18} />}>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {isVisible('workstations') && renderNumeric('Workstations / tables', 'workstations')}
               {isVisible('chairs') && renderNumeric('Chairs', 'chairs')}
@@ -297,9 +307,9 @@ export default function UnitDetails() {
                 <h3 className="text-lg font-bold text-[#1C2A44]">Add / Edit Appliances</h3>
                 <button
                   onClick={() => setIsApplianceModalOpen(false)}
-                  className="p-2 hover:bg-[#f0f4f8] rounded-full text-[#8993a4] transition-colors text-lg leading-none"
+                  className="p-2 hover:bg-[#f0f4f8] rounded-full text-[#8993a4] transition-colors text-lg leading-none flex items-center justify-center"
                 >
-                  ✖️
+                  <X size={18} />
                 </button>
               </div>
 
@@ -351,7 +361,7 @@ export default function UnitDetails() {
         )}
 
         {/* SECTION 5: Unit Availability */}
-        <SectionCard title="📅 Unit Availability">
+        <SectionCard title="Unit Availability" icon={<Calendar size={18} />}>
 
           {isMobile ? (
             /* ── Mobile layout ── */

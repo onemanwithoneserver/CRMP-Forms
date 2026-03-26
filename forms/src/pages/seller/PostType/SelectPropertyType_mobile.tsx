@@ -87,7 +87,7 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
         </>
       ) : (
         /* Default: 2-column grid for all items (2x3 feel) */
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {PROPERTY_TYPE_CARDS.map((type, idx) => (
             <PropertyCard
               key={type.id}

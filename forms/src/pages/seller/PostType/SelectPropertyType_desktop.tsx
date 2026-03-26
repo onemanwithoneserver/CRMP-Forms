@@ -16,16 +16,9 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
     <div className="flex flex-col gap-3 py-1">
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <p className="text-[12px] font-extrabold text-[#445069] m-0 font-['Outfit'] tracking-wider leading-tight uppercase opacity-70">
+          <h2 className="text-[14px] font-extrabold text-[#445069] m-0 font-['Outfit'] tracking-wider leading-tight  opacity-70">
             What do you want to do?
-          </p>
-          {postType && (
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] bg-[#C89B3C]/10 border border-[#C89B3C]/20">
-              <span className="text-[10px] font-bold text-[#C89B3C] uppercase tracking-wide leading-none">
-                {SELLER_POST_TYPES.find(o => o.value === postType)?.label}
-              </span>
-            </div>
-          )}
+          </h2>
         </div>
       </div>
 

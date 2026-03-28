@@ -115,8 +115,8 @@ const FIELD_STATUS: Record<string, Record<BType, Status>> = {
   fireNOC:              { independent_commercial:'M',semi_commercial:'M',commercial_complex:'M',mall_retail:'M',mall_office:'M',pure_office:'M',industrial:'M',institutional:'M',institutional_mixed:'M',temporary:'O' },
   // Industrial Specific
   dockDoors:            { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'M',institutional:'N',institutional_mixed:'N',temporary:'N' },
-  clearHeight:          { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'M',institutional:'N',institutional_mixed:'N',temporary:'N' },
-  truckAccess:          { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'M',institutional:'N',institutional_mixed:'N',temporary:'N' },
+  clearHeight:          { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'M',institutional:'O',institutional_mixed:'O',temporary:'N' },
+  truckAccess:          { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'M',institutional:'O',institutional_mixed:'O',temporary:'N' },
   // Institutional Specific
   institutionType:      { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'N',institutional:'M',institutional_mixed:'M',temporary:'N' },
   capacity:             { independent_commercial:'N',semi_commercial:'N',commercial_complex:'N',mall_retail:'N',mall_office:'N',pure_office:'N',industrial:'N',institutional:'M',institutional_mixed:'M',temporary:'N' },
@@ -173,7 +173,7 @@ function FieldLabel({ label, status }: { label: string; status: Status }) {
     <div className="flex items-center gap-1 mb-[3px]">
       <span className="text-[0.75rem] font-[600] text-[var(--text)] leading-none">{label}</span>
       {status === 'M' && <span className="text-[#e53e3e] text-[10px] leading-none font-[700]">*</span>}
-      {status === 'O' && <span className="text-[10px] leading-none text-[var(--text-tertiary)] font-[500]">(optional)</span>}
+      {status === 'O' && <span className="text-[10px] leading-none text-[var(--text-tertiary)] font-[500]"></span>}
     </div>
   )
 }
@@ -207,7 +207,7 @@ function YesNoField({ value, onChange }: { value: string; onChange: (v: string) 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div className="col-span-2 md:col-span-4 flex items-center gap-2 pt-1 pb-0.5 border-b border-[var(--border-light)] mb-0">
-      <span className="text-[0.72rem] font-[700] tracking-[0.07em] text-[var(--text-secondary)] uppercase">{children}</span>
+      <span className="text-[0.72rem] font-[700] tracking-[0.07em] text-[var(--text-secondary)] ">{children}</span>
     </div>
   )
 }
@@ -301,7 +301,7 @@ export function BuildingInfoPanel() {
           {/* Building Type label + dropdown */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className="text-[0.78rem] font-[700] text-[var(--text)] whitespace-nowrap">Building type</span>
-            <div className="w-[180px] sm:w-[220px]">
+            <div className="flex-1 sm:flex-none sm:w-[220px]">
               <SelectField
                 value={form.buildingType}
                 onChange={v => { up({ buildingType: v }); setFormOpen(false) }}
@@ -369,7 +369,7 @@ export function BuildingInfoPanel() {
             type="button"
             onClick={() => setFormOpen(o => !o)}
             title="Add building details"
-            className={`flex items-center gap-1.5 px-3 h-[32px] rounded-[4px] border text-[0.78rem] font-[600] transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
+            className={`flex items-center justify-center gap-1.5 px-3 h-[32px] rounded-[4px] border text-[0.78rem] font-[600] transition-all duration-200 whitespace-nowrap flex-shrink-0 w-full sm:w-auto ${
               formOpen
                 ? 'bg-[#1C2A44] text-white border-[#1C2A44]'
                 : 'bg-white text-[var(--text)] border-[var(--border)] hover:border-[#1C2A44]'
@@ -397,64 +397,64 @@ export function BuildingInfoPanel() {
             </div>
           )}
 
-          {/* ── Main grid (2 cols mobile, 4 cols desktop) ── */}
+          {/* ── Main grid: 2 cols mobile / 4 cols desktop ── */}
           <div className="bg-white border border-[var(--border)] rounded-[4px] p-2">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2 gap-y-2">
 
               {/* ── Location ── */}
               <SectionBlock title="Location">
 
-                {/* Row: Map Location button | (lat/lng shown only when filled, read-only) */}
-                <div className="col-span-2 md:col-span-2 flex flex-col">
+                {/* Map Location button — full row */}
+                <div className="col-span-2 md:col-span-4 flex flex-col">
                   <FieldLabel label="Map location" status="M" />
                   <button
                     type="button"
                     onClick={() => setMapDialogOpen(true)}
-                    className="h-[32px] flex items-center gap-2 px-3 rounded-[4px] border border-[var(--border)] bg-[#EBF3FF] text-[#1952C4] text-[0.78rem] font-[600] hover:bg-[#dce9ff] transition-colors w-full"
+                    className="h-[32px] flex items-center gap-2 px-3 rounded-[4px] border border-[var(--border)] bg-[#EBF3FF] text-[#1952C4] text-[0.78rem] font-[600] hover:bg-[#dce9ff] transition-colors w-full sm:w-fit"
                   >
                     <MapPinIcon />
                     <span>Select location on map</span>
                   </button>
                 </div>
 
-                {/* Row: City | District | Location / Road | Micro Location */}
-                <div className="flex flex-col">
+                {/* City | District | Location / Road | Micro Location — 2 per row mobile, 4 per row desktop */}
+                <div className="col-span-1 flex flex-col">
                   <FieldLabel label="City" status="M" />
                   <TInput value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="col-span-1 flex flex-col">
                   <FieldLabel label="District" status="O" />
                   <TInput value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="col-span-1 flex flex-col">
                   <FieldLabel label="Location / Road" status="O" />
                   <TInput value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Driveway" />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="col-span-1 flex flex-col">
                   <FieldLabel label="Micro location" status="O" />
                   <TInput value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Financial District" />
                 </div>
 
-                {/* Row: Building name | Colony / Layout | Pincode */}
-                <div className="flex flex-col">
-                  <FieldLabel label="Building name" status={st('buildingName')} />
-                  <TInput value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
+                {/* Building name | Colony / Layout | Pincode — 3 per row */}
+                <div className="col-span-2 md:col-span-4 grid grid-cols-3 gap-x-2">
+                  <div className="flex flex-col">
+                    <FieldLabel label="Building name" status={st('buildingName')} />
+                    <TInput value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="Colony / Layout name" status="O" />
+                    <TInput value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="Pincode" status="M" />
+                    <TInput value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
+                  </div>
                 </div>
 
-                <div className="flex flex-col">
-                  <FieldLabel label="Colony / Layout name" status="O" />
-                  <TInput value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
-                </div>
-
-                <div className="flex flex-col">
-                  <FieldLabel label="Pincode" status="M" />
-                  <TInput value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
-                </div>
-
-                <div className="flex flex-col col-span-2 md:col-span-4">
+                <div className="col-span-2 md:col-span-4 flex flex-col">
                   <FieldLabel label="Address" status={st('address')} />
                   <TInput value={form.address} onChange={v => up({ address: v })} placeholder="Street address" />
                 </div>
@@ -464,59 +464,59 @@ export function BuildingInfoPanel() {
               {/* ── Basic Essentials ── */}
               <SectionBlock title="Basic essentials">
                 {show('established') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Established" status={st('established')} />
                     <YesNoField value={form.established} onChange={v => up({ established: v })} />
                   </div>
                 )}
 
                 {show('yearOfConstruction') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
                     <TInput type="number" value={form.yearOfConstruction} onChange={v => up({ yearOfConstruction: v })} placeholder="e.g. 2010" />
                   </div>
                 )}
 
                 {show('totalFloors') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Total floors" status={st('totalFloors')} />
                     <TInput type="number" value={form.totalFloors} onChange={v => up({ totalFloors: v })} placeholder="e.g. 12" />
                   </div>
                 )}
 
                 {show('basement') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Basement" status={st('basement')} />
                     <YesNoField value={form.basement} onChange={v => up({ basement: v })} />
                   </div>
                 )}
 
                 {show('totalBuiltUpArea') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Total built-up area (sq ft)" status={st('totalBuiltUpArea')} />
                     <TInput type="number" value={form.totalBuiltUpArea} onChange={v => up({ totalBuiltUpArea: v })} placeholder="e.g. 45000" />
                   </div>
                 )}
 
                 {show('landArea') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Land area (yds / acres)" status={st('landArea')} />
                     <TInput type="number" value={form.landArea} onChange={v => up({ landArea: v })} placeholder="e.g. 2.5" />
                   </div>
                 )}
 
-                {show('totalParking') && (
-                  <div className="flex flex-col">
-                    <FieldLabel label="Total parking" status={st('totalParking')} />
-                    <TInput value={form.totalParking} onChange={v => up({ totalParking: v })} placeholder="e.g. 200 slots" />
-                  </div>
-                )}
               </SectionBlock>
 
               {/* ── Parking ── */}
               {show('basementParking') && (
                 <SectionBlock title="Parking">
-                  <div className="flex flex-col">
+                  {show('totalParking') && (
+                    <div className="col-span-1 flex flex-col">
+                      <FieldLabel label="Total parking" status={st('totalParking')} />
+                      <TInput value={form.totalParking} onChange={v => up({ totalParking: v })} placeholder="e.g. 200 slots" />
+                    </div>
+                  )}
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Basement parking" status={st('basementParking')} />
                     <TInput value={form.basementParking} onChange={v => up({ basementParking: v })} placeholder="No. of slots" />
                   </div>
@@ -526,49 +526,49 @@ export function BuildingInfoPanel() {
               {/* ── Facilities ── */}
               <SectionBlock title="Facilities">
                 {show('passengerLifts') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Passenger lifts" status={st('passengerLifts')} />
                     <TInput type="number" value={form.passengerLifts} onChange={v => up({ passengerLifts: v })} placeholder="Count" />
                   </div>
                 )}
 
                 {show('serviceLifts') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Service lifts" status={st('serviceLifts')} />
                     <YesNoField value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />
                   </div>
                 )}
 
                 {show('escalators') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Escalators" status={st('escalators')} />
                     <YesNoField value={form.escalators} onChange={v => up({ escalators: v })} />
                   </div>
                 )}
 
                 {show('powerBackup') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Power backup" status={st('powerBackup')} />
                     <YesNoField value={form.powerBackup} onChange={v => up({ powerBackup: v })} />
                   </div>
                 )}
 
                 {show('hvacCentralAC') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="HVAC / Central AC" status={st('hvacCentralAC')} />
                     <YesNoField value={form.hvacCentralAC} onChange={v => up({ hvacCentralAC: v })} />
                   </div>
                 )}
 
                 {show('fireSafetySystem') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Fire safety system" status={st('fireSafetySystem')} />
                     <YesNoField value={form.fireSafetySystem} onChange={v => up({ fireSafetySystem: v })} />
                   </div>
                 )}
 
                 {show('waterSupply') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Water supply" status={st('waterSupply')} />
                     <SelectField
                       value={form.waterSupply}
@@ -588,28 +588,28 @@ export function BuildingInfoPanel() {
               {/* ── Amenities & Security ── */}
               <SectionBlock title="Amenities & security">
                 {show('publicWashrooms') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Public washrooms" status={st('publicWashrooms')} />
                     <YesNoField value={form.publicWashrooms} onChange={v => up({ publicWashrooms: v })} />
                   </div>
                 )}
 
                 {show('security24x7') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="24×7 security" status={st('security24x7')} />
                     <YesNoField value={form.security24x7} onChange={v => up({ security24x7: v })} />
                   </div>
                 )}
 
                 {show('cctvSurveillance') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="CCTV surveillance" status={st('cctvSurveillance')} />
                     <YesNoField value={form.cctvSurveillance} onChange={v => up({ cctvSurveillance: v })} />
                   </div>
                 )}
 
                 {show('accessControlSystem') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Access control system" status={st('accessControlSystem')} />
                     <YesNoField value={form.accessControlSystem} onChange={v => up({ accessControlSystem: v })} />
                   </div>
@@ -619,21 +619,21 @@ export function BuildingInfoPanel() {
               {/* ── Compliance ── */}
               <SectionBlock title="Compliance">
                 {show('occupancyCertificate') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Occupancy certificate" status={st('occupancyCertificate')} />
                     <YesNoField value={form.occupancyCertificate} onChange={v => up({ occupancyCertificate: v })} />
                   </div>
                 )}
 
                 {show('completionCertificate') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Completion certificate" status={st('completionCertificate')} />
                     <YesNoField value={form.completionCertificate} onChange={v => up({ completionCertificate: v })} />
                   </div>
                 )}
 
                 {show('fireNOC') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Fire NOC" status={st('fireNOC')} />
                     <YesNoField value={form.fireNOC} onChange={v => up({ fireNOC: v })} />
                   </div>
@@ -643,17 +643,17 @@ export function BuildingInfoPanel() {
               {/* ── Industrial Specific ── */}
               {isIndustrial && (
                 <SectionBlock title="Industrial / Warehouse specific">
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Dock doors" status={st('dockDoors')} />
                     <YesNoField value={form.dockDoors} onChange={v => up({ dockDoors: v })} />
                   </div>
 
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Clear height (ft)" status={st('clearHeight')} />
                     <TInput type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 30" />
                   </div>
 
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Truck access" status={st('truckAccess')} />
                     <YesNoField value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
                   </div>
@@ -663,7 +663,7 @@ export function BuildingInfoPanel() {
               {/* ── Institutional Specific ── */}
               {isInstitutional && (
                 <SectionBlock title="Institutional specific">
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Institution type" status={st('institutionType')} />
                     <SelectField
                       value={form.institutionType}
@@ -680,24 +680,38 @@ export function BuildingInfoPanel() {
                     />
                   </div>
 
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Capacity (beds / students / rooms)" status={st('capacity')} />
                     <TInput type="number" value={form.capacity} onChange={v => up({ capacity: v })} placeholder="e.g. 200" />
                   </div>
+
+                  {show('clearHeight') && (
+                    <div className="col-span-1 flex flex-col">
+                      <FieldLabel label="Clear height (ft)" status={st('clearHeight')} />
+                      <TInput type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 20" />
+                    </div>
+                  )}
+
+                  {show('truckAccess') && (
+                    <div className="col-span-1 flex flex-col">
+                      <FieldLabel label="Truck access" status={st('truckAccess')} />
+                      <YesNoField value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
+                    </div>
+                  )}
                 </SectionBlock>
               )}
 
               {/* ── Other & Approval ── */}
               <SectionBlock title="Other &amp; approval">
                 {show('maintenanceCharges') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Maintenance charges (₹/mo)" status={st('maintenanceCharges')} />
                     <TInput type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
                   </div>
                 )}
 
                 {show('approvalAuth') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="Approval authority" status={st('approvalAuth')} />
                     <SelectField
                       value={form.approvalAuth}
@@ -715,7 +729,7 @@ export function BuildingInfoPanel() {
                 )}
 
                 {show('rera') && (
-                  <div className="flex flex-col">
+                  <div className="col-span-1 flex flex-col">
                     <FieldLabel label="RERA registered" status={st('rera')} />
                     <YesNoField value={form.rera} onChange={v => up({ rera: v })} />
                   </div>
@@ -724,9 +738,13 @@ export function BuildingInfoPanel() {
 
               {/* ── Media ── */}
               <SectionBlock title="Media">
-                <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
-                <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
-                <div className="flex flex-col">
+                <div className="col-span-1 flex flex-col">
+                  <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
+                </div>
+                <div className="col-span-1 flex flex-col">
+                  <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
+                </div>
+                <div className="col-span-2 md:col-span-4 flex flex-col">
                   <FieldLabel label="Video / Virtual tour URL" status="O" />
                   <TInput value="" placeholder="https://..." />
                 </div>
@@ -741,7 +759,6 @@ export function BuildingInfoPanel() {
                 <span className="text-[#e53e3e] font-[700]">*</span> mandatory
               </span>
               <span className="flex items-center gap-1 text-[0.68rem] text-[var(--text-secondary)]">
-                <span className="text-[var(--text-tertiary)]">(optional)</span> can be skipped
               </span>
               <span className="flex items-center gap-1 text-[0.68rem] text-[var(--text-secondary)]">
                 fields not shown = not applicable for selected type

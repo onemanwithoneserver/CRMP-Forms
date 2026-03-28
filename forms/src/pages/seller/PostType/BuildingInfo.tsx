@@ -379,7 +379,7 @@ export function BuildingInfoPanel() {
                   value={searchQuery}
                   onChange={e => { setSearchQuery(e.target.value); setShowSearchResults(true) }}
                   onFocus={() => searchQuery.trim() && setShowSearchResults(true)}
-                  className="w-2/3 h-[32px] pl-7 pr-2 text-[0.78rem] font-[500] text-[var(--text)] bg-[var(--surface-container)] border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors"
+                  className="w-full h-[32px] pl-7 pr-2 text-[0.78rem] font-[500] text-[var(--text)] bg-[var(--surface-container)] border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors"
                 />
                 {searchQuery && (
                   <button

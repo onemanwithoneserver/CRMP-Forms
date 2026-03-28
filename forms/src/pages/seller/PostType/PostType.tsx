@@ -188,6 +188,7 @@ export default function PostType() {
     colony: '',
     colonyLayout: '',
     buildingType: '',
+    buildingName: '',
     latitude: '',
     longitude: '',
     country: 'India',

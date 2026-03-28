@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from '../../../context/FormContext'
+import { useDevice } from '../../../context/DeviceContext'
 import FormPage from '../../../components/layout/FormPage'
 import SegmentedControl from '../../../components/inputs/SegmentedControl'
 import SelectField from '../../../components/inputs/SelectField'
@@ -204,9 +205,33 @@ function YesNoField({ value, onChange }: { value: string; onChange: (v: string) 
   )
 }
 
+function YesNoRow({ label, status, value, onChange, isMobile = false }: {
+  label: string; status: Status; value: string; onChange: (v: string) => void; isMobile?: boolean
+}) {
+  if (isMobile) {
+    return (
+      <div className="col-span-4 flex items-center justify-between gap-3 py-[5px] border-b border-[var(--border-light)] last:border-b-0">
+        <div className="flex items-center gap-1 min-w-0">
+          <span className="text-[0.78rem] font-[600] text-[var(--text)] leading-snug">{label}</span>
+          {status === 'M' && <span className="text-[#e53e3e] text-[10px] leading-none font-[700] flex-shrink-0">*</span>}
+        </div>
+        <div className="flex-shrink-0">
+          <YesNoField value={value} onChange={onChange} />
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="col-span-1 flex flex-col gap-1 py-1">
+      <FieldLabel label={label} status={status} />
+      <YesNoField value={value} onChange={onChange} />
+    </div>
+  )
+}
+
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="col-span-2 md:col-span-4 flex items-center gap-2 pt-1 pb-0.5 border-b border-[var(--border-light)] mb-0">
+    <div className="col-span-4 flex items-center gap-2 pt-1 pb-0.5 border-b border-[var(--border-light)] mb-0">
       <span className="text-[0.72rem] font-[700] tracking-[0.07em] text-[var(--text-secondary)] ">{children}</span>
     </div>
   )
@@ -248,6 +273,9 @@ function FileUploadField({ label, status, accept, multiple }: { label: string; s
 
 // ─── Reusable panel (embeddable without FormPage) ───────────────────────────
 export function BuildingInfoPanel() {
+  const { device } = useDevice()
+  const isMobile = device === 'mobile'
+
   // Local building form state
   const [form, setForm] = useState<BFormData>(INIT)
   const [formOpen, setFormOpen] = useState(false)
@@ -397,15 +425,15 @@ export function BuildingInfoPanel() {
             </div>
           )}
 
-          {/* ── Main grid: 2 cols mobile / 4 cols desktop ── */}
+          {/* ── Main grid (4 cols always; col-span controls items-per-row) ── */}
           <div className="bg-white border border-[var(--border)] rounded-[4px] p-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2 gap-y-2">
+            <div className="grid grid-cols-4 gap-x-2 gap-y-2">
 
               {/* ── Location ── */}
               <SectionBlock title="Location">
 
                 {/* Map Location button — full row */}
-                <div className="col-span-2 md:col-span-4 flex flex-col">
+                <div className="col-span-4 flex flex-col">
                   <FieldLabel label="Map location" status="M" />
                   <button
                     type="button"
@@ -417,29 +445,29 @@ export function BuildingInfoPanel() {
                   </button>
                 </div>
 
-                {/* City | District | Location / Road | Micro Location — 2 per row mobile, 4 per row desktop */}
-                <div className="col-span-1 flex flex-col">
+                {/* City | District | Location / Road | Micro Location — 4 per row on desktop, 2 per row on mobile */}
+                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
                   <FieldLabel label="City" status="M" />
                   <TInput value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
                 </div>
 
-                <div className="col-span-1 flex flex-col">
+                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
                   <FieldLabel label="District" status="O" />
                   <TInput value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
                 </div>
 
-                <div className="col-span-1 flex flex-col">
+                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
                   <FieldLabel label="Location / Road" status="O" />
                   <TInput value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Driveway" />
                 </div>
 
-                <div className="col-span-1 flex flex-col">
+                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
                   <FieldLabel label="Micro location" status="O" />
                   <TInput value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Financial District" />
                 </div>
 
-                {/* Building name | Colony / Layout | Pincode — 3 per row */}
-                <div className="col-span-2 md:col-span-4 grid grid-cols-3 gap-x-2">
+                {/* Building name | Colony / Layout | Pincode — 3 per row on desktop, 2 per row on mobile */}
+                <div className={`col-span-4 grid ${isMobile ? 'grid-cols-2' : 'grid-cols-3'} gap-x-2`}>
                   <div className="flex flex-col">
                     <FieldLabel label="Building name" status={st('buildingName')} />
                     <TInput value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
@@ -454,7 +482,7 @@ export function BuildingInfoPanel() {
                   </div>
                 </div>
 
-                <div className="col-span-2 md:col-span-4 flex flex-col">
+                <div className="col-span-4 flex flex-col">
                   <FieldLabel label="Address" status={st('address')} />
                   <TInput value={form.address} onChange={v => up({ address: v })} placeholder="Street address" />
                 </div>
@@ -464,42 +492,51 @@ export function BuildingInfoPanel() {
               {/* ── Basic Essentials ── */}
               <SectionBlock title="Basic essentials">
                 {show('established') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Established" status={st('established')} />
-                    <YesNoField value={form.established} onChange={v => up({ established: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Established" status={st('established')} value={form.established} onChange={v => up({ established: v })} />
                 )}
 
-                {show('yearOfConstruction') && (
-                  <div className="col-span-1 flex flex-col">
+                {show('yearOfConstruction') && show('totalFloors') && (
+                  <div className="col-span-4 grid grid-cols-2 gap-x-2">
+                    {show('yearOfConstruction') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
+                        <TInput type="number" value={form.yearOfConstruction} onChange={v => up({ yearOfConstruction: v })} placeholder="e.g. 2010" />
+                      </div>
+                    )}
+                    {show('totalFloors') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Total floors" status={st('totalFloors')} />
+                        <TInput type="number" value={form.totalFloors} onChange={v => up({ totalFloors: v })} placeholder="e.g. 12" />
+                      </div>
+                    )}
+                  </div>
+                )}
+                {show('yearOfConstruction') && !show('totalFloors') && (
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
                     <TInput type="number" value={form.yearOfConstruction} onChange={v => up({ yearOfConstruction: v })} placeholder="e.g. 2010" />
                   </div>
                 )}
-
-                {show('totalFloors') && (
-                  <div className="col-span-1 flex flex-col">
+                {!show('yearOfConstruction') && show('totalFloors') && (
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Total floors" status={st('totalFloors')} />
                     <TInput type="number" value={form.totalFloors} onChange={v => up({ totalFloors: v })} placeholder="e.g. 12" />
                   </div>
                 )}
 
                 {show('basement') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Basement" status={st('basement')} />
-                    <YesNoField value={form.basement} onChange={v => up({ basement: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Basement" status={st('basement')} value={form.basement} onChange={v => up({ basement: v })} />
                 )}
 
                 {show('totalBuiltUpArea') && (
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Total built-up area (sq ft)" status={st('totalBuiltUpArea')} />
                     <TInput type="number" value={form.totalBuiltUpArea} onChange={v => up({ totalBuiltUpArea: v })} placeholder="e.g. 45000" />
                   </div>
                 )}
 
                 {show('landArea') && (
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Land area (yds / acres)" status={st('landArea')} />
                     <TInput type="number" value={form.landArea} onChange={v => up({ landArea: v })} placeholder="e.g. 2.5" />
                   </div>
@@ -510,15 +547,17 @@ export function BuildingInfoPanel() {
               {/* ── Parking ── */}
               {show('basementParking') && (
                 <SectionBlock title="Parking">
-                  {show('totalParking') && (
-                    <div className="col-span-1 flex flex-col">
-                      <FieldLabel label="Total parking" status={st('totalParking')} />
-                      <TInput value={form.totalParking} onChange={v => up({ totalParking: v })} placeholder="e.g. 200 slots" />
+                  <div className="col-span-4 grid grid-cols-2 gap-x-2">
+                    {show('totalParking') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Total parking" status={st('totalParking')} />
+                        <TInput value={form.totalParking} onChange={v => up({ totalParking: v })} placeholder="e.g. 200 slots" />
+                      </div>
+                    )}
+                    <div className="flex flex-col">
+                      <FieldLabel label="Basement parking" status={st('basementParking')} />
+                      <TInput value={form.basementParking} onChange={v => up({ basementParking: v })} placeholder="No. of slots" />
                     </div>
-                  )}
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Basement parking" status={st('basementParking')} />
-                    <TInput value={form.basementParking} onChange={v => up({ basementParking: v })} placeholder="No. of slots" />
                   </div>
                 </SectionBlock>
               )}
@@ -526,49 +565,34 @@ export function BuildingInfoPanel() {
               {/* ── Facilities ── */}
               <SectionBlock title="Facilities">
                 {show('passengerLifts') && (
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Passenger lifts" status={st('passengerLifts')} />
                     <TInput type="number" value={form.passengerLifts} onChange={v => up({ passengerLifts: v })} placeholder="Count" />
                   </div>
                 )}
 
                 {show('serviceLifts') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Service lifts" status={st('serviceLifts')} />
-                    <YesNoField value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Service lifts" status={st('serviceLifts')} value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />
                 )}
 
                 {show('escalators') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Escalators" status={st('escalators')} />
-                    <YesNoField value={form.escalators} onChange={v => up({ escalators: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Escalators" status={st('escalators')} value={form.escalators} onChange={v => up({ escalators: v })} />
                 )}
 
                 {show('powerBackup') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Power backup" status={st('powerBackup')} />
-                    <YesNoField value={form.powerBackup} onChange={v => up({ powerBackup: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Power backup" status={st('powerBackup')} value={form.powerBackup} onChange={v => up({ powerBackup: v })} />
                 )}
 
                 {show('hvacCentralAC') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="HVAC / Central AC" status={st('hvacCentralAC')} />
-                    <YesNoField value={form.hvacCentralAC} onChange={v => up({ hvacCentralAC: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="HVAC / Central AC" status={st('hvacCentralAC')} value={form.hvacCentralAC} onChange={v => up({ hvacCentralAC: v })} />
                 )}
 
                 {show('fireSafetySystem') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Fire safety system" status={st('fireSafetySystem')} />
-                    <YesNoField value={form.fireSafetySystem} onChange={v => up({ fireSafetySystem: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Fire safety system" status={st('fireSafetySystem')} value={form.fireSafetySystem} onChange={v => up({ fireSafetySystem: v })} />
                 )}
 
                 {show('waterSupply') && (
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Water supply" status={st('waterSupply')} />
                     <SelectField
                       value={form.waterSupply}
@@ -588,82 +612,56 @@ export function BuildingInfoPanel() {
               {/* ── Amenities & Security ── */}
               <SectionBlock title="Amenities & security">
                 {show('publicWashrooms') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Public washrooms" status={st('publicWashrooms')} />
-                    <YesNoField value={form.publicWashrooms} onChange={v => up({ publicWashrooms: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Public washrooms" status={st('publicWashrooms')} value={form.publicWashrooms} onChange={v => up({ publicWashrooms: v })} />
                 )}
 
                 {show('security24x7') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="24×7 security" status={st('security24x7')} />
-                    <YesNoField value={form.security24x7} onChange={v => up({ security24x7: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="24×7 security" status={st('security24x7')} value={form.security24x7} onChange={v => up({ security24x7: v })} />
                 )}
 
                 {show('cctvSurveillance') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="CCTV surveillance" status={st('cctvSurveillance')} />
-                    <YesNoField value={form.cctvSurveillance} onChange={v => up({ cctvSurveillance: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="CCTV surveillance" status={st('cctvSurveillance')} value={form.cctvSurveillance} onChange={v => up({ cctvSurveillance: v })} />
                 )}
 
                 {show('accessControlSystem') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Access control system" status={st('accessControlSystem')} />
-                    <YesNoField value={form.accessControlSystem} onChange={v => up({ accessControlSystem: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Access control system" status={st('accessControlSystem')} value={form.accessControlSystem} onChange={v => up({ accessControlSystem: v })} />
                 )}
               </SectionBlock>
 
               {/* ── Compliance ── */}
               <SectionBlock title="Compliance">
                 {show('occupancyCertificate') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Occupancy certificate" status={st('occupancyCertificate')} />
-                    <YesNoField value={form.occupancyCertificate} onChange={v => up({ occupancyCertificate: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Occupancy certificate" status={st('occupancyCertificate')} value={form.occupancyCertificate} onChange={v => up({ occupancyCertificate: v })} />
                 )}
 
                 {show('completionCertificate') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Completion certificate" status={st('completionCertificate')} />
-                    <YesNoField value={form.completionCertificate} onChange={v => up({ completionCertificate: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Completion certificate" status={st('completionCertificate')} value={form.completionCertificate} onChange={v => up({ completionCertificate: v })} />
                 )}
 
                 {show('fireNOC') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Fire NOC" status={st('fireNOC')} />
-                    <YesNoField value={form.fireNOC} onChange={v => up({ fireNOC: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Fire NOC" status={st('fireNOC')} value={form.fireNOC} onChange={v => up({ fireNOC: v })} />
                 )}
               </SectionBlock>
 
               {/* ── Industrial Specific ── */}
               {isIndustrial && (
                 <SectionBlock title="Industrial / Warehouse specific">
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Dock doors" status={st('dockDoors')} />
-                    <YesNoField value={form.dockDoors} onChange={v => up({ dockDoors: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Dock doors" status={st('dockDoors')} value={form.dockDoors} onChange={v => up({ dockDoors: v })} />
 
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Clear height (ft)" status={st('clearHeight')} />
                     <TInput type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 30" />
                   </div>
 
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="Truck access" status={st('truckAccess')} />
-                    <YesNoField value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="Truck access" status={st('truckAccess')} value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
                 </SectionBlock>
               )}
 
               {/* ── Institutional Specific ── */}
               {isInstitutional && (
                 <SectionBlock title="Institutional specific">
-                  <div className="col-span-1 flex flex-col">
+                  {/* Institution Type | Capacity — 2 per row */}
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Institution type" status={st('institutionType')} />
                     <SelectField
                       value={form.institutionType}
@@ -680,23 +678,21 @@ export function BuildingInfoPanel() {
                     />
                   </div>
 
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Capacity (beds / students / rooms)" status={st('capacity')} />
                     <TInput type="number" value={form.capacity} onChange={v => up({ capacity: v })} placeholder="e.g. 200" />
                   </div>
 
+                  {/* Clear Height | (blank) — then Truck Access full row */}
                   {show('clearHeight') && (
-                    <div className="col-span-1 flex flex-col">
+                    <div className="col-span-2 flex flex-col">
                       <FieldLabel label="Clear height (ft)" status={st('clearHeight')} />
                       <TInput type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 20" />
                     </div>
                   )}
 
                   {show('truckAccess') && (
-                    <div className="col-span-1 flex flex-col">
-                      <FieldLabel label="Truck access" status={st('truckAccess')} />
-                      <YesNoField value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
-                    </div>
+                    <YesNoRow isMobile={isMobile} label="Truck access" status={st('truckAccess')} value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
                   )}
                 </SectionBlock>
               )}
@@ -704,14 +700,14 @@ export function BuildingInfoPanel() {
               {/* ── Other & Approval ── */}
               <SectionBlock title="Other &amp; approval">
                 {show('maintenanceCharges') && (
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Maintenance charges (₹/mo)" status={st('maintenanceCharges')} />
                     <TInput type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
                   </div>
                 )}
 
                 {show('approvalAuth') && (
-                  <div className="col-span-1 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Approval authority" status={st('approvalAuth')} />
                     <SelectField
                       value={form.approvalAuth}
@@ -729,22 +725,19 @@ export function BuildingInfoPanel() {
                 )}
 
                 {show('rera') && (
-                  <div className="col-span-1 flex flex-col">
-                    <FieldLabel label="RERA registered" status={st('rera')} />
-                    <YesNoField value={form.rera} onChange={v => up({ rera: v })} />
-                  </div>
+                  <YesNoRow isMobile={isMobile} label="RERA registered" status={st('rera')} value={form.rera} onChange={v => up({ rera: v })} />
                 )}
               </SectionBlock>
 
               {/* ── Media ── */}
               <SectionBlock title="Media">
-                <div className="col-span-1 flex flex-col">
+                <div className="col-span-2 flex flex-col">
                   <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
                 </div>
-                <div className="col-span-1 flex flex-col">
+                <div className="col-span-2 flex flex-col">
                   <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
                 </div>
-                <div className="col-span-2 md:col-span-4 flex flex-col">
+                <div className="col-span-4 flex flex-col">
                   <FieldLabel label="Video / Virtual tour URL" status="O" />
                   <TInput value="" placeholder="https://..." />
                 </div>

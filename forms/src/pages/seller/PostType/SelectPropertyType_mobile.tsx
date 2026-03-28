@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm, SELLER_POST_TYPES } from '../../../context/FormContext'
 import { PropertyCard } from '../../../components/inputs/PropertyCard'
 import { PROPERTY_TYPE_CARDS } from './PropertySelectionConstants'
@@ -7,8 +7,7 @@ interface SelectPropertyTypeMobileProps {
   propertyType: string | undefined
 }
 
-// Ultra-premium radio component used inside the expanded card configuration.
-function PostTypeOptionMobile({
+function PostTypeTabOptionMobile({
   option,
   selected,
   onClick
@@ -17,86 +16,42 @@ function PostTypeOptionMobile({
   selected: boolean
   onClick: (e: React.MouseEvent) => void
 }) {
-  const [isActive, setIsActive] = useState(false)
-
   return (
     <button
       type="button"
       onClick={onClick}
-      onPointerDown={() => setIsActive(true)}
-      onPointerUp={() => setIsActive(false)}
-      onPointerLeave={() => setIsActive(false)}
-      style={{
-        display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '12px 14px', width: '100%', textAlign: 'left',
-        background: selected ? 'linear-gradient(135deg, rgba(28, 42, 68, 0.05) 0%, rgba(15, 27, 46, 0.02) 100%)' : '#FFFFFF',
-        border: selected ? '1px solid rgba(200, 155, 60, 0.3)' : '1px solid #E4E7EC',
-        borderRadius: '4px', cursor: 'pointer',
-        transition: 'all 200ms ease',
-        transform: isActive ? 'scale(0.98)' : 'scale(1)',
-        outline: 'none',
-        fontFamily: "'Outfit', sans-serif"
-      }}
+      className={`px-3 py-1 text-center text-[0.8rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out active:scale-[0.98] outline-none ${
+        selected
+          ? 'bg-[#1C2A44] text-white font-semibold shadow-[0_1px_3px_rgba(15,27,46,0.2)]'
+          : 'bg-transparent text-[#667085] font-medium'
+      }`}
     >
-      <div
-        style={{
-          width: '18px', height: '18px', borderRadius: '50%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          background: selected ? '#C89B3C' : '#F5F7FA',
-          border: selected ? '1px solid transparent' : '1px solid #E4E7EC',
-          transition: 'all 200ms ease',
-          boxShadow: selected ? '0 2px 4px rgba(200, 155, 60, 0.3)' : 'none'
-        }}
-      >
-        {selected && (
-          <div
-            style={{
-              width: '8px', height: '8px', borderRadius: '50%',
-              background: '#FFFFFF',
-              boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
-            }}
-          />
-        )}
-      </div>
-      <span
-        style={{
-          fontSize: '0.9rem',
-          fontWeight: selected ? 600 : 500,
-          color: selected ? '#1C2A44' : '#445069',
-          transition: 'color 200ms ease',
-          letterSpacing: '-0.01em'
-        }}
-      >
-        {option.label}
-      </span>
+      {option.label}
     </button>
   )
 }
 
+import { ChevronRight } from 'lucide-react'
+
 export default function SelectPropertyTypeMobile({ propertyType }: SelectPropertyTypeMobileProps) {
-  const { state, dispatch } = useForm()
+  const { state, dispatch, next } = useForm()
   const { postType } = state.formData
 
   const selectedCardContent = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px 0', fontFamily: "'Outfit', sans-serif" }}>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1C2A44', margin: 0, letterSpacing: '-0.01em' }}>
-          What do you want to do?
-        </h2>
-        <div style={{ height: '1px', width: '100%', background: 'linear-gradient(90deg, rgba(200, 155, 60, 0.3) 0%, transparent 100%)' }} />
-      </div>
+    <div className="flex items-center justify-between gap-2 py-1 px-1 font-['Outfit',_sans-serif]">
+      {/* 1. Question Section */}
+      <h2 className="text-[12px] font-bold text-[#1C2A44] m-0 tracking-[-0.01em] leading-tight">
+        What do you want to do?
+      </h2>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {SELLER_POST_TYPES.filter(option => {
-          if (propertyType === 'land') {
-            return option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
-          }
-          return true
-        }).map(option => {
+      {/* 2. Tab Controls Beside Question */}
+      <div className="flex items-center shrink-0 bg-[#F5F7FA] p-0.5 rounded-[6px] border border-[#E4E7EC]">
+        {SELLER_POST_TYPES.filter(option => 
+          option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+        ).map(option => {
           const selected = postType === option.value
           return (
-            <PostTypeOptionMobile
+            <PostTypeTabOptionMobile
               key={option.value}
               option={option}
               selected={selected}
@@ -110,22 +65,27 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
           )
         })}
       </div>
+
+      {/* 3. Arrow Control to Advance Step */}
+      <button
+        type="button"
+        aria-label="Next"
+        className="ml-2 flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-[#1C2A44] to-[#0F1B2E] border border-[#E6C36A] shadow-[0_2px_6px_rgba(15,27,46,0.10)] active:scale-95 transition"
+        onClick={(e) => {
+          e.stopPropagation()
+          next()
+        }}
+      >
+        <ChevronRight size={18} color="#E6C36A" />
+      </button>
     </div>
   )
 
-return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif", padding: '0 8px' }}>
+  return (
+    <div className="flex flex-col gap-2 font-['Outfit',_sans-serif] px-1">
       {propertyType ? (
         <>
-          {/* Active Handoff: Compact 4-Column Grid */}
-          <div 
-            style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(4, 1fr)', 
-              gap: '8px',
-              transition: 'all 300ms ease'
-            }}
-          >
+          <div className="grid grid-cols-4 gap-1.5 transition-all duration-300 ease-out">
             {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
               <PropertyCard
                 key={type.id}
@@ -141,14 +101,14 @@ return (
             ))}
           </div>
 
-          {/* Elevated Active Card below */}
-          <div style={{ transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
+          <div className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
             {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
               <PropertyCard
                 key={type.id}
                 icon={type.icon}
                 label={type.label}
                 selected={true}
+                compact={true}
                 onClick={() => { }}
               >
                 {selectedCardContent}
@@ -157,23 +117,11 @@ return (
           </div>
         </>
       ) : (
-        /* Default View: Staggered Flex Layout (Centers the bottom 2) */
-        <div 
-          style={{ 
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: '8px',
-            width: '100%',
-            transition: 'all 300ms ease'
-          }}
-        >
+        <div className="flex flex-wrap justify-center gap-1.5 w-full transition-all duration-300 ease-out">
           {PROPERTY_TYPE_CARDS.map((type) => (
             <div
               key={type.id}
-              style={{
-                width: 'calc(33.333% - 6px)',
-              }}
+              className="w-[calc(33.333%-4px)]"
             >
               <PropertyCard
                 icon={type.icon}

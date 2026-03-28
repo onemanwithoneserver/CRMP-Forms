@@ -18,56 +18,31 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   return (
     <div 
       ref={sectionRef} 
-      style={{
-        position: 'relative',
-        marginTop: isMobile ? '-24px' : '-32px',
-        padding: isMobile ? '0' : '0 16px',
-        maxWidth: '896px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        width: '100%',
-        transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
-        fontFamily: "'Outfit', sans-serif",
-        zIndex: 20
-      }}
+      className={`relative max-w-[896px] mx-auto w-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] font-['Outfit',_sans-serif] z-20 ${
+        isMobile ? '-mt-6 px-0' : '-mt-8 px-4'
+      }`}
     >
       <div 
-        style={{
-          background: '#FFFFFF',
-          borderRadius: isMobile ? '0' : '4px',
-          boxShadow: '0 8px 32px rgba(15, 27, 46, 0.08), 0 2px 8px rgba(15, 27, 46, 0.04)',
-          border: isMobile ? 'none' : '1px solid #E4E7EC',
-          borderTop: isMobile ? '1px solid #E4E7EC' : '1px solid #E4E7EC',
-          borderBottom: isMobile ? '1px solid #E4E7EC' : '1px solid #E4E7EC',
-          overflow: 'hidden'
-        }}
+        className={`bg-white shadow-[0_8px_32px_rgba(15,27,46,0.08),0_2px_8px_rgba(15,27,46,0.04)]  overflow-hidden ${
+          isMobile 
+            ? 'rounded-none border-y border-x-0 border-[#E4E7EC]' 
+            : 'rounded-[4px] border border-[#E4E7EC]'
+        }`}
       >
-        <div 
-          style={{ 
-            height: '4px', 
-            width: '100%', 
-            background: 'linear-gradient(90deg, #1C2A44 0%, #C89B3C 100%)' 
-          }} 
-        />
+        <div className="h-1 w-full bg-gradient-to-r from-[#1C2A44] to-[#C89B3C]" />
 
-        <div style={{ padding: isMobile ? '16px' : '24px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: isMobile ? '16px' : '24px' }}>
+        <div className={isMobile ? 'p-4' : 'py-2 px-4'}>
+          <div className={`flex items-center gap-3 ${isMobile ? 'mb-4' : 'mb-4'}`}>
             <div 
-              style={{ 
-                width: isMobile ? '32px' : '36px', 
-                height: isMobile ? '32px' : '36px', 
-                borderRadius: '3px', 
-                background: '#F5F7FA', 
-                border: '1px solid #E4E7EC', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                boxShadow: 'inset 0 1px 0 #FFFFFF, 0 1px 2px rgba(15, 27, 46, 0.05)' 
-              }}
+              className={`rounded-[3px] bg-[#F5F7FA] border border-[#E4E7EC] flex items-center justify-center shadow-[inset_0_1px_0_#FFFFFF,0_1px_2px_rgba(15,27,46,0.05)] ${
+                isMobile ? 'w-8 h-8' : 'w-9 h-9'
+              }`}
             >
               <LayoutGrid size={isMobile ? 16 : 18} color="#1C2A44" />
             </div>
-            <h2 style={{ fontSize: isMobile ? '1.05rem' : '1.15rem', fontWeight: 700, color: '#1C2A44', margin: 0, letterSpacing: '-0.01em' }}>
+            <h2 className={`font-bold text-[#1C2A44] m-0 tracking-[-0.01em] ${
+              isMobile ? 'text-[1.05rem]' : 'text-[1.15rem]'
+            }`}>
               Select Property Type
             </h2>
           </div>

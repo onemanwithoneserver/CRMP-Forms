@@ -478,14 +478,16 @@ export function FormProvider({ children }: { children: ReactNode }) {
   const totalSteps = steps.length
 
   const next = () => {
+    // Validation temporarily disabled for design/demo purposes
+    /*
     const errors = validateStep(state.step, state.formData)
-
     if (Object.keys(errors).length > 0) {
       Object.entries(errors).forEach(([field, message]) => {
         dispatch({ type: 'setError', field, message })
       })
       return
     }
+    */
     dispatch({ type: 'next' })
   }
 

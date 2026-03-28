@@ -197,35 +197,5 @@ export function Dropdown({
     </div>
   )
 
-  return (
-    <div className="relative flex flex-col gap-1.5 w-full" ref={ref} onKeyDown={handleKeyDown}>
-      {variant !== 'compact' && label && (
-        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5 font-['Outfit']">
-          {label}
-        </label>
-      )}
-
-      <button
-        ref={triggerRef}
-        type="button"
-        onClick={() => { computeDirection(); setIsOpen(!isOpen); setSearch('') }}
-        className={`
-          w-full flex items-center justify-between gap-1.5 px-2.5 border text-left text-[12px] font-['Outfit'] transition-all duration-300 cursor-pointer
-          ${variant === 'compact' ? 'h-[32px] py-1' : 'h-[32px] py-1'}
-          ${triggerRadius}
-          ${isOpen
-            ? 'border-[#C89B3C] bg-white outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'
-            : 'border-[var(--border)] bg-[rgba(255,255,255,0.7)] text-[#1C2A44] hover:border-[#C89B3C]/60 hover:bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]'
-          }
-        `}
-      >
-        <span className={value ? 'text-[#1C2A44] font-semibold truncate' : 'text-[#667085] font-medium truncate'}>
-          {value || placeholder}
-        </span>
-        <ChevronDown size={14} className={`transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-[#C89B3C]' : 'text-[#667085]'}`} />
-      </button>
-
-      {ReactDOM.createPortal(panelEl, document.body)}
-    </div>
-  )
+  return null
 }

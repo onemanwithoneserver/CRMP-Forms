@@ -179,9 +179,10 @@ function FieldLabel({ label, status }: { label: string; status: Status }) {
   )
 }
 
-function TInput({ value, onChange, placeholder, type = 'text', disabled = false }: {
-  value: string; onChange?: (v: string) => void; placeholder?: string; type?: string; disabled?: boolean
+function TInput({ value, onChange, placeholder, type = 'text', disabled = false, isMobile = false }: {
+  value: string; onChange?: (v: string) => void; placeholder?: string; type?: string; disabled?: boolean; isMobile?: boolean
 }) {
+  const widthClass = isMobile ? 'w-full' : 'w-2/3'
   return (
     <input
       type={type}
@@ -189,7 +190,22 @@ function TInput({ value, onChange, placeholder, type = 'text', disabled = false 
       placeholder={placeholder}
       value={value}
       onChange={e => onChange?.(e.target.value)}
-      className={`w-full h-[32px] px-2 text-[0.78rem] font-[500] text-[var(--text)] bg-white border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors ${disabled ? 'bg-[var(--surface-container)] text-[var(--text-tertiary)] cursor-default' : ''}`}
+      className={`${widthClass} h-[32px] px-2 text-[0.78rem] font-[500] text-[var(--text)] bg-white border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors ${disabled ? 'bg-[var(--surface-container)] text-[var(--text-tertiary)] cursor-default' : ''}`}
+    />
+  )
+}
+
+function TTextArea({ value, onChange, placeholder, rows = 3, isMobile = false }: {
+  value: string; onChange?: (v: string) => void; placeholder?: string; rows?: number; isMobile?: boolean
+}) {
+  const widthClass = isMobile ? 'w-full' : 'w-2/3'
+  return (
+    <textarea
+      rows={rows}
+      placeholder={placeholder}
+      value={value}
+      onChange={e => onChange?.(e.target.value)}
+      className={`${widthClass} px-2 py-1.5 text-[0.78rem] font-[500] text-[var(--text)] bg-white border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors resize-none`}
     />
   )
 }
@@ -205,8 +221,8 @@ function YesNoField({ value, onChange }: { value: string; onChange: (v: string) 
   )
 }
 
-function YesNoRow({ label, status, value, onChange, isMobile = false }: {
-  label: string; status: Status; value: string; onChange: (v: string) => void; isMobile?: boolean
+function YesNoRow({ label, status, value, onChange, isMobile = false, colSpan = 1 }: {
+  label: string; status: Status; value: string; onChange: (v: string) => void; isMobile?: boolean; colSpan?: 1|2|3|4
 }) {
   if (isMobile) {
     return (
@@ -221,8 +237,9 @@ function YesNoRow({ label, status, value, onChange, isMobile = false }: {
       </div>
     )
   }
+  const spanClass = colSpan === 4 ? 'col-span-4' : colSpan === 3 ? 'col-span-3' : colSpan === 2 ? 'col-span-2' : 'col-span-1'
   return (
-    <div className="col-span-1 flex flex-col gap-1 py-1">
+    <div className={`${spanClass} flex flex-col gap-1 py-1`}>
       <FieldLabel label={label} status={status} />
       <YesNoField value={value} onChange={onChange} />
     </div>
@@ -321,15 +338,15 @@ export function BuildingInfoPanel() {
   const isInstitutional = bt === 'institutional' || bt === 'institutional_mixed'
 
   return (
-    <div className="flex flex-col gap-3 font-['Outfit']">
+    <div className="flex flex-col font-['Outfit']">
 
         {/* ── Top bar: Building Type selector + Search + Add ── */}
-        <div className="bg-white border border-[var(--border)] rounded-[4px] p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className={`bg-white rounded-[4px] p-2 flex gap-2 ${isMobile ? 'flex-col' : 'flex-row items-center'}`}>
 
-          {/* Building Type label + dropdown */}
+          {/* Building Type label + dropdown — always one row */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className="text-[0.78rem] font-[700] text-[var(--text)] whitespace-nowrap">Building type</span>
-            <div className="flex-1 sm:flex-none sm:w-[220px]">
+            <div className={`${isMobile ? 'flex-1' : 'w-[220px]'}`}>
               <SelectField
                 value={form.buildingType}
                 onChange={v => { up({ buildingType: v }); setFormOpen(false) }}
@@ -339,76 +356,81 @@ export function BuildingInfoPanel() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="hidden sm:block w-px h-[28px] bg-[var(--border)]" />
+          {/* Divider — desktop only */}
+          {!isMobile && <div className="w-px h-[28px] bg-[var(--border)] flex-shrink-0" />}
 
-          {/* Search existing buildings */}
-          <div className="flex-1 relative" ref={searchRef}>
-            <div className="relative">
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
-                <SearchIcon />
-              </span>
-              <input
-                type="text"
-                placeholder="Search existing buildings..."
-                value={searchQuery}
-                onChange={e => { setSearchQuery(e.target.value); setShowSearchResults(true) }}
-                onFocus={() => searchQuery.trim() && setShowSearchResults(true)}
-                className="w-full h-[32px] pl-7 pr-2 text-[0.78rem] font-[500] text-[var(--text)] bg-[var(--surface-container)] border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  aria-label="Clear search"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-[var(--text)] transition-colors"
-                  onClick={() => { setSearchQuery(''); setShowSearchResults(false) }}
-                >
-                  <XIcon />
-                </button>
+          {/* Search + Add: always one flex row */}
+          <div className="flex flex-row items-center gap-2 flex-1">
+
+            {/* Search existing buildings */}
+            <div className="flex-1 relative" ref={searchRef}>
+              <div className="relative">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
+                  <SearchIcon />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search existing buildings..."
+                  value={searchQuery}
+                  onChange={e => { setSearchQuery(e.target.value); setShowSearchResults(true) }}
+                  onFocus={() => searchQuery.trim() && setShowSearchResults(true)}
+                  className="w-2/3 h-[32px] pl-7 pr-2 text-[0.78rem] font-[500] text-[var(--text)] bg-[var(--surface-container)] border border-[var(--border)] rounded-[4px] focus:border-[var(--accent-gold)] focus:outline-none transition-colors"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    aria-label="Clear search"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-[var(--text)] transition-colors"
+                    onClick={() => { setSearchQuery(''); setShowSearchResults(false) }}
+                  >
+                    <XIcon />
+                  </button>
+                )}
+              </div>
+
+              {/* Search results dropdown */}
+              {showSearchResults && filteredBuildings.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-0.5 bg-white border border-[var(--border)] rounded-[4px] shadow-[var(--shadow-md)] z-50 overflow-hidden">
+                  {filteredBuildings.map(b => {
+                    const typeLabel = BUILDING_TYPES.find(t => t.value === b.type)?.label ?? b.type
+                    return (
+                      <button
+                        key={b.id}
+                        type="button"
+                        className="w-full text-left px-3 py-2 hover:bg-[var(--accent-gold-subtle)] transition-colors border-b border-[var(--border-light)] last:border-b-0 flex flex-col gap-0.5"
+                        onClick={() => selectBuilding(b)}
+                      >
+                        <span className="text-[0.78rem] font-[600] text-[var(--text)]">{b.name}</span>
+                        <span className="text-[0.7rem] text-[var(--text-tertiary)] flex items-center gap-1">
+                          <LocationIcon />
+                          {b.address} · {typeLabel}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
               )}
             </div>
 
-            {/* Search results dropdown */}
-            {showSearchResults && filteredBuildings.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-0.5 bg-white border border-[var(--border)] rounded-[4px] shadow-[var(--shadow-md)] z-50 overflow-hidden">
-                {filteredBuildings.map(b => {
-                  const typeLabel = BUILDING_TYPES.find(t => t.value === b.type)?.label ?? b.type
-                  return (
-                    <button
-                      key={b.id}
-                      type="button"
-                      className="w-full text-left px-3 py-2 hover:bg-[var(--accent-gold-subtle)] transition-colors border-b border-[var(--border-light)] last:border-b-0 flex flex-col gap-0.5"
-                      onClick={() => selectBuilding(b)}
-                    >
-                      <span className="text-[0.78rem] font-[600] text-[var(--text)]">{b.name}</span>
-                      <span className="text-[0.7rem] text-[var(--text-tertiary)] flex items-center gap-1">
-                        <LocationIcon />
-                        {b.address} · {typeLabel}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-          </div>
+            {/* Add Building (+) button */}
+            <button
+              type="button"
+              onClick={() => setFormOpen(o => !o)}
+              title="Add building details"
+              className={`flex items-center justify-center gap-1.5 px-3 h-[32px] rounded-[4px] border text-[0.78rem] font-[600] transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
+                formOpen
+                  ? 'bg-[#1C2A44] text-white border-[#1C2A44]'
+                  : 'bg-white text-[var(--text)] border-[var(--border)] hover:border-[#1C2A44]'
+              }`}
+            >
+              <PlusIcon />
+              <span>Add building details</span>
+              <span className={`ml-0.5 transition-transform duration-200 ${formOpen ? 'rotate-180' : 'rotate-0'}`}>
+                <ChevronDownIcon />
+              </span>
+            </button>
 
-          {/* Add Building (+) button */}
-          <button
-            type="button"
-            onClick={() => setFormOpen(o => !o)}
-            title="Add building details"
-            className={`flex items-center justify-center gap-1.5 px-3 h-[32px] rounded-[4px] border text-[0.78rem] font-[600] transition-all duration-200 whitespace-nowrap flex-shrink-0 w-full sm:w-auto ${
-              formOpen
-                ? 'bg-[#1C2A44] text-white border-[#1C2A44]'
-                : 'bg-white text-[var(--text)] border-[var(--border)] hover:border-[#1C2A44]'
-            }`}
-          >
-            <PlusIcon />
-            <span>Add building details</span>
-            <span className={`ml-0.5 transition-transform duration-200 ${formOpen ? 'rotate-180' : 'rotate-0'}`}>
-              <ChevronDownIcon />
-            </span>
-          </button>
+          </div>
         </div>
 
         {/* ── Expandable Building Details Form ── */}
@@ -426,120 +448,101 @@ export function BuildingInfoPanel() {
           )}
 
           {/* ── Main grid (4 cols always; col-span controls items-per-row) ── */}
-          <div className="bg-white border border-[var(--border)] rounded-[4px] p-2">
+          <div className="bg-white rounded-[4px] p-2">
             <div className="grid grid-cols-4 gap-x-2 gap-y-2">
 
-              {/* ── Location ── */}
+
+              {/* ── Location (CREMP 4-col grid, 2 rows) ── */}
               <SectionBlock title="Location">
+                <div className={`col-span-4 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2.5`}>
+                  {/* Row 1 */}
+                  <div className="flex flex-col">
+                    <FieldLabel label="Map location" status="M" />
+                    <button
+                      type="button"
+                      onClick={() => setMapDialogOpen(true)}
+                      className="h-[32px] flex items-center gap-2 px-3 rounded-[4px] border border-[var(--border)] bg-[#EBF3FF] text-[#1952C4] text-[0.78rem] font-[600] hover:bg-[#dce9ff] transition-colors w-full"
+                    >
+                      <MapPinIcon />
+                      <span>Select location on map</span>
+                    </button>
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="City" status="M" />
+                    <TInput isMobile={isMobile} value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="District" status="O" />
+                    <TInput isMobile={isMobile} value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="Location / Road" status="O" />
+                    <TInput isMobile={isMobile} value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Driveway" />
+                  </div>
 
-                {/* Map Location button — full row */}
-                <div className="col-span-4 flex flex-col">
-                  <FieldLabel label="Map location" status="M" />
-                  <button
-                    type="button"
-                    onClick={() => setMapDialogOpen(true)}
-                    className="h-[32px] flex items-center gap-2 px-3 rounded-[4px] border border-[var(--border)] bg-[#EBF3FF] text-[#1952C4] text-[0.78rem] font-[600] hover:bg-[#dce9ff] transition-colors w-full sm:w-fit"
-                  >
-                    <MapPinIcon />
-                    <span>Select location on map</span>
-                  </button>
-                </div>
-
-                {/* City | District | Location / Road | Micro Location — 4 per row on desktop, 2 per row on mobile */}
-                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
-                  <FieldLabel label="City" status="M" />
-                  <TInput value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
-                </div>
-
-                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
-                  <FieldLabel label="District" status="O" />
-                  <TInput value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
-                </div>
-
-                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
-                  <FieldLabel label="Location / Road" status="O" />
-                  <TInput value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Driveway" />
-                </div>
-
-                <div className={`${isMobile ? 'col-span-2' : 'col-span-1'} flex flex-col`}>
-                  <FieldLabel label="Micro location" status="O" />
-                  <TInput value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Financial District" />
-                </div>
-
-                {/* Building name | Colony / Layout | Pincode — 3 per row on desktop, 2 per row on mobile */}
-                <div className={`col-span-4 grid ${isMobile ? 'grid-cols-2' : 'grid-cols-3'} gap-x-2`}>
+                  {/* Row 2 */}
+                  <div className="flex flex-col">
+                    <FieldLabel label="Micro location" status="O" />
+                    <TInput isMobile={isMobile} value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Financial District" />
+                  </div>
                   <div className="flex flex-col">
                     <FieldLabel label="Building name" status={st('buildingName')} />
-                    <TInput value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
+                    <TInput isMobile={isMobile} value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
                   </div>
                   <div className="flex flex-col">
                     <FieldLabel label="Colony / Layout name" status="O" />
-                    <TInput value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
+                    <TInput isMobile={isMobile} value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
                   </div>
                   <div className="flex flex-col">
                     <FieldLabel label="Pincode" status="M" />
-                    <TInput value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
+                    <TInput isMobile={isMobile} value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
                   </div>
                 </div>
 
                 <div className="col-span-4 flex flex-col">
                   <FieldLabel label="Address" status={st('address')} />
-                  <TInput value={form.address} onChange={v => up({ address: v })} placeholder="Street address" />
+                  <TTextArea isMobile={isMobile} value={form.address} onChange={v => up({ address: v })} placeholder="Street address" rows={3} />
                 </div>
 
               </SectionBlock>
 
               {/* ── Basic Essentials ── */}
               <SectionBlock title="Basic essentials">
+
+                {/* Row 1 (desktop 4-col, mobile 2-col): Year | Floors | Total BUA | Land Area */}
+                <div className={`col-span-4 grid gap-x-2 gap-y-2 ${isMobile ? 'grid-cols-2' : 'grid-cols-4'}`}>
+                  {show('yearOfConstruction') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
+                      <TInput isMobile={isMobile} type="number" value={form.yearOfConstruction} onChange={v => up({ yearOfConstruction: v })} placeholder="e.g. 2010" />
+                    </div>
+                  )}
+                  {show('totalFloors') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Total floors" status={st('totalFloors')} />
+                      <TInput isMobile={isMobile} type="number" value={form.totalFloors} onChange={v => up({ totalFloors: v })} placeholder="e.g. 12" />
+                    </div>
+                  )}
+                  {show('totalBuiltUpArea') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Total built-up area (sq ft)" status={st('totalBuiltUpArea')} />
+                      <TInput isMobile={isMobile} type="number" value={form.totalBuiltUpArea} onChange={v => up({ totalBuiltUpArea: v })} placeholder="e.g. 45000" />
+                    </div>
+                  )}
+                  {show('landArea') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Land area (yds / acres)" status={st('landArea')} />
+                      <TInput isMobile={isMobile} type="number" value={form.landArea} onChange={v => up({ landArea: v })} placeholder="e.g. 2.5" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Row 2 (desktop 2-col, mobile full-row): Established | Basement */}
                 {show('established') && (
-                  <YesNoRow isMobile={isMobile} label="Established" status={st('established')} value={form.established} onChange={v => up({ established: v })} />
+                  <YesNoRow isMobile={isMobile} colSpan={2} label="Established" status={st('established')} value={form.established} onChange={v => up({ established: v })} />
                 )}
-
-                {show('yearOfConstruction') && show('totalFloors') && (
-                  <div className="col-span-4 grid grid-cols-2 gap-x-2">
-                    {show('yearOfConstruction') && (
-                      <div className="flex flex-col">
-                        <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
-                        <TInput type="number" value={form.yearOfConstruction} onChange={v => up({ yearOfConstruction: v })} placeholder="e.g. 2010" />
-                      </div>
-                    )}
-                    {show('totalFloors') && (
-                      <div className="flex flex-col">
-                        <FieldLabel label="Total floors" status={st('totalFloors')} />
-                        <TInput type="number" value={form.totalFloors} onChange={v => up({ totalFloors: v })} placeholder="e.g. 12" />
-                      </div>
-                    )}
-                  </div>
-                )}
-                {show('yearOfConstruction') && !show('totalFloors') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
-                    <TInput type="number" value={form.yearOfConstruction} onChange={v => up({ yearOfConstruction: v })} placeholder="e.g. 2010" />
-                  </div>
-                )}
-                {!show('yearOfConstruction') && show('totalFloors') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Total floors" status={st('totalFloors')} />
-                    <TInput type="number" value={form.totalFloors} onChange={v => up({ totalFloors: v })} placeholder="e.g. 12" />
-                  </div>
-                )}
-
                 {show('basement') && (
-                  <YesNoRow isMobile={isMobile} label="Basement" status={st('basement')} value={form.basement} onChange={v => up({ basement: v })} />
-                )}
-
-                {show('totalBuiltUpArea') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Total built-up area (sq ft)" status={st('totalBuiltUpArea')} />
-                    <TInput type="number" value={form.totalBuiltUpArea} onChange={v => up({ totalBuiltUpArea: v })} placeholder="e.g. 45000" />
-                  </div>
-                )}
-
-                {show('landArea') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Land area (yds / acres)" status={st('landArea')} />
-                    <TInput type="number" value={form.landArea} onChange={v => up({ landArea: v })} placeholder="e.g. 2.5" />
-                  </div>
+                  <YesNoRow isMobile={isMobile} colSpan={2} label="Basement" status={st('basement')} value={form.basement} onChange={v => up({ basement: v })} />
                 )}
 
               </SectionBlock>
@@ -551,12 +554,12 @@ export function BuildingInfoPanel() {
                     {show('totalParking') && (
                       <div className="flex flex-col">
                         <FieldLabel label="Total parking" status={st('totalParking')} />
-                        <TInput value={form.totalParking} onChange={v => up({ totalParking: v })} placeholder="e.g. 200 slots" />
+                        <TInput isMobile={isMobile} value={form.totalParking} onChange={v => up({ totalParking: v })} placeholder="e.g. 200 slots" />
                       </div>
                     )}
                     <div className="flex flex-col">
                       <FieldLabel label="Basement parking" status={st('basementParking')} />
-                      <TInput value={form.basementParking} onChange={v => up({ basementParking: v })} placeholder="No. of slots" />
+                      <TInput isMobile={isMobile} value={form.basementParking} onChange={v => up({ basementParking: v })} placeholder="No. of slots" />
                     </div>
                   </div>
                 </SectionBlock>
@@ -564,49 +567,77 @@ export function BuildingInfoPanel() {
 
               {/* ── Facilities ── */}
               <SectionBlock title="Facilities">
-                {show('passengerLifts') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Passenger lifts" status={st('passengerLifts')} />
-                    <TInput type="number" value={form.passengerLifts} onChange={v => up({ passengerLifts: v })} placeholder="Count" />
+
+                {/* Row 1: 5 Yes/No fields — 1 row (grid-cols-5) on desktop, stacked on mobile */}
+                {isMobile ? (
+                  <>
+                    {show('serviceLifts') && <YesNoRow isMobile={true} label="Service lifts" status={st('serviceLifts')} value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />}
+                    {show('escalators') && <YesNoRow isMobile={true} label="Escalators" status={st('escalators')} value={form.escalators} onChange={v => up({ escalators: v })} />}
+                    {show('powerBackup') && <YesNoRow isMobile={true} label="Power backup" status={st('powerBackup')} value={form.powerBackup} onChange={v => up({ powerBackup: v })} />}
+                    {show('hvacCentralAC') && <YesNoRow isMobile={true} label="HVAC / Central AC" status={st('hvacCentralAC')} value={form.hvacCentralAC} onChange={v => up({ hvacCentralAC: v })} />}
+                    {show('fireSafetySystem') && <YesNoRow isMobile={true} label="Fire safety system" status={st('fireSafetySystem')} value={form.fireSafetySystem} onChange={v => up({ fireSafetySystem: v })} />}
+                  </>
+                ) : (
+                  <div className="col-span-4 grid grid-cols-5 gap-x-2">
+                    {show('serviceLifts') && (
+                      <div className="flex flex-col gap-1 py-1">
+                        <FieldLabel label="Service lifts" status={st('serviceLifts')} />
+                        <YesNoField value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />
+                      </div>
+                    )}
+                    {show('escalators') && (
+                      <div className="flex flex-col gap-1 py-1">
+                        <FieldLabel label="Escalators" status={st('escalators')} />
+                        <YesNoField value={form.escalators} onChange={v => up({ escalators: v })} />
+                      </div>
+                    )}
+                    {show('powerBackup') && (
+                      <div className="flex flex-col gap-1 py-1">
+                        <FieldLabel label="Power backup" status={st('powerBackup')} />
+                        <YesNoField value={form.powerBackup} onChange={v => up({ powerBackup: v })} />
+                      </div>
+                    )}
+                    {show('hvacCentralAC') && (
+                      <div className="flex flex-col gap-1 py-1">
+                        <FieldLabel label="HVAC / Central AC" status={st('hvacCentralAC')} />
+                        <YesNoField value={form.hvacCentralAC} onChange={v => up({ hvacCentralAC: v })} />
+                      </div>
+                    )}
+                    {show('fireSafetySystem') && (
+                      <div className="flex flex-col gap-1 py-1">
+                        <FieldLabel label="Fire safety system" status={st('fireSafetySystem')} />
+                        <YesNoField value={form.fireSafetySystem} onChange={v => up({ fireSafetySystem: v })} />
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {show('serviceLifts') && (
-                  <YesNoRow isMobile={isMobile} label="Service lifts" status={st('serviceLifts')} value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />
-                )}
 
-                {show('escalators') && (
-                  <YesNoRow isMobile={isMobile} label="Escalators" status={st('escalators')} value={form.escalators} onChange={v => up({ escalators: v })} />
+                {show('passengerLifts') && (
+                  <div className="col-span-43 flex flex-col">
+                    <FieldLabel label="Passenger lifts" status={st('passengerLifts')} />
+                    <TInput isMobile={isMobile} type="number" value={form.passengerLifts} onChange={v => up({ passengerLifts: v })} placeholder="Count" />
+                  </div>
                 )}
-
-                {show('powerBackup') && (
-                  <YesNoRow isMobile={isMobile} label="Power backup" status={st('powerBackup')} value={form.powerBackup} onChange={v => up({ powerBackup: v })} />
-                )}
-
-                {show('hvacCentralAC') && (
-                  <YesNoRow isMobile={isMobile} label="HVAC / Central AC" status={st('hvacCentralAC')} value={form.hvacCentralAC} onChange={v => up({ hvacCentralAC: v })} />
-                )}
-
-                {show('fireSafetySystem') && (
-                  <YesNoRow isMobile={isMobile} label="Fire safety system" status={st('fireSafetySystem')} value={form.fireSafetySystem} onChange={v => up({ fireSafetySystem: v })} />
-                )}
-
                 {show('waterSupply') && (
                   <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Water supply" status={st('waterSupply')} />
-                    <SelectField
-                      value={form.waterSupply}
-                      onChange={v => up({ waterSupply: v })}
-                      placeholder="Select source"
-                      options={[
-                        { value: 'bore',       label: 'Bore well' },
-                        { value: 'municipal',  label: 'Municipal' },
-                        { value: 'both',       label: 'Both' },
-                        { value: 'others',     label: 'Others' },
-                      ]}
-                    />
+                    <div className={isMobile ? 'w-full' : 'w-1/3'}>
+                      <SelectField
+                        value={form.waterSupply}
+                        onChange={v => up({ waterSupply: v })}
+                        placeholder="Select source"
+                        options={[
+                          { value: 'bore',       label: 'Bore well' },
+                          { value: 'municipal',  label: 'Municipal' },
+                          { value: 'both',       label: 'Both' },
+                          { value: 'others',     label: 'Others' },
+                        ]}
+                      />
+                    </div>
                   </div>
                 )}
+
               </SectionBlock>
 
               {/* ── Amenities & Security ── */}
@@ -650,7 +681,7 @@ export function BuildingInfoPanel() {
 
                   <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Clear height (ft)" status={st('clearHeight')} />
-                    <TInput type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 30" />
+                    <TInput isMobile={isMobile} type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 30" />
                   </div>
 
                   <YesNoRow isMobile={isMobile} label="Truck access" status={st('truckAccess')} value={form.truckAccess} onChange={v => up({ truckAccess: v })} />
@@ -664,6 +695,7 @@ export function BuildingInfoPanel() {
                   <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Institution type" status={st('institutionType')} />
                     <SelectField
+                      className={isMobile ? 'w-full' : 'w-2/3'}
                       value={form.institutionType}
                       onChange={v => up({ institutionType: v })}
                       placeholder="Select type"
@@ -680,14 +712,14 @@ export function BuildingInfoPanel() {
 
                   <div className="col-span-2 flex flex-col">
                     <FieldLabel label="Capacity (beds / students / rooms)" status={st('capacity')} />
-                    <TInput type="number" value={form.capacity} onChange={v => up({ capacity: v })} placeholder="e.g. 200" />
+                    <TInput isMobile={isMobile} type="number" value={form.capacity} onChange={v => up({ capacity: v })} placeholder="e.g. 200" />
                   </div>
 
                   {/* Clear Height | (blank) — then Truck Access full row */}
                   {show('clearHeight') && (
                     <div className="col-span-2 flex flex-col">
                       <FieldLabel label="Clear height (ft)" status={st('clearHeight')} />
-                      <TInput type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 20" />
+                      <TInput isMobile={isMobile} type="number" value={form.clearHeight} onChange={v => up({ clearHeight: v })} placeholder="e.g. 20" />
                     </div>
                   )}
 
@@ -699,62 +731,63 @@ export function BuildingInfoPanel() {
 
               {/* ── Other & Approval ── */}
               <SectionBlock title="Other &amp; approval">
-                {show('maintenanceCharges') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Maintenance charges (₹/mo)" status={st('maintenanceCharges')} />
-                    <TInput type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
-                  </div>
-                )}
-
-                {show('approvalAuth') && (
-                  <div className="col-span-2 flex flex-col">
-                    <FieldLabel label="Approval authority" status={st('approvalAuth')} />
-                    <SelectField
-                      value={form.approvalAuth}
-                      onChange={v => up({ approvalAuth: v })}
-                      placeholder="Select authority"
-                      options={[
-                        { value: 'bmcda',  label: 'BMCDA' },
-                        { value: 'ghmc',   label: 'GHMC' },
-                        { value: 'mcgm',   label: 'MCGM' },
-                        { value: 'dda',    label: 'DDA' },
-                        { value: 'others', label: 'Others' },
-                      ]}
-                    />
-                  </div>
-                )}
-
-                {show('rera') && (
-                  <YesNoRow isMobile={isMobile} label="RERA registered" status={st('rera')} value={form.rera} onChange={v => up({ rera: v })} />
-                )}
+                {/* Single row: Maintenance | Approval Auth | RERA — col-span-1 each in the 4-col grid, wrapped in a col-span-4 3-col sub-grid */}
+                <div className="col-span-3 grid grid-cols-3 gap-x-2 gap-y-2">
+                  {show('maintenanceCharges') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Maintenance charges" status={st('maintenanceCharges')} />
+                      <TInput isMobile={isMobile} type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
+                    </div>
+                  )}
+                  {show('approvalAuth') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Approval authority" status={st('approvalAuth')} />
+                      <SelectField
+                        className={isMobile ? 'w-full' : 'w-2/3'}
+                        value={form.approvalAuth}
+                        onChange={v => up({ approvalAuth: v })}
+                        placeholder="Select authority"
+                        options={[
+                          { value: 'bmcda',  label: 'BMCDA' },
+                          { value: 'ghmc',   label: 'GHMC' },
+                          { value: 'mcgm',   label: 'MCGM' },
+                          { value: 'dda',    label: 'DDA' },
+                          { value: 'others', label: 'Others' },
+                        ]}
+                      />
+                    </div>
+                  )}
+                  {show('rera') && (
+                    <div className="flex flex-col gap-1 py-1">
+                      <FieldLabel label="RERA registered" status={st('rera')} />
+                      <YesNoField value={form.rera} onChange={v => up({ rera: v })} />
+                    </div>
+                  )}
+                </div>
               </SectionBlock>
 
               {/* ── Media ── */}
               <SectionBlock title="Media">
-                <div className="col-span-2 flex flex-col">
-                  <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
-                </div>
-                <div className="col-span-2 flex flex-col">
-                  <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
-                </div>
-                <div className="col-span-4 flex flex-col">
-                  <FieldLabel label="Video / Virtual tour URL" status="O" />
-                  <TInput value="" placeholder="https://..." />
+                {/* Single row (desktop 3-col, mobile 1-col): Photos | Floor Plans | Video URL */}
+                <div className={`col-span-4 grid gap-x-2 gap-y-2 ${isMobile ? 'grid-cols-1' : 'grid-cols-3'}`}>
+                  <div className="flex flex-col">
+                    <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
+                  </div>
+                  <div className="flex flex-col">
+                    <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="Video / Virtual tour URL" status="O" />
+                    <TInput isMobile={isMobile} value="" placeholder="https://..." />
+                  </div>
                 </div>
               </SectionBlock>
 
             </div>
 
             {/* Legend */}
-            <div className="mt-2 pt-2 border-t border-[var(--border-light)] flex items-center gap-3 flex-wrap">
-              <span className="text-[0.68rem] font-[600] text-[var(--text-tertiary)]">Field indicators:</span>
+            <div className="mt-2 pt-2 border-t border-[var(--border-light)] flex items-center gap-3 flex-wrap">              
               <span className="flex items-center gap-1 text-[0.68rem] text-[var(--text-secondary)]">
-                <span className="text-[#e53e3e] font-[700]">*</span> mandatory
-              </span>
-              <span className="flex items-center gap-1 text-[0.68rem] text-[var(--text-secondary)]">
-              </span>
-              <span className="flex items-center gap-1 text-[0.68rem] text-[var(--text-secondary)]">
-                fields not shown = not applicable for selected type
               </span>
             </div>
           </div>

@@ -9,9 +9,10 @@ type Props = {
   options: Option[]
   placeholder?: string
   error?: string | null
+  className?: string
 }
 
-export default function SelectField({ label, value, onChange, options, placeholder, error }: Props) {
+export default function SelectField({ label, value, onChange, options, placeholder, error, className }: Props) {
   const [open, setOpen] = useState(false)
   const [openUpward, setOpenUpward] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -38,7 +39,7 @@ export default function SelectField({ label, value, onChange, options, placehold
   }
 
   return (
-    <div className="block relative" ref={containerRef}>
+    <div className={`block relative${className ? ` ${className}` : ''}`} ref={containerRef}>
       {label && (
         <div className="text-[0.78rem] font-[600] text-[var(--text)] mb-[3px]">
           {label}

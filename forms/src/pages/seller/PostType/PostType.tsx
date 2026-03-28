@@ -278,7 +278,7 @@ export default function PostType() {
               <div className="p-3 space-y-3">
 
                 {/* Row 1 – Map Actions & Coordinates */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end">
+                {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end">
                   <div className="flex flex-col gap-1 w-full">
                     <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Map Location</label>
                     <button
@@ -297,49 +297,41 @@ export default function PostType() {
                   </div>
                   <TextField label="Latitude" value={localLocation.latitude} placeholder="e.g. 17.41898" onChange={val => setLocalLocation(s => ({ ...s, latitude: val }))} />
                   <TextField label="Longitude" value={localLocation.longitude} placeholder="e.g. 78.34377" onChange={val => setLocalLocation(s => ({ ...s, longitude: val }))} />
-                </div>
+                </div> */}
 
                 <div className="h-px w-full bg-[#F1F5F9]" />
 
-                {/* Row 2 – Administrative Details */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-                  <Dropdown label="Country" value={localLocation.country || 'India'} options={COUNTRIES} placeholder="Select country"
-                    onChange={val => setLocalLocation(s => ({ ...s, country: val }))} />
-                  <Dropdown label="State" value={localLocation.state} options={STATES} placeholder="Select state" searchable
-                    onChange={val => setLocalLocation(s => ({ ...s, state: val }))} />
-                  <TextField label="City" value={city || ''} placeholder="e.g. Hyderabad"
+                {/* Location Details – 4-column grid, 2 rows */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2.5">
+                  {/* Row 1 */}
+                  <div className="flex flex-col">
+                    <label className="text-xs font-semibold text-[#1C2A44] pl-0.5 font-['Outfit'] mb-1">Map location <span className="text-[#E11D48]">*</span></label>
+                    <button
+                      type="button"
+                      onClick={openMap}
+                      className="h-[38px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#2563EB] bg-[#F5F8FF] text-[14px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#E0E7FF] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
+                    >
+                      <MapPin size={16} className="shrink-0 text-[#2563EB]" />
+                      {localLocation.latitude && localLocation.longitude
+                        ? `${localLocation.latitude}, ${localLocation.longitude}`
+                        : 'Select location on map'}
+                    </button>
+                  </div>
+                  <TextField label="City *" value={city || ''} placeholder="e.g. Hyderabad"
                     onChange={val => dispatch({ type: 'updateData', payload: { city: val } })} />
                   <TextField label="District" value={localLocation.district} placeholder="e.g. Rangareddy"
                     onChange={val => setLocalLocation(s => ({ ...s, district: val }))} />
-                </div>
-
-                <div className="h-px w-full bg-[#F1F5F9]" />
-
-                {/* Row 3 – Location Details */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
                   <TextField label="Location / Road" value={localLocation.location} placeholder="e.g. Honeywell Driveway"
                     onChange={val => setLocalLocation(s => ({ ...s, location: val }))} />
-                  <TextField label="Micro Location" value={localLocation.microLocation} placeholder="e.g. Financial District"
+
+                  {/* Row 2 */}
+                  <TextField label="Micro location" value={localLocation.microLocation} placeholder="e.g. Financial District"
                     onChange={val => setLocalLocation(s => ({ ...s, microLocation: val }))} />
-                  <Dropdown label="Zone" value={localLocation.zone} options={ZONES} placeholder="Select zone"
-                    onChange={val => setLocalLocation(s => ({ ...s, zone: val }))} />
-                  <Dropdown label="Corporation" value={localLocation.corporation} options={CORPORATIONS} placeholder="Select corporation" searchable
-                    onChange={val => setLocalLocation(s => ({ ...s, corporation: val }))} />
-                </div>
-
-                <div className="h-px w-full bg-[#F1F5F9]" />
-
-                {/* Row 4 – Zoning Details */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-                  <Dropdown label="Building Type" value={localLocation.buildingType}
-                    options={['Standalone Building', 'Tech Park', 'Business Park', 'Mall', 'High Street', 'Shopping Complex', 'Independent House/Villa', 'Other']}
-                    placeholder="Select Building Type" searchable
-                    onChange={val => setLocalLocation(s => ({ ...s, buildingType: val }))} />
-                  <TextField label="Colony / Layout Name" value={localLocation.colonyLayout} placeholder="Optional"
+                  <TextField label="Building name" value={localLocation.buildingName || ''} placeholder="e.g. Infinity Towers"
+                    onChange={val => setLocalLocation(s => ({ ...s, buildingName: val }))} />
+                  <TextField label="Colony / Layout name" value={localLocation.colonyLayout} placeholder="Optional"
                     onChange={val => setLocalLocation(s => ({ ...s, colonyLayout: val }))} />
-                  <Dropdown label="Circle" value={localLocation.circle} options={CIRCLES} placeholder="Select circle"
-                    onChange={val => setLocalLocation(s => ({ ...s, circle: val }))} />
-                  <TextField label="Pincode" value={localLocation.pincode} placeholder="e.g. 500032"
+                  <TextField label="Pincode *" value={localLocation.pincode} placeholder="e.g. 500032"
                     onChange={val => setLocalLocation(s => ({ ...s, pincode: val.replace(/\D/g, '').slice(0, 6) }))} />
                 </div>
 
@@ -359,7 +351,7 @@ export default function PostType() {
                 <h2 className="text-[1.1rem] font-bold text-white font-['Outfit'] tracking-tight">Building Information</h2>
               </div>
 
-              <div className="p-3">
+              <div className="p-2">
                 <BuildingInfoPanel />
               </div>
 

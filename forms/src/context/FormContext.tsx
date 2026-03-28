@@ -161,6 +161,12 @@ export const getDynamicSteps = (data: FormData) => {
     } else {
       steps.push({ key: 'transaction-details', label: 'Transactional Details' })
     }
+  } else {
+    // Design-purpose default: show a full flow when postType isn't chosen yet
+    steps.push({ key: 'unit-details', label: 'Unit details' })
+    steps.push({ key: 'facilities', label: 'Facilities' })
+    steps.push({ key: 'upload-photos', label: 'Property Gallery' })
+    steps.push({ key: 'transaction-details', label: 'Transactional Details' })
   }
 
   steps.push({ key: 'review', label: 'Review' })
@@ -424,10 +430,6 @@ function validateStep(step: number, data: FormData): Record<string, string> {
   if (currentStepKey === 'post-type') {
     if (!data.propertyType) {
       errors.propertyType = 'Please select a property type'
-    } else if (!data.postType) {
-      errors.postType = 'Please select what you want to do'
-    } else if (SELLER_SUB_CATEGORIES[data.postType] && !data.postSubCategory) {
-      errors.postType = 'Please select a sub-category to proceed'
     }
   }
 

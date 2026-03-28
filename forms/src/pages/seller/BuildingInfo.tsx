@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useForm } from '../../../context/FormContext'
-import { useDevice } from '../../../context/DeviceContext'
-import FormPage from '../../../components/layout/FormPage'
-import SegmentedControl from '../../../components/inputs/SegmentedControl'
-import SelectField from '../../../components/inputs/SelectField'
+import { useForm } from '../../context/FormContext'
+import { useDevice } from '../../context/DeviceContext'
+import FormPage from '../../components/layout/FormPage'
+import SegmentedControl from '../../components/inputs/SegmentedControl'
+import SelectField from '../../components/inputs/SelectField'
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
 const SearchIcon = () => (
@@ -347,20 +347,6 @@ return (
 
       <div style={{ background: '#FFFFFF', borderRadius: '4px', padding: '8px', display: 'flex', gap: '8px', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'stretch' : 'center', border: '1px solid #E4E7EC', boxShadow: '0 2px 8px rgba(15, 27, 46, 0.04)' }}>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1C2A44', whiteSpace: 'nowrap' }}>Building type</span>
-          <div style={{ width: isMobile ? '100%' : '220px' }}>
-            <SelectField
-              value={form.buildingType}
-              onChange={v => { up({ buildingType: v }); setFormOpen(false) }}
-              placeholder="Select type"
-              options={BUILDING_TYPES}
-            />
-          </div>
-        </div>
-
-        {!isMobile && <div style={{ width: '1px', height: '24px', background: '#E4E7EC', flexShrink: 0 }} />}
-
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flex: 1 }}>
 
           <div style={{ flex: 1, position: 'relative' }} ref={searchRef}>
@@ -453,59 +439,122 @@ return (
           <div className="grid grid-cols-4 gap-x-4 gap-y-4">
 
             <SectionBlock title="Location">
-              <div className={`col-span-4 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3`}>
-                <div className="flex flex-col">
-                  <FieldLabel label="Map location" status="M" />
-                  <button
-                    type="button"
-                    onClick={() => setMapDialogOpen(true)}
-                    style={{ height: '32px', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', borderRadius: '3px', border: '1px solid #C89B3C', background: '#F5F7FA', color: '#1C2A44', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', width: '100%', boxShadow: '0 1px 2px rgba(15,27,46,0.05)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.borderColor = '#E6C36A' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F7FA'; e.currentTarget.style.borderColor = '#C89B3C' }}
-                  >
-                    <span style={{ color: '#C89B3C' }}><MapPinIcon /></span>
-                    <span>Select location on map</span>
-                  </button>
+              {isMobile ? (
+                <div className="col-span-4 flex flex-col gap-3">
+                  {/* Row 1: Map Location + Pincode */}
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <div className="flex flex-col">
+                      <FieldLabel label="Map location" status="M" />
+                      <button
+                        type="button"
+                        onClick={() => setMapDialogOpen(true)}
+                        style={{ height: '32px', display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', borderRadius: '3px', border: '1px solid #C89B3C', background: '#F5F7FA', color: '#1C2A44', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', width: '100%', boxShadow: '0 1px 2px rgba(15,27,46,0.05)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.borderColor = '#E6C36A' }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F7FA'; e.currentTarget.style.borderColor = '#C89B3C' }}
+                      >
+                        <span style={{ color: '#C89B3C', flexShrink: 0 }}><MapPinIcon /></span>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Select on map</span>
+                      </button>
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Pincode" status="M" />
+                      <TInput isMobile value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
+                    </div>
+                  </div>
+                  {/* Row 2: City + District */}
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <div className="flex flex-col">
+                      <FieldLabel label="City" status="M" />
+                      <TInput isMobile value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="District" status="O" />
+                      <TInput isMobile value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
+                    </div>
+                  </div>
+                  {/* Row 3: Location / Road + Micro Location */}
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <div className="flex flex-col">
+                      <FieldLabel label="Location / Road" status="O" />
+                      <TInput isMobile value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Dwy" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Micro location" status="O" />
+                      <TInput isMobile value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Fin. District" />
+                    </div>
+                  </div>
+                  {/* Row 4: Building Name + Colony / Layout Name */}
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <div className="flex flex-col">
+                      <FieldLabel label="Building name" status={st('buildingName')} />
+                      <TInput isMobile value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Colony / Layout" status="O" />
+                      <TInput isMobile value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
+                    </div>
+                  </div>
+                  {/* Full-width: Address */}
+                  <div className="flex flex-col">
+                    <FieldLabel label="Address" status={st('address')} />
+                    <TTextArea isMobile value={form.address} onChange={v => up({ address: v })} placeholder="Street address" rows={3} />
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="City" status="M" />
-                  <TInput isMobile={isMobile} value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
-                </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="District" status="O" />
-                  <TInput isMobile={isMobile} value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
-                </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="Location / Road" status="O" />
-                  <TInput isMobile={isMobile} value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Driveway" />
-                </div>
-
-                <div className="flex flex-col">
-                  <FieldLabel label="Micro location" status="O" />
-                  <TInput isMobile={isMobile} value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Financial District" />
-                </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="Building name" status={st('buildingName')} />
-                  <TInput isMobile={isMobile} value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
-                </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="Colony / Layout name" status="O" />
-                  <TInput isMobile={isMobile} value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
-                </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="Pincode" status="M" />
-                  <TInput isMobile={isMobile} value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
-                </div>
-              </div>
-
-              <div className="col-span-4 flex flex-col mt-1">
-                <FieldLabel label="Address" status={st('address')} />
-                <TTextArea isMobile={isMobile} value={form.address} onChange={v => up({ address: v })} placeholder="Street address" rows={3} />
-              </div>
+              ) : (
+                <>
+                  <div className="col-span-4 grid grid-cols-4 gap-x-4 gap-y-3">
+                    <div className="flex flex-col">
+                      <FieldLabel label="Map location" status="M" />
+                      <button
+                        type="button"
+                        onClick={() => setMapDialogOpen(true)}
+                        style={{ height: '32px', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', borderRadius: '3px', border: '1px solid #C89B3C', background: '#F5F7FA', color: '#1C2A44', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', width: '100%', boxShadow: '0 1px 2px rgba(15,27,46,0.05)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.borderColor = '#E6C36A' }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F7FA'; e.currentTarget.style.borderColor = '#C89B3C' }}
+                      >
+                        <span style={{ color: '#C89B3C' }}><MapPinIcon /></span>
+                        <span>Select location on map</span>
+                      </button>
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="City" status="M" />
+                      <TInput isMobile={isMobile} value={form.city} onChange={v => up({ city: v })} placeholder="e.g. Hyderabad" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="District" status="O" />
+                      <TInput isMobile={isMobile} value={form.district} onChange={v => up({ district: v })} placeholder="e.g. Rangareddy" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Location / Road" status="O" />
+                      <TInput isMobile={isMobile} value={form.locationRoad} onChange={v => up({ locationRoad: v })} placeholder="e.g. Honeywell Driveway" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Micro location" status="O" />
+                      <TInput isMobile={isMobile} value={form.microLocation} onChange={v => up({ microLocation: v })} placeholder="e.g. Financial District" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Building name" status={st('buildingName')} />
+                      <TInput isMobile={isMobile} value={form.buildingName} onChange={v => up({ buildingName: v })} placeholder="e.g. Infinity Towers" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Colony / Layout name" status="O" />
+                      <TInput isMobile={isMobile} value={form.colonyLayout} onChange={v => up({ colonyLayout: v })} placeholder="Optional" />
+                    </div>
+                    <div className="flex flex-col">
+                      <FieldLabel label="Pincode" status="M" />
+                      <TInput isMobile={isMobile} value={form.pincode} onChange={v => up({ pincode: v })} placeholder="e.g. 500032" />
+                    </div>
+                  </div>
+                  <div className="col-span-4 flex flex-col mt-1">
+                    <FieldLabel label="Address" status={st('address')} />
+                    <TTextArea isMobile={isMobile} value={form.address} onChange={v => up({ address: v })} placeholder="Street address" rows={3} />
+                  </div>
+                </>
+              )}
             </SectionBlock>
 
             <SectionBlock title="Basic essentials">
-              <div className={`col-span-4 grid gap-x-4 gap-y-3 ${isMobile ? 'grid-cols-2' : 'grid-cols-4'}`}>
+              <div className={`col-span-4 grid gap-x-4 gap-y-3 grid-cols-2 ${!isMobile && 'md:grid-cols-4'}`}>
                 {show('yearOfConstruction') && (
                   <div className="flex flex-col">
                     <FieldLabel label="Year of construction" status={st('yearOfConstruction')} />
@@ -542,7 +591,7 @@ return (
 
             {show('basementParking') && (
               <SectionBlock title="Parking">
-                <div className="col-span-4 grid grid-cols-2 gap-x-4">
+                <div className="col-span-4 grid grid-cols-2 gap-x-4 gap-y-3">
                   {show('totalParking') && (
                     <div className="flex flex-col">
                       <FieldLabel label="Total parking" status={st('totalParking')} />
@@ -560,6 +609,32 @@ return (
             <SectionBlock title="Facilities">
               {isMobile ? (
                 <>
+                  {/* Row: Passenger Lifts + Water Supply */}
+                  <div className="col-span-4 grid grid-cols-2 gap-x-3 gap-y-3">
+                    {show('passengerLifts') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Passenger lifts" status={st('passengerLifts')} />
+                        <TInput isMobile type="number" value={form.passengerLifts} onChange={v => up({ passengerLifts: v })} placeholder="Count" />
+                      </div>
+                    )}
+                    {show('waterSupply') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Water supply" status={st('waterSupply')} />
+                        <SelectField
+                          value={form.waterSupply}
+                          onChange={v => up({ waterSupply: v })}
+                          placeholder="Select source"
+                          options={[
+                            { value: 'bore',      label: 'Bore well' },
+                            { value: 'municipal', label: 'Municipal' },
+                            { value: 'both',      label: 'Both' },
+                            { value: 'others',    label: 'Others' },
+                          ]}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {/* Remaining yes/no fields */}
                   {show('serviceLifts') && <YesNoRow isMobile={true} label="Service lifts" status={st('serviceLifts')} value={form.serviceLifts} onChange={v => up({ serviceLifts: v })} />}
                   {show('escalators') && <YesNoRow isMobile={true} label="Escalators" status={st('escalators')} value={form.escalators} onChange={v => up({ escalators: v })} />}
                   {show('powerBackup') && <YesNoRow isMobile={true} label="Power backup" status={st('powerBackup')} value={form.powerBackup} onChange={v => up({ powerBackup: v })} />}
@@ -601,16 +676,16 @@ return (
                 </div>
               )}
 
-              {show('passengerLifts') && (
+              {!isMobile && show('passengerLifts') && (
                 <div className="col-span-4 flex flex-col">
                   <FieldLabel label="Passenger lifts" status={st('passengerLifts')} />
                   <TInput isMobile={isMobile} type="number" value={form.passengerLifts} onChange={v => up({ passengerLifts: v })} placeholder="Count" />
                 </div>
               )}
-              {show('waterSupply') && (
+              {!isMobile && show('waterSupply') && (
                 <div className="col-span-2 flex flex-col">
                   <FieldLabel label="Water supply" status={st('waterSupply')} />
-                  <div style={{ width: isMobile ? '100%' : '50%' }}>
+                  <div style={{ width: '50%' }}>
                     <SelectField
                       value={form.waterSupply}
                       onChange={v => up({ waterSupply: v })}
@@ -702,52 +777,106 @@ return (
             )}
 
             <SectionBlock title="Other & approval">
-              <div className="col-span-3 grid grid-cols-3 gap-x-4 gap-y-3">
-                {show('maintenanceCharges') && (
-                  <div className="flex flex-col">
-                    <FieldLabel label="Maintenance charges" status={st('maintenanceCharges')} />
-                    <TInput isMobile={isMobile} type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
+              {isMobile ? (
+                <div className="col-span-4 flex flex-col gap-3">
+                  {/* Row 1: Maintenance Charges + Approval Authority */}
+                  <div className="grid grid-cols-2 gap-x-3">
+                    {show('maintenanceCharges') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Maintenance charges" status={st('maintenanceCharges')} />
+                        <TInput isMobile type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
+                      </div>
+                    )}
+                    {show('approvalAuth') && (
+                      <div className="flex flex-col">
+                        <FieldLabel label="Approval authority" status={st('approvalAuth')} />
+                        <SelectField
+                          value={form.approvalAuth}
+                          onChange={v => up({ approvalAuth: v })}
+                          placeholder="Select"
+                          options={[
+                            { value: 'bmcda',  label: 'BMCDA' },
+                            { value: 'ghmc',   label: 'GHMC' },
+                            { value: 'mcgm',   label: 'MCGM' },
+                            { value: 'dda',    label: 'DDA' },
+                            { value: 'others', label: 'Others' },
+                          ]}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-                {show('approvalAuth') && (
-                  <div className="flex flex-col">
-                    <FieldLabel label="Approval authority" status={st('approvalAuth')} />
-                    <SelectField
-                      value={form.approvalAuth}
-                      onChange={v => up({ approvalAuth: v })}
-                      placeholder="Select authority"
-                      options={[
-                        { value: 'bmcda',  label: 'BMCDA' },
-                        { value: 'ghmc',   label: 'GHMC' },
-                        { value: 'mcgm',   label: 'MCGM' },
-                        { value: 'dda',    label: 'DDA' },
-                        { value: 'others', label: 'Others' },
-                      ]}
-                    />
-                  </div>
-                )}
-                {show('rera') && (
-                  <div className="flex flex-col gap-1 py-1">
-                    <FieldLabel label="RERA registered" status={st('rera')} />
-                    <YesNoField value={form.rera} onChange={v => up({ rera: v })} />
-                  </div>
-                )}
-              </div>
+                  {/* Row 2: RERA Registered */}
+                  {show('rera') && (
+                    <YesNoRow isMobile={true} label="RERA registered" status={st('rera')} value={form.rera} onChange={v => up({ rera: v })} />
+                  )}
+                </div>
+              ) : (
+                <div className="col-span-3 grid grid-cols-3 gap-x-4 gap-y-3">
+                  {show('maintenanceCharges') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Maintenance charges" status={st('maintenanceCharges')} />
+                      <TInput isMobile={isMobile} type="number" value={form.maintenanceCharges} onChange={v => up({ maintenanceCharges: v })} placeholder="e.g. 15000" />
+                    </div>
+                  )}
+                  {show('approvalAuth') && (
+                    <div className="flex flex-col">
+                      <FieldLabel label="Approval authority" status={st('approvalAuth')} />
+                      <SelectField
+                        value={form.approvalAuth}
+                        onChange={v => up({ approvalAuth: v })}
+                        placeholder="Select authority"
+                        options={[
+                          { value: 'bmcda',  label: 'BMCDA' },
+                          { value: 'ghmc',   label: 'GHMC' },
+                          { value: 'mcgm',   label: 'MCGM' },
+                          { value: 'dda',    label: 'DDA' },
+                          { value: 'others', label: 'Others' },
+                        ]}
+                      />
+                    </div>
+                  )}
+                  {show('rera') && (
+                    <div className="flex flex-col gap-1 py-1">
+                      <FieldLabel label="RERA registered" status={st('rera')} />
+                      <YesNoField value={form.rera} onChange={v => up({ rera: v })} />
+                    </div>
+                  )}
+                </div>
+              )}
             </SectionBlock>
 
             <SectionBlock title="Media">
-              <div className={`col-span-4 grid gap-x-4 gap-y-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-3'}`}>
-                <div className="flex flex-col">
-                  <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
+              {isMobile ? (
+                <div className="col-span-4 flex flex-col gap-3">
+                  {/* Row 1: Building Photos + Floor Plans */}
+                  <div className="grid grid-cols-2 gap-x-3">
+                    <div className="flex flex-col">
+                      <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
+                    </div>
+                    <div className="flex flex-col">
+                      <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
+                    </div>
+                  </div>
+                  {/* Row 2: Video / Virtual Tour URL */}
+                  <div className="flex flex-col">
+                    <FieldLabel label="Video / Virtual tour URL" status="O" />
+                    <TInput isMobile value="" placeholder="https://..." />
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
+              ) : (
+                <div className="col-span-4 grid grid-cols-3 gap-x-4 gap-y-3">
+                  <div className="flex flex-col">
+                    <FileUploadField label="Building photos" status="M" accept="image/*" multiple />
+                  </div>
+                  <div className="flex flex-col">
+                    <FileUploadField label="Floor plans" status="O" accept="image/*,application/pdf" multiple />
+                  </div>
+                  <div className="flex flex-col">
+                    <FieldLabel label="Video / Virtual tour URL" status="O" />
+                    <TInput isMobile={isMobile} value="" placeholder="https://..." />
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <FieldLabel label="Video / Virtual tour URL" status="O" />
-                  <TInput isMobile={isMobile} value="" placeholder="https://..." />
-                </div>
-              </div>
+              )}
             </SectionBlock>
 
           </div>

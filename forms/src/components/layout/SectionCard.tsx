@@ -7,27 +7,64 @@ interface SectionCardProps {
 }
 
 export default function SectionCard({ title, icon, children }: SectionCardProps) {
+  const gradient = 'linear-gradient(90deg, #1C2A44 0%, #3b5998 50%, #C89B3C 100%)'
+
   return (
-    <div className="relative mt-10 mb-6 w-full font-outfit">
-      <div className="absolute -top-[22px] left-0 bg-[#1C2A44] px-5 py-2 flex items-center gap-3 z-10 border-t-[3px] border-[#C89B3C] shadow-md rounded-t-[8px]">
-        {icon && (
-          <div className="text-[#C89B3C] flex items-center justify-center">
-            {icon}
-          </div>
-        )}
-        <h2 className="text-[0.95rem] font-bold text-white m-0 tracking-tight whitespace-nowrap">
-          {title}
-        </h2>
+    <div
+      style={{
+        background: '#FFFFFF',
+        borderRadius: '4px',
+        border: '1px solid #E4E7EC',
+        boxShadow: '0 4px 12px rgba(15, 27, 46, 0.05)',
+        overflow: 'hidden',
+        marginBottom: '16px',
+        width: '100%',
+        boxSizing: 'border-box',
+        fontFamily: "'Outfit', sans-serif"
+      }}
+    >
+      <div style={{ height: '6px', width: '100%', background: gradient }} />
+      
+      <div style={{ padding: '16px 20px' }}>
+        <div 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '10px'
+          }}
+        >
+          {icon && (
+            <div 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                color: '#C89B3C' 
+              }}
+            >
+              {icon}
+            </div>
+          )}
+          <h3 
+            style={{ 
+              fontSize: '0.9rem', 
+              fontWeight: 700, 
+              color: '#1C2A44', 
+              margin: 0,
+              letterSpacing: '-0.01em'
+            }}
+          >
+            {title}
+          </h3>
+        </div>
       </div>
 
-      <div className="bg-white rounded-[8px] pt-10 pb-6 px-6 relative shadow-sm overflow-hidden">
-        <div className="absolute top-0 left-0 h-[1.5px] w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C] opacity-60" />
-        
-        <div className="relative z-[1]">
+      <div style={{ height: '1.5px', width: '100%', background: gradient, opacity: 0.8 }} />
+      
+      <div style={{ padding: '20px' }}>
+        <div style={{ position: 'relative', zIndex: 1 }}>
           {children}
         </div>
-
-        <div className="absolute bottom-0 left-0 h-[1.5px] w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C] opacity-60" />
       </div>
     </div>
   )

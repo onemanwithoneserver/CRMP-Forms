@@ -223,7 +223,7 @@ export default function UnitDetails() {
 
         <SectionCard title="Size & Dimensions" icon={<Ruler size={14} />}>
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 items-end">
+            <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-2' : 'grid-cols-[repeat(auto-fit,minmax(200px,1fr))]'}`}>
               {isVisible('plotSize') && <NumericField label="Plot size" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" suffix="sq. yds" />}
               {isVisible('plotDimensions') && <StringField label="Plot dimensions (L × B)" value={d.plotDimensions} onChange={v => onUpdate({ plotDimensions: v })} placeholder="e.g. 40x30" />}
               {isVisible('builtUpArea') && <NumericField label="Built-up area" value={d.totalBuiltUpArea} onChange={v => onUpdate({ totalBuiltUpArea: v })} placeholder="0" suffix="sq. ft" />}
@@ -260,7 +260,7 @@ export default function UnitDetails() {
         {isBuiltSpace && (
           <SectionCard title="Space Readiness" icon={<Construction size={14} />}>
             <div className="flex flex-col gap-5">
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
+              <div className={`grid gap-4 ${isMobile ? 'grid-cols-2' : 'grid-cols-[repeat(auto-fit,minmax(200px,1fr))]'}`}>
                 {isVisible('spaceCondition') && <Dropdown label="Space condition" value={d.spaceCondition} options={['Bare shell', 'Warm shell', 'Semi-fitted', 'Fully fitted', 'Plug & play']} placeholder="Select condition" onChange={v => onUpdate({ spaceCondition: v })} />}
                 {isVisible('flooring') && <Dropdown label="Flooring" value={d.flooring} options={['None', 'Basic', 'Premium']} placeholder="Select flooring" onChange={v => onUpdate({ flooring: v })} />}
                 {isVisible('walls') && <Dropdown label="Walls" value={d.walls} options={['Bare', 'Painted', 'Panelled']} placeholder="Select wall finish" onChange={v => onUpdate({ walls: v })} />}
@@ -283,7 +283,7 @@ export default function UnitDetails() {
         {isBuiltSpace && (
           <SectionCard title="Interiors & Layout" icon={<Armchair size={14} />}>
             <div className="flex flex-col gap-5">
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 items-end">
+              <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-2' : 'grid-cols-[repeat(auto-fit,minmax(200px,1fr))]'}`}>
                 {isVisible('partitionsType') && <Dropdown label="Partitions type" value={d.partitionsType} options={['None', 'Glass', 'Gypsum', 'Wall']} placeholder="Select partitions" onChange={v => onUpdate({ partitionsType: v })} />}
                 {isVisible('externalBranding') && <Dropdown label="External branding options" value={d.externalBranding} options={['Space available outside', 'Available inside building', 'Both']} placeholder="Select branding option" onChange={v => onUpdate({ externalBranding: v })} />}
                 {isVisible('numberOfRooms') && <NumericField label="No. of rooms / partitions" value={d.numberOfRooms} onChange={v => onUpdate({ numberOfRooms: v })} />}
@@ -307,7 +307,7 @@ export default function UnitDetails() {
         {isBuiltSpace && (
           <SectionCard title="Furniture & Appliances" icon={<Monitor size={14} />}>
             <div className="flex flex-col gap-5">
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
+              <div className={`grid gap-4 ${isMobile ? 'grid-cols-2' : 'grid-cols-[repeat(auto-fit,minmax(200px,1fr))]'}`}>
                 {isVisible('workstations') && <NumericField label="Workstations / tables" value={d.workstations} onChange={v => onUpdate({ workstations: v })} />}
                 {isVisible('chairs') && <NumericField label="Chairs" value={d.chairs} onChange={v => onUpdate({ chairs: v })} />}
               </div>
@@ -364,7 +364,7 @@ export default function UnitDetails() {
             {(['land', 'retail', 'office', 'coworking'].includes(pType) || pType === 'land') && (
               <>
                 <div className="h-px w-full bg-[#E4E7EC]" />
-                <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-1' : 'grid-cols-[repeat(auto-fit,minmax(250px,1fr))]'}`}>
+                <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-2' : 'grid-cols-[repeat(auto-fit,minmax(250px,1fr))]'}`}>
                   {['land', 'retail', 'office', 'coworking'].includes(pType) && (
                     <StringField label="Unit No. (If any)" value={d.unitNo} onChange={v => onUpdate({ unitNo: v })} placeholder="e.g. A-204, Shop 12" />
                   )}

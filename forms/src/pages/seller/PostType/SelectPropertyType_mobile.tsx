@@ -20,10 +20,10 @@ function PostTypeTabOptionMobile({
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 py-1 text-center text-[0.8rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out active:scale-[0.98] outline-none ${
+      className={`px-[12px] py-[4px] text-center text-[0.8rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out active:scale-[0.98] outline-none ${
         selected
-          ? 'bg-[#1C2A44] text-white font-semibold shadow-[0_1px_3px_rgba(15,27,46,0.2)]'
-          : 'bg-transparent text-[#667085] font-medium'
+          ? 'bg-navy text-white font-semibold shadow-[0_1px_3px_rgba(15,27,46,0.2)]'
+          : 'bg-transparent text-text-tertiary font-medium'
       }`}
     >
       {option.label}
@@ -38,14 +38,13 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
   const { postType } = state.formData
 
   const selectedCardContent = (
-    <div className="flex items-center justify-between gap-2 py-1 px-1 font-['Outfit',_sans-serif]">
+    <div className="flex items-center justify-between gap-[8px] py-[4px] px-[4px] font-outfit">
       {/* 1. Question Section */}
-      <h2 className="text-[12px] font-bold text-[#1C2A44] m-0 tracking-[-0.01em] leading-tight">
+      <h2 className="text-[12px] font-bold text-navy m-0 tracking-[-0.01em] leading-tight">
         What do you want to do?
       </h2>
-
       {/* 2. Tab Controls Beside Question */}
-      <div className="flex items-center shrink-0 bg-[#F5F7FA] p-0.5 rounded-[6px] border border-[#E4E7EC]">
+      <div className="flex items-center shrink-0 bg-[#F5F7FA] p-[2px] rounded-[6px] border border-border">
         {SELLER_POST_TYPES.filter(option => 
           option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
         ).map(option => {
@@ -65,12 +64,11 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
           )
         })}
       </div>
-
       {/* 3. Arrow Control to Advance Step */}
       <button
         type="button"
         aria-label="Next"
-        className="ml-2 flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-[#1C2A44] to-[#0F1B2E] border border-[#E6C36A] shadow-[0_2px_6px_rgba(15,27,46,0.10)] active:scale-95 transition"
+        className="ml-[8px] flex items-center justify-center w-[28px] h-[28px] rounded-full bg-gradient-to-br from-navy to-navy-dark border border-gold shadow-[0_2px_6px_rgba(15,27,46,0.10)] active:scale-95 transition"
         onClick={(e) => {
           e.stopPropagation()
           next()
@@ -82,10 +80,10 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
   )
 
   return (
-    <div className="flex flex-col gap-2 font-['Outfit',_sans-serif] px-1">
+    <div className="flex flex-col gap-[8px] font-outfit px-[4px]">
       {propertyType ? (
         <>
-          <div className="grid grid-cols-4 gap-1.5 transition-all duration-300 ease-out">
+          <div className="grid grid-cols-4 gap-[6px] transition-all duration-300 ease-out">
             {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
               <PropertyCard
                 key={type.id}
@@ -100,7 +98,6 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
               />
             ))}
           </div>
-
           <div className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
             {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
               <PropertyCard
@@ -117,7 +114,7 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
           </div>
         </>
       ) : (
-        <div className="flex flex-wrap justify-center gap-1.5 w-full transition-all duration-300 ease-out">
+        <div className="flex flex-wrap justify-center gap-[6px] w-full transition-all duration-300 ease-out">
           {PROPERTY_TYPE_CARDS.map((type) => (
             <div
               key={type.id}

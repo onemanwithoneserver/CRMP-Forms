@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from '../../context/FormContext'
 import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
@@ -35,34 +35,12 @@ function NumericField({
   prefix?: string
   suffix?: string
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-
-  if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
-      <div style={{ position: 'relative', width: '100%' }}>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      {label && <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>}
+      <div className="relative w-full">
         {prefix && (
-          <span 
-            style={{ 
-              position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', 
-              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.85rem', fontWeight: 600, 
-              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
-            }}
-          >
+          <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.85rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
             {prefix}
           </span>
         )}
@@ -71,37 +49,18 @@ function NumericField({
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          style={{
-            width: '100%',
-            height: '34px',
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingLeft: prefix ? '24px' : '10px',
-            paddingRight: suffix ? '30px' : '10px',
-            fontSize: '0.85rem',
-            fontWeight: 500,
-            color: '#1C2A44',
-            background: background,
-            border: `1px solid ${borderColor}`,
-            borderRadius: '3px',
-            outline: 'none',
-            transition: 'all 250ms ease-in-out',
-            boxShadow: shadow,
-            boxSizing: 'border-box',
-          }}
+          className={`
+            peer w-full h-[34px] py-0 text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] 
+            border border-[#E4E7EC] rounded-[3px] outline-none box-border
+            transition-all duration-250 ease-in-out
+            hover:bg-white hover:border-[#E6C36A] 
+            focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]
+            ${prefix ? 'pl-[24px]' : 'pl-[10px]'}
+            ${suffix ? 'pr-[30px]' : 'pr-[10px]'}
+          `}
         />
         {suffix && (
-          <span 
-            style={{ 
-              position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', 
-              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.8rem', fontWeight: 600, 
-              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
-            }}
-          >
+          <span className="absolute right-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.8rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
             {suffix}
           </span>
         )}
@@ -121,49 +80,15 @@ function StringField({
   onChange: (v: string) => void
   placeholder?: string
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-
-  if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
       <input
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        style={{
-          width: '100%',
-          height: '34px',
-          padding: '0 10px',
-          fontSize: '0.85rem',
-          fontWeight: 500,
-          color: '#1C2A44',
-          background: background,
-          border: `1px solid ${borderColor}`,
-          borderRadius: '3px',
-          outline: 'none',
-          transition: 'all 250ms ease-in-out',
-          boxShadow: shadow,
-          boxSizing: 'border-box',
-        }}
+        className="w-full h-[34px] px-[10px] text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded-[3px] outline-none box-border transition-all duration-250 ease-in-out hover:bg-white hover:border-[#E6C36A] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
       />
     </div>
   )
@@ -182,10 +107,10 @@ export default function LeaseInfo() {
   const isSubLease = d.leaseSubType === 'Sub Lease'
 
   const renderNumericWithUnit = (label: string, valField: keyof typeof state.formData, unitField: keyof typeof state.formData) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <div style={{ flex: 1 }}>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
           <NumericField 
             label="" 
             value={d[valField] as string || ''} 
@@ -193,7 +118,7 @@ export default function LeaseInfo() {
             placeholder="0" 
           />
         </div>
-        <div style={{ width: '110px' }}>
+        <div className="w-[110px]">
           <Dropdown
             label=""
             value={(d[unitField] as string) || 'Months'}
@@ -207,12 +132,12 @@ export default function LeaseInfo() {
 
   return (
     <FormPage title="Lease Information" icon={<Handshake size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
+      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
 
         <SectionCard title="Lease Type & Pricing" icon={<Handshake size={14} />}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div className="flex flex-col gap-5">
             
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr', gap: '16px', alignItems: 'end' }}>
+            <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-1' : 'grid-cols-[1fr_2fr]'}`}>
               <Dropdown
                 label="Lease Type"
                 value={d.leaseSubType || 'Full Lease'}
@@ -220,8 +145,8 @@ export default function LeaseInfo() {
                 onChange={v => onUpdate({ leaseSubType: v })}
                 placeholder="Select type"
               />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>Monthly Lease / Rent Type</label>
+              <div className="flex flex-col gap-2">
+                <label className="text-[0.8rem] font-semibold text-[#1C2A44]">Monthly Lease / Rent Type</label>
                 <SegmentedControl
                   options={RENT_PRICING_MODES}
                   value={d.rentPricingMode || 'Per Sq Ft'}
@@ -230,9 +155,9 @@ export default function LeaseInfo() {
               </div>
             </div>
 
-            <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+            <div className="h-px w-full bg-[#E4E7EC]" />
 
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className={`grid gap-4 ${isMobile ? 'grid-cols-2' : 'grid-cols-3'}`}>
               <NumericField
                 label={d.rentPricingMode === 'Fixed Amount' ? 'Monthly Lease Value' : 'Rent Per Sq Ft / Sq.yd'}
                 value={d.rentPricingMode === 'Fixed Amount' ? (d.monthlyRent as string) : (d.pricePerSqFt as string)}
@@ -247,7 +172,7 @@ export default function LeaseInfo() {
                 placeholder="0"
                 prefix="₹"
               />
-              <div style={{ gridColumn: isMobile ? 'span 2' : 'auto' }}>
+              <div className={isMobile ? 'col-span-2' : ''}>
                 <NumericField
                   label="Maintenance (If any)"
                   value={d.maintenanceCharges as string}
@@ -261,8 +186,8 @@ export default function LeaseInfo() {
         </SectionCard>
 
         <SectionCard title="Financial & Terms" icon={<Coins size={14} />}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: '16px', alignItems: 'end' }}>
+          <div className="flex flex-col gap-5">
+            <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-2' : 'grid-cols-3'}`}>
               <NumericField
                 label="Rent Escalation"
                 value={d.rentEscalation as string}
@@ -270,15 +195,15 @@ export default function LeaseInfo() {
                 placeholder="0"
                 suffix="%"
               />
-              <div style={{ gridColumn: isMobile ? 'span 2' : 'auto' }}>
+              <div className={isMobile ? 'col-span-2' : ''}>
                 {renderNumericWithUnit('Escalation Cycle', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
               </div>
             </div>
 
             {isSubLease && (
               <>
-                <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
-                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr', gap: '16px' }}>
+                <div className="h-px w-full bg-[#E4E7EC]" />
+                <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-[1fr_2fr]'}`}>
                   <Dropdown
                     label="Existing Tenant (Industry)"
                     value={d.tenantIndustry}

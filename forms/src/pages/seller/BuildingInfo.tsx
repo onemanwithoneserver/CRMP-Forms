@@ -342,16 +342,13 @@ export function BuildingInfoPanel() {
   const isIndustrial    = bt === 'industrial'
   const isInstitutional = bt === 'institutional' || bt === 'institutional_mixed'
 
-return (
-    <div style={{ display: 'flex', flexDirection: 'column', fontFamily: "'Outfit', sans-serif" }}>
-
-      <div style={{ background: '#FFFFFF', borderRadius: '4px', padding: '8px', display: 'flex', gap: '8px', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'stretch' : 'center', border: '1px solid #E4E7EC', boxShadow: '0 2px 8px rgba(15, 27, 46, 0.04)' }}>
-
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flex: 1 }}>
-
-          <div style={{ flex: 1, position: 'relative' }} ref={searchRef}>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#667085', display: 'flex' }}>
+  return (
+    <div className="flex flex-col font-outfit">
+      <div className={`bg-white rounded-[4px] p-[8px] flex ${isMobile ? 'flex-col items-stretch' : 'flex-row items-center'} gap-[8px] border border-border shadow-[0_2px_8px_rgba(15,27,46,0.04)]`}>
+        <div className="flex flex-row items-center gap-[8px] flex-1">
+          <div className="flex-1 relative" ref={searchRef}>
+            <div className="relative">
+              <span className="absolute left-[8px] top-1/2 -translate-y-1/2 text-text-tertiary flex">
                 <SearchIcon />
               </span>
               <input
@@ -359,33 +356,24 @@ return (
                 placeholder="Search existing buildings..."
                 value={searchQuery}
                 onChange={e => { setSearchQuery(e.target.value); setShowSearchResults(true) }}
-                onFocus={(e) => {
-                  searchQuery.trim() && setShowSearchResults(true)
-                  e.target.style.background = '#FFFFFF'
-                  e.target.style.borderColor = '#C89B3C'
-                  e.target.style.boxShadow = '0 0 0 2px rgba(200, 155, 60, 0.1)'
-                }}
-                onBlur={(e) => {
-                  e.target.style.background = '#F5F7FA'
-                  e.target.style.borderColor = '#E4E7EC'
-                  e.target.style.boxShadow = 'none'
-                }}
-                style={{ width: '100%', height: '34px', padding: '0 28px', fontSize: '0.85rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', transition: 'all 200ms ease', boxSizing: 'border-box' }}
+                className="w-full h-[34px] pl-[28px] pr-[28px] text-[0.85rem] font-medium text-navy bg-[#F5F7FA] border border-border rounded-[3px] outline-none transition-all duration-200 box-border"
+                style={{ fontWeight: 500 }}
+                onFocus={() => searchQuery.trim() && setShowSearchResults(true)}
+                // Tailwind can't animate border color on focus with custom colors, so keep logic in onFocus/onBlur if needed
               />
               {searchQuery && (
                 <button
                   type="button"
                   aria-label="Clear search"
                   onClick={() => { setSearchQuery(''); setShowSearchResults(false) }}
-                  style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', color: '#667085', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
+                  className="absolute right-[8px] top-1/2 -translate-y-1/2 text-text-tertiary bg-none border-none cursor-pointer p-0 flex"
                 >
                   <XIcon />
                 </button>
               )}
             </div>
-
             {showSearchResults && filteredBuildings.length > 0 && (
-              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px', background: '#FFFFFF', border: '1px solid #E4E7EC', borderRadius: '3px', boxShadow: '0 8px 24px rgba(15, 27, 46, 0.15), 0 2px 6px rgba(15, 27, 46, 0.08)', zIndex: 50, overflow: 'hidden' }}>
+              <div className="absolute top-full left-0 right-0 mt-[4px] bg-white border border-border rounded-[3px] shadow-[0_8px_24px_rgba(15,27,46,0.15),0_2px_6px_rgba(15,27,46,0.08)] z-50 overflow-hidden">
                 {filteredBuildings.map(b => {
                   const typeLabel = BUILDING_TYPES.find(t => t.value === b.type)?.label ?? b.type
                   return (
@@ -393,12 +381,10 @@ return (
                       key={b.id}
                       type="button"
                       onClick={() => selectBuilding(b)}
-                      onMouseEnter={(e) => e.currentTarget.style.background = '#F5F7FA'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                      style={{ width: '100%', textAlign: 'left', padding: '8px 12px', background: 'transparent', border: 'none', borderBottom: '1px solid #E4E7EC', display: 'flex', flexDirection: 'column', gap: '2px', cursor: 'pointer', transition: 'background 150ms ease' }}
+                      className="w-full text-left px-[12px] py-[8px] bg-transparent border-0 border-b border-border flex flex-col gap-[2px] cursor-pointer transition-colors duration-150 hover:bg-[#F5F7FA]"
                     >
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>{b.name}</span>
-                      <span style={{ fontSize: '0.75rem', color: '#667085', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span className="text-[0.85rem] font-semibold text-navy">{b.name}</span>
+                      <span className="text-[0.75rem] text-text-tertiary flex items-center gap-[4px]">
                         <LocationIcon />
                         {b.address} · {typeLabel}
                       </span>
@@ -408,35 +394,34 @@ return (
               </div>
             )}
           </div>
-
           <button
             type="button"
             onClick={() => setFormOpen(o => !o)}
             title="Add building details"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '34px', padding: '0 12px', borderRadius: '3px', fontSize: '0.8rem', fontWeight: 600, transition: 'all 200ms ease', flexShrink: 0, cursor: 'pointer', border: formOpen ? '1px solid #E6C36A' : '1px solid #E4E7EC', background: formOpen ? 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)' : '#FFFFFF', color: formOpen ? '#FFFFFF' : '#1C2A44', boxShadow: formOpen ? '0 2px 6px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)' : 'none' }}
+            className={`flex items-center justify-center gap-[6px] h-[34px] px-[12px] rounded-[3px] text-[0.8rem] font-semibold transition-all duration-200 flex-shrink-0 cursor-pointer border ${formOpen ? 'border-gold bg-gradient-to-br from-navy to-navy-dark text-white shadow-[0_2px_6px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)]' : 'border-border bg-white text-navy'} select-none`}
           >
             <PlusIcon />
             <span>Add building details</span>
-            <span style={{ transform: formOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 200ms ease', display: 'flex' }}>
+            <span className={`flex transition-transform duration-200 ${formOpen ? 'rotate-180' : ''}`}>
               <ChevronDownIcon />
             </span>
           </button>
-
         </div>
       </div>
 
-      <div style={{ overflow: 'hidden', transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)', maxHeight: formOpen ? '9000px' : '0', opacity: formOpen ? 1 : 0, marginTop: formOpen ? '12px' : '0' }}>
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${formOpen ? 'max-h-[9000px] opacity-100 mt-[12px]' : 'max-h-0 opacity-0 mt-0'}`}
+      >
         {form.buildingType && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-            <span style={{ color: '#C89B3C', display: 'flex' }}><BuildingIcon /></span>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1C2A44' }}>
+          <div className="flex items-center gap-[6px] mb-[8px]">
+            <span className="text-gold flex"><BuildingIcon /></span>
+            <span className="text-[0.85rem] font-bold text-navy">
               {BUILDING_TYPES.find(t => t.value === form.buildingType)?.label ?? 'Building details'}
             </span>
           </div>
         )}
-
-        <div style={{ background: '#FFFFFF', borderRadius: '4px', border: '1px solid #E4E7EC', padding: '16px', boxShadow: '0 4px 16px rgba(15, 27, 46, 0.04)' }}>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-4">
+        <div className="bg-white rounded-[4px] border border-border p-[16px] shadow-[0_4px_16px_rgba(15,27,46,0.04)]">
+          <div className="grid grid-cols-4 gap-x-[16px] gap-y-[16px]">
 
             <SectionBlock title="Location">
               {isMobile ? (

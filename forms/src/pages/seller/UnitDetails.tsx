@@ -34,34 +34,12 @@ function NumericField({
   prefix?: string
   suffix?: string
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-
-  if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
-      <div style={{ position: 'relative', width: '100%' }}>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      {label && <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>}
+      <div className="relative w-full">
         {prefix && (
-          <span 
-            style={{ 
-              position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', 
-              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.85rem', fontWeight: 600, 
-              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
-            }}
-          >
+          <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.85rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
             {prefix}
           </span>
         )}
@@ -70,37 +48,18 @@ function NumericField({
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          style={{
-            width: '100%',
-            height: '34px',
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingLeft: prefix ? '24px' : '10px',
-            paddingRight: suffix ? '28px' : '10px',
-            fontSize: '0.85rem',
-            fontWeight: 500,
-            color: '#1C2A44',
-            background: background,
-            border: `1px solid ${borderColor}`,
-            borderRadius: '3px',
-            outline: 'none',
-            transition: 'all 250ms ease-in-out',
-            boxShadow: shadow,
-            boxSizing: 'border-box',
-          }}
+          className={`
+            peer w-full h-[34px] py-0 text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] 
+            border border-[#E4E7EC] rounded-[3px] outline-none box-border
+            transition-all duration-250 ease-in-out
+            hover:bg-white hover:border-[#E6C36A] 
+            focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]
+            ${prefix ? 'pl-[24px]' : 'pl-[10px]'}
+            ${suffix ? 'pr-[28px]' : 'pr-[10px]'}
+          `}
         />
         {suffix && (
-          <span 
-            style={{ 
-              position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', 
-              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.8rem', fontWeight: 600, 
-              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
-            }}
-          >
+          <span className="absolute right-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.8rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
             {suffix}
           </span>
         )}
@@ -120,76 +79,41 @@ function StringField({
   onChange: (v: string) => void
   placeholder?: string
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-
-  if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      {label && <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>}
       <input
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        style={{
-          width: '100%',
-          height: '34px',
-          padding: '0 10px',
-          fontSize: '0.85rem',
-          fontWeight: 500,
-          color: '#1C2A44',
-          background: background,
-          border: `1px solid ${borderColor}`,
-          borderRadius: '3px',
-          outline: 'none',
-          transition: 'all 250ms ease-in-out',
-          boxShadow: shadow,
-          boxSizing: 'border-box',
-        }}
+        className="w-full h-[34px] px-[10px] text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded-[3px] outline-none box-border transition-all duration-250 ease-in-out hover:bg-white hover:border-[#E6C36A] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
       />
     </div>
   )
 }
 
 function PremiumCheckbox({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
-    <label 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", width: 'fit-content' }}
-    >
+    <label className="group flex items-center gap-2.5 cursor-pointer font-['Outfit',sans-serif] w-fit">
+      <input 
+        type="checkbox" 
+        className="hidden" 
+        checked={checked} 
+        onChange={(e) => onChange(e.target.checked)} 
+      />
       <div 
-        style={{
-          width: '18px', height: '18px', borderRadius: '3px',
-          background: checked ? '#C89B3C' : '#FFFFFF',
-          border: checked ? '1px solid #C89B3C' : `1px solid ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 200ms ease',
-          boxShadow: checked ? '0 2px 4px rgba(200, 155, 60, 0.3)' : 'none'
-        }}
+        className={`
+          w-[18px] h-[18px] rounded-[3px] flex items-center justify-center transition-all duration-200 ease border
+          ${checked 
+            ? 'bg-[#C89B3C] border-[#C89B3C] shadow-[0_2px_4px_rgba(200,155,60,0.3)]' 
+            : 'bg-white border-[#E4E7EC] group-hover:border-[#C89B3C]'
+          }
+        `}
       >
         {checked && <Check size={12} color="#FFFFFF" strokeWidth={3} />}
       </div>
-      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: checked ? '#1C2A44' : '#445069', transition: 'color 200ms ease' }}>
+      <span className={`text-[0.85rem] font-semibold transition-colors duration-200 ease ${checked ? 'text-[#1C2A44]' : 'text-[#445069] group-hover:text-[#1C2A44]'}`}>
         {label}
       </span>
     </label>
@@ -278,16 +202,16 @@ export default function UnitDetails() {
 
     if (isMobile) {
       return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '6px 0', fontFamily: "'Outfit', sans-serif" }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
-          <div style={{ width: '120px' }}>{control}</div>
+        <div className="flex items-center justify-between w-full py-1.5 font-['Outfit',sans-serif]">
+          <label className="text-[0.85rem] font-semibold text-[#1C2A44]">{label}</label>
+          <div className="w-[120px]">{control}</div>
         </div>
       )
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-        <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+      <div className="flex flex-col gap-2 w-full font-['Outfit',sans-serif]">
+        <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
         <div>{control}</div>
       </div>
     )
@@ -295,11 +219,11 @@ export default function UnitDetails() {
 
   return (
     <FormPage title="Unit Details" icon={<LayoutGrid size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
+      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
 
         <SectionCard title="Size & Dimensions" icon={<Ruler size={14} />}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', alignItems: 'end' }}>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 items-end">
               {isVisible('plotSize') && <NumericField label="Plot size" value={d.plotSize} onChange={v => onUpdate({ plotSize: v })} placeholder="e.g. 1200" suffix="sq. yds" />}
               {isVisible('plotDimensions') && <StringField label="Plot dimensions (L × B)" value={d.plotDimensions} onChange={v => onUpdate({ plotDimensions: v })} placeholder="e.g. 40x30" />}
               {isVisible('builtUpArea') && <NumericField label="Built-up area" value={d.totalBuiltUpArea} onChange={v => onUpdate({ totalBuiltUpArea: v })} placeholder="0" suffix="sq. ft" />}
@@ -326,7 +250,7 @@ export default function UnitDetails() {
             </div>
 
             {isVisible('cornerUnit') && (
-              <div style={{ marginTop: '4px' }}>
+              <div className="mt-1">
                 <PremiumCheckbox label="This is a corner unit" checked={!!d.cornerUnit} onChange={v => onUpdate({ cornerUnit: v })} />
               </div>
             )}
@@ -335,8 +259,8 @@ export default function UnitDetails() {
 
         {isBuiltSpace && (
           <SectionCard title="Space Readiness" icon={<Construction size={14} />}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
                 {isVisible('spaceCondition') && <Dropdown label="Space condition" value={d.spaceCondition} options={['Bare shell', 'Warm shell', 'Semi-fitted', 'Fully fitted', 'Plug & play']} placeholder="Select condition" onChange={v => onUpdate({ spaceCondition: v })} />}
                 {isVisible('flooring') && <Dropdown label="Flooring" value={d.flooring} options={['None', 'Basic', 'Premium']} placeholder="Select flooring" onChange={v => onUpdate({ flooring: v })} />}
                 {isVisible('walls') && <Dropdown label="Walls" value={d.walls} options={['Bare', 'Painted', 'Panelled']} placeholder="Select wall finish" onChange={v => onUpdate({ walls: v })} />}
@@ -345,9 +269,9 @@ export default function UnitDetails() {
                 {isVisible('lighting') && <Dropdown label="Lighting" value={d.lighting} options={['None', 'Basic', 'Designer']} placeholder="Select lighting" onChange={v => onUpdate({ lighting: v })} />}
               </div>
 
-              <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+              <div className="h-px w-full bg-[#E4E7EC]" />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                 {isVisible('glassFacade') && renderBoolean('Glass facade (for external branding)', 'glassFacade')}
                 {isVisible('compoundWall') && renderBoolean('Compound wall available', 'compoundWall')}
                 {isVisible('waterConnection') && renderBoolean('Water connection available', 'waterConnection')}
@@ -358,8 +282,8 @@ export default function UnitDetails() {
 
         {isBuiltSpace && (
           <SectionCard title="Interiors & Layout" icon={<Armchair size={14} />}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', alignItems: 'end' }}>
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 items-end">
                 {isVisible('partitionsType') && <Dropdown label="Partitions type" value={d.partitionsType} options={['None', 'Glass', 'Gypsum', 'Wall']} placeholder="Select partitions" onChange={v => onUpdate({ partitionsType: v })} />}
                 {isVisible('externalBranding') && <Dropdown label="External branding options" value={d.externalBranding} options={['Space available outside', 'Available inside building', 'Both']} placeholder="Select branding option" onChange={v => onUpdate({ externalBranding: v })} />}
                 {isVisible('numberOfRooms') && <NumericField label="No. of rooms / partitions" value={d.numberOfRooms} onChange={v => onUpdate({ numberOfRooms: v })} />}
@@ -367,9 +291,9 @@ export default function UnitDetails() {
                 {isVisible('storageSpace') && <StringField label="Storage space (describe)" value={d.storageSpace} onChange={v => onUpdate({ storageSpace: v })} placeholder="e.g. 50 sq ft separate pantry" />}
               </div>
 
-              <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+              <div className="h-px w-full bg-[#E4E7EC]" />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
                 {isVisible('conferenceRoom') && renderBoolean('Conference room', 'conferenceRoom')}
                 {isVisible('receptionArea') && renderBoolean('Reception area', 'receptionArea')}
                 {isVisible('brandingSpace') && renderBoolean('Branding space available', 'brandingSpace')}
@@ -382,15 +306,15 @@ export default function UnitDetails() {
 
         {isBuiltSpace && (
           <SectionCard title="Furniture & Appliances" icon={<Monitor size={14} />}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
                 {isVisible('workstations') && <NumericField label="Workstations / tables" value={d.workstations} onChange={v => onUpdate({ workstations: v })} />}
                 {isVisible('chairs') && <NumericField label="Chairs" value={d.chairs} onChange={v => onUpdate({ chairs: v })} />}
               </div>
 
-              <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+              <div className="h-px w-full bg-[#E4E7EC]" />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
                 {isVisible('storageCupboards') && renderBoolean('Storage / cupboards', 'storageCupboards')}
                 {isVisible('sofaLounge') && renderBoolean('Sofa / lounge area', 'sofaLounge')}
                 {isVisible('receptionDesk') && renderBoolean('Reception desk', 'receptionDesk')}
@@ -399,32 +323,23 @@ export default function UnitDetails() {
 
               {isVisible('appliances') && (
                 <>
-                  <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+                  <div className="h-px w-full bg-[#E4E7EC]" />
                   <div>
                     <button
                       type="button"
                       onClick={() => setIsApplianceModalOpen(true)}
-                      style={{
-                        height: '36px', padding: '0 16px', borderRadius: '3px',
-                        background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)',
-                        border: '1px solid #E6C36A', color: '#FFFFFF',
-                        fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
-                        boxShadow: '0 2px 6px rgba(15,27,46,0.25)', transition: 'all 200ms ease',
-                        outline: 'none', display: 'flex', alignItems: 'center', gap: '8px'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                      className="flex items-center gap-2 h-[36px] px-4 rounded-[3px] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#E6C36A] text-white text-[0.85rem] font-semibold cursor-pointer shadow-[0_2px_6px_rgba(15,27,46,0.25)] transition-all duration-200 ease outline-none hover:-translate-y-[1px]"
                     >
                       <span>Add / Edit Appliances</span>
                     </button>
-                    <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <div className="mt-3 flex flex-wrap gap-2">
                       {(d.appliances || []).map(app => (
-                        <span key={app} style={{ padding: '4px 10px', background: '#F5F7FA', color: '#1C2A44', fontSize: '0.75rem', fontWeight: 600, borderRadius: '3px', border: '1px solid #E4E7EC' }}>
+                        <span key={app} className="py-1 px-2.5 bg-[#F5F7FA] text-[#1C2A44] text-[0.75rem] font-semibold rounded-[3px] border border-[#E4E7EC]">
                           {app}
                         </span>
                       ))}
                       {d.appliancesOthers && (
-                        <span style={{ padding: '4px 10px', background: 'rgba(200, 155, 60, 0.1)', color: '#C89B3C', fontSize: '0.75rem', fontWeight: 600, borderRadius: '3px', border: '1px solid rgba(200, 155, 60, 0.3)' }}>
+                        <span className="py-1 px-2.5 bg-[#C89B3C]/10 text-[#C89B3C] text-[0.75rem] font-semibold rounded-[3px] border border-[#C89B3C]/30">
                           Other: {d.appliancesOthers}
                         </span>
                       )}
@@ -437,8 +352,8 @@ export default function UnitDetails() {
         )}
 
         <SectionCard title="Unit Availability" icon={<Calendar size={14} />}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', alignItems: 'end' }}>
+          <div className="flex flex-col gap-4">
+            <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-1' : 'grid-cols-[repeat(auto-fit,minmax(250px,1fr))]'}`}>
               {renderBoolean('Is it immediately available?', 'isImmediatelyAvailable')}
               
               {d.isImmediatelyAvailable === 'No' && (
@@ -448,8 +363,8 @@ export default function UnitDetails() {
 
             {(['land', 'retail', 'office', 'coworking'].includes(pType) || pType === 'land') && (
               <>
-                <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
-                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', alignItems: 'end' }}>
+                <div className="h-px w-full bg-[#E4E7EC]" />
+                <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-1' : 'grid-cols-[repeat(auto-fit,minmax(250px,1fr))]'}`}>
                   {['land', 'retail', 'office', 'coworking'].includes(pType) && (
                     <StringField label="Unit No. (If any)" value={d.unitNo} onChange={v => onUpdate({ unitNo: v })} placeholder="e.g. A-204, Shop 12" />
                   )}
@@ -459,8 +374,8 @@ export default function UnitDetails() {
                   )}
 
                   {pType === 'land' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>No. of Units Available</label>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">No. of Units Available</label>
                       <SegmentedControl
                         options={[{ label: 'Single', value: 'Single' }, { label: 'Multiple', value: 'Multiple' }]}
                         value={d.numberOfUnitsAvailable || 'Single'}
@@ -475,25 +390,23 @@ export default function UnitDetails() {
         </SectionCard>
 
         {isApplianceModalOpen && (
-          <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(15, 27, 46, 0.6)', backdropFilter: 'blur(4px)', fontFamily: "'Outfit', sans-serif" }}>
-            <div style={{ position: 'absolute', inset: 0 }} onClick={() => setIsApplianceModalOpen(false)} />
-            <div style={{ position: 'relative', background: '#FFFFFF', borderRadius: '4px', width: '100%', maxWidth: '720px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 16px 48px rgba(15, 27, 46, 0.15)', border: '1px solid #E4E7EC', display: 'flex', flexDirection: 'column' }}>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0F1B2E]/60 backdrop-blur-[4px] font-['Outfit',sans-serif]">
+            <div className="absolute inset-0" onClick={() => setIsApplianceModalOpen(false)} />
+            <div className="relative bg-white rounded flex flex-col w-full max-w-[720px] max-h-[90vh] shadow-[0_16px_48px_rgba(15,27,46,0.15)] border border-[#E4E7EC]">
               
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid #E4E7EC', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', flexShrink: 0 }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', margin: 0, letterSpacing: '-0.01em' }}>Add / Edit Appliances</h3>
+              <div className="flex items-center justify-between py-4 px-5 border-b border-[#E4E7EC] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] shrink-0">
+                <h3 className="text-[1.05rem] font-bold text-white m-0 tracking-[-0.01em]">Add / Edit Appliances</h3>
                 <button
                   onClick={() => setIsApplianceModalOpen(false)}
-                  style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: '#FFFFFF', cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
+                  className="w-7 h-7 flex items-center justify-center rounded-[3px] border border-white/20 bg-white/10 text-white cursor-pointer transition-all duration-200 ease outline-none hover:bg-white/20"
                 >
                   <X size={14} />
                 </button>
               </div>
 
-              <div style={{ padding: '20px', flex: 1, overflowY: 'auto' }}>
-                <label style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1C2A44', marginBottom: '16px', display: 'block' }}>Select Available Appliances</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '16px' }}>
+              <div className="p-5 flex-1 overflow-y-auto">
+                <label className="block text-[0.9rem] font-bold text-[#1C2A44] mb-4">Select Available Appliances</label>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
                   {APPLIANCE_LIST.map(app => (
                     <PremiumCheckbox
                       key={app}
@@ -504,7 +417,7 @@ export default function UnitDetails() {
                   ))}
                 </div>
 
-                <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid #E4E7EC' }}>
+                <div className="mt-6 pt-5 border-t border-[#E4E7EC]">
                   <StringField
                     label="Other Appliances (List any additional items)"
                     value={d.appliancesOthers}
@@ -514,22 +427,18 @@ export default function UnitDetails() {
                 </div>
               </div>
 
-              <div style={{ padding: '16px 20px', borderTop: '1px solid #E4E7EC', background: '#F5F7FA', display: 'flex', justifyContent: 'flex-end', gap: '12px', flexShrink: 0 }}>
+              <div className="py-4 px-5 border-t border-[#E4E7EC] bg-[#F5F7FA] flex justify-end gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsApplianceModalOpen(false)}
-                  style={{ height: '36px', padding: '0 20px', borderRadius: '3px', fontSize: '0.85rem', fontWeight: 600, color: '#667085', background: '#FFFFFF', border: '1px solid #E4E7EC', cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#C89B3C'; e.currentTarget.style.color = '#1C2A44' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E4E7EC'; e.currentTarget.style.color = '#667085' }}
+                  className="h-[36px] px-5 rounded-[3px] text-[0.85rem] font-semibold text-[#667085] bg-white border border-[#E4E7EC] cursor-pointer transition-all duration-200 ease outline-none hover:border-[#C89B3C] hover:text-[#1C2A44]"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsApplianceModalOpen(false)}
-                  style={{ height: '36px', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 24px', borderRadius: '3px', fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', border: '1px solid #E6C36A', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,27,46,0.25)', transition: 'all 200ms ease', outline: 'none' }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                  className="flex items-center gap-2 h-[36px] px-6 rounded-[3px] text-[0.85rem] font-semibold text-white bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#E6C36A] cursor-pointer shadow-[0_2px_6px_rgba(15,27,46,0.25)] transition-all duration-200 ease outline-none hover:-translate-y-[1px]"
                 >
                   Save Changes
                 </button>

@@ -17,40 +17,28 @@ function UploadTile({ accept, index, type = 'image' }: { accept: string; index: 
   const isMain = index === 0
   const [isHovered, setIsHovered] = useState(false)
 
+  // Dynamic classes for border and background
+  const borderColor = isMain ? 'border-[#C89B3C]' : isHovered ? 'border-[#C89B3C]' : 'border-[#E4E7EC]'
+  const bgColor = isMain ? 'bg-[rgba(200,155,60,0.05)]' : isHovered ? 'bg-white' : 'bg-[#F5F7FA]'
+  const boxShadow = isHovered && !isMain ? 'shadow-[0_2px_8px_rgba(15,27,46,0.05)]' : ''
+  const iconColor = isMain ? 'text-[#C89B3C]' : isHovered ? 'text-[#C89B3C]' : 'text-[#667085]'
+  const textColor = isMain ? 'text-[#C89B3C]' : isHovered ? 'text-[#1C2A44]' : 'text-[#667085]'
+  const fontWeight = isMain ? 'font-bold' : 'font-medium'
+
   return (
     <div
       onClick={() => inputRef.current?.click()}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{
-        border: `1px dashed ${isMain ? '#C89B3C' : isHovered ? '#C89B3C' : '#E4E7EC'}`,
-        borderRadius: '3px',
-        height: '42px',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px',
-        cursor: 'pointer',
-        background: isMain ? 'rgba(200,155,60,0.05)' : isHovered ? '#FFFFFF' : '#F5F7FA',
-        transition: 'all 200ms ease',
-        position: 'relative',
-        boxShadow: isHovered && !isMain ? '0 2px 8px rgba(15, 27, 46, 0.05)' : 'none'
-      }}
+      className={`border-dashed border ${borderColor} rounded-[3px] h-[42px] flex flex-row items-center justify-center gap-2 cursor-pointer ${bgColor} transition-all duration-200 relative ${boxShadow}`}
     >
-      <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
-      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: isMain ? '#C89B3C' : isHovered ? '#C89B3C' : '#667085', transition: 'color 200ms ease' }}>
+      <input ref={inputRef} type="file" accept={accept} className="hidden" />
+      <span className={`flex items-center justify-center ${iconColor} transition-colors duration-200`}>
         {type === 'image' && <Camera size={16} strokeWidth={isMain ? 2.5 : 2} />}
         {type === 'video' && <Video size={16} strokeWidth={isMain ? 2.5 : 2} />}
         {type === 'document' && <FileText size={16} strokeWidth={isMain ? 2.5 : 2} />}
       </span>
-      <span style={{
-        fontSize: '0.8rem',
-        fontWeight: isMain ? 700 : 500,
-        color: isMain ? '#C89B3C' : isHovered ? '#1C2A44' : '#667085',
-        letterSpacing: '-0.01em',
-        transition: 'color 200ms ease'
-      }}>
+      <span className={`text-[0.8rem] ${fontWeight} ${textColor} tracking-[-0.01em] transition-colors duration-200`}>
         {isMain ? 'Main Cover' : `Slot ${index + 1}`}
       </span>
     </div>
@@ -62,19 +50,24 @@ function UploadZone({ label, description, accept, note, isMultiple = true }: Upl
   const [isHovered, setIsHovered] = useState(false)
 
   const type = accept.includes('video') ? 'video' : accept.includes('pdf') ? 'document' : 'image'
+  const borderColor = isHovered ? 'border-[#C89B3C]' : 'border-[#E4E7EC]'
+  const bgColor = isHovered ? 'bg-white' : 'bg-transparent'
+  const textColor = isHovered ? 'text-[#1C2A44]' : 'text-[#667085]'
+  const boxShadow = isHovered ? 'shadow-[0_2px_8px_rgba(15,27,46,0.05)]' : ''
+  const plusColor = isHovered ? '#C89B3C' : '#667085'
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+    <div className="flex flex-col gap-3 w-full font-sans">
+      <label className="text-[0.85rem] font-semibold text-[#1C2A44]">{label}</label>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+      <div className="grid grid-cols-2 gap-2">
         {isMultiple ? (
           <>
             <UploadTile accept={accept} index={0} type={type} />
             <UploadTile accept={accept} index={1} type={type} />
           </>
         ) : (
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="col-span-2">
             <UploadTile accept={accept} index={0} type={type} />
           </div>
         )}
@@ -85,26 +78,16 @@ function UploadZone({ label, description, accept, note, isMultiple = true }: Upl
         onClick={() => addMoreRef.current?.click()}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-          height: '42px', borderRadius: '3px',
-          border: `1px dashed ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
-          background: isHovered ? '#FFFFFF' : 'transparent',
-          color: isHovered ? '#1C2A44' : '#667085',
-          fontSize: '0.8rem', fontWeight: 600,
-          cursor: 'pointer', transition: 'all 200ms ease',
-          width: '100%', outline: 'none',
-          boxShadow: isHovered ? '0 2px 8px rgba(15, 27, 46, 0.05)' : 'none'
-        }}
+        className={`flex items-center justify-center gap-2 h-[42px] rounded-[3px] border-dashed border ${borderColor} ${bgColor} ${textColor} text-[0.8rem] font-semibold cursor-pointer transition-all duration-200 w-full outline-none ${boxShadow}`}
       >
-        <input ref={addMoreRef} type="file" accept={accept} multiple style={{ display: 'none' }} />
-        <Plus size={16} strokeWidth={2.5} color={isHovered ? '#C89B3C' : '#667085'} style={{ transition: 'color 200ms ease' }} />
+        <input ref={addMoreRef} type="file" accept={accept} multiple className="hidden" />
+        <Plus size={16} strokeWidth={2.5} color={plusColor} style={{ transition: 'color 200ms ease' }} />
         {description}
       </button>
 
       {note && (
-        <p style={{ fontSize: '0.75rem', color: '#A0AAB8', margin: '0', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', background: '#C89B3C' }} />
+        <p className="text-[0.75rem] text-[#A0AAB8] m-0 font-medium flex items-center gap-1">
+          <span className="inline-block w-1 h-1 rounded-full bg-[#C89B3C]" />
           {note}
         </p>
       )}
@@ -132,8 +115,7 @@ export default function UploadPhotosMobile() {
 
   return (
     <FormPage title="Property Gallery" icon={<Library size={20} color="#E6C36A" />} onBack={back} onNext={handleNext}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
-
+      <div className="flex flex-col gap-4 font-sans">
         {/* IMAGES */}
         <SectionCard title="Property Photos" icon={<ImageIcon size={14} />}>
           <UploadZone
@@ -180,7 +162,6 @@ export default function UploadPhotosMobile() {
             />
           </SectionCard>
         )}
-
       </div>
     </FormPage>
   )

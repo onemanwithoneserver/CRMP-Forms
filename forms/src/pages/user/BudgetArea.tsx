@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
@@ -20,34 +20,12 @@ function NumericField({
   prefix?: string
   suffix?: string
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-
-  if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
-      <div style={{ position: 'relative', width: '100%' }}>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      {label && <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>}
+      <div className="relative w-full">
         {prefix && (
-          <span 
-            style={{ 
-              position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', 
-              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.85rem', fontWeight: 600, 
-              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
-            }}
-          >
+          <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.85rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
             {prefix}
           </span>
         )}
@@ -56,37 +34,18 @@ function NumericField({
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          style={{
-            width: '100%',
-            height: '34px',
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingLeft: prefix ? '24px' : '10px',
-            paddingRight: suffix ? '44px' : '10px', // Wider padding to accommodate "sq ft"
-            fontSize: '0.85rem',
-            fontWeight: 500,
-            color: '#1C2A44',
-            background: background,
-            border: `1px solid ${borderColor}`,
-            borderRadius: '3px',
-            outline: 'none',
-            transition: 'all 250ms ease-in-out',
-            boxShadow: shadow,
-            boxSizing: 'border-box',
-          }}
+          className={`
+            peer w-full h-[34px] py-0 text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] 
+            border border-[#E4E7EC] rounded-[3px] outline-none box-border
+            transition-all duration-250 ease-in-out
+            hover:bg-white hover:border-[#E6C36A] 
+            focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]
+            ${prefix ? 'pl-[24px]' : 'pl-[10px]'}
+            ${suffix ? 'pr-[44px]' : 'pr-[10px]'}
+          `}
         />
         {suffix && (
-          <span 
-            style={{ 
-              position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', 
-              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.8rem', fontWeight: 600, 
-              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
-            }}
-          >
+          <span className="absolute right-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.8rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
             {suffix}
           </span>
         )}
@@ -110,10 +69,10 @@ export default function BudgetArea() {
       onNext={next}
       icon={<Wallet size={20} color="#E6C36A" />}
     >
-      <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
+      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
         
         <SectionCard title="Budget Range" icon={<Banknote size={14} />}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
             <NumericField
               label="Minimum Budget"
               value={formData.budgetMin}
@@ -132,7 +91,7 @@ export default function BudgetArea() {
         </SectionCard>
 
         <SectionCard title="Area Preference" icon={<Ruler size={14} />}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
             <NumericField
               label="Minimum Area"
               value={formData.areaMin}

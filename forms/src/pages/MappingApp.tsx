@@ -53,49 +53,21 @@ export default function MappingApp() {
 
   if (!StepComponent) {
     return (
-      <div 
-        style={{ 
-          padding: '40px', 
-          textAlign: 'center', 
-          fontFamily: "'Outfit', sans-serif",
-          color: '#667085',
-          background: '#F5F7FA',
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '4px', border: '1px solid #E4E7EC', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-           <strong>Configuration Error:</strong> Component not bound for key: <code style={{ color: '#C89B3C' }}>{currentStepData.key}</code>
+      <div className="flex items-center justify-center h-screen w-full bg-[#F5F7FA] p-10 text-center font-['Outfit',sans-serif] text-[#667085]">
+        <div className="bg-white p-6 rounded border border-[#E4E7EC] shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+          <strong className="font-bold">Configuration Error:</strong> Component not bound for key:{' '}
+          <code className="text-[#C89B3C] font-mono">{currentStepData.key}</code>
         </div>
       </div>
     )
   }
 
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: '100%', 
-        overflow: 'hidden', 
-        background: '#F5F7FA',
-        fontFamily: "'Outfit', sans-serif"
-      }}
-    >
+    <div className="flex flex-col h-full overflow-hidden bg-[#F5F7FA] font-['Outfit',sans-serif]">
       {/* Premium Step Navigation Bar */}
       {!state.designStepOverride && (
-        <div 
-          style={{ 
-            background: '#FFFFFF', 
-            padding: '12px 16px', 
-            borderBottom: '1px solid #E4E7EC',
-            boxShadow: '0 2px 8px rgba(15, 27, 46, 0.03)',
-            zIndex: 50
-          }}
-        >
-          <div style={{ maxWidth: '896px', margin: '0 auto' }}>
+        <div className="z-50 bg-white py-3 px-4 border-b border-[#E4E7EC] shadow-[0_2px_8px_rgba(15,27,46,0.03)]">
+          <div className="max-w-[896px] mx-auto">
             <StepHeader
               steps={steps}
               currentStep={state.step}
@@ -106,13 +78,7 @@ export default function MappingApp() {
       )}
 
       {/* Main Content Area */}
-      <div 
-        style={{ 
-          flex: 1, 
-          overflow: 'hidden',
-          position: 'relative'
-        }}
-      >
+      <div className="relative flex-1 overflow-hidden">
         <StepComponent key={state.step} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from '../../context/FormContext'
 import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
@@ -19,49 +19,15 @@ function NumericField({
   onChange: (v: string) => void
   placeholder?: string
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-
-  if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
       <input
         type="number"
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        style={{
-          width: '100%',
-          height: '34px',
-          padding: '0 10px',
-          fontSize: '0.85rem',
-          fontWeight: 500,
-          color: '#1C2A44',
-          background: background,
-          border: `1px solid ${borderColor}`,
-          borderRadius: '3px',
-          outline: 'none',
-          transition: 'all 250ms ease-in-out',
-          boxShadow: shadow,
-          boxSizing: 'border-box',
-        }}
+        className="w-full h-[34px] px-[10px] text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded-[3px] outline-none box-border transition-all duration-250 ease-in-out hover:bg-white hover:border-[#E6C36A] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
       />
     </div>
   )
@@ -107,16 +73,16 @@ export default function Facilities() {
 
     if (isMobile) {
       return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '6px 0', fontFamily: "'Outfit', sans-serif" }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
-          <div style={{ width: '120px' }}>{control}</div>
+        <div className="flex items-center justify-between w-full py-1.5 font-['Outfit',sans-serif]">
+          <label className="text-[0.85rem] font-semibold text-[#1C2A44]">{label}</label>
+          <div className="w-[120px]">{control}</div>
         </div>
       )
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-        <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+      <div className="flex flex-col gap-2 w-full font-['Outfit',sans-serif]">
+        <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
         <div>{control}</div>
       </div>
     )
@@ -124,18 +90,18 @@ export default function Facilities() {
 
   return (
     <FormPage title="Facilities" icon={<Settings size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
+      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
 
         {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (
           <SectionCard title="Parking Details" icon={<Car size={14} />}>
             {isMobile ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="flex flex-col gap-3">
                 {renderVerticalBoolean('Designated parking', 'designatedParking')}
                 
-                <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+                <div className="h-px w-full bg-[#E4E7EC]" />
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid grid-cols-2 gap-3">
                   <NumericField label="No. of parkings" value={d.noOfParkings} onChange={v => onUpdate({ noOfParkings: v })} />
                   <Dropdown
                     label="Visitor parking"
@@ -147,7 +113,7 @@ export default function Facilities() {
                 </div>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              <div className="grid grid-cols-3 gap-4">
                 {renderVerticalBoolean('Designated parking', 'designatedParking')}
                 <NumericField label="No. of parkings" value={d.noOfParkings} onChange={v => onUpdate({ noOfParkings: v })} />
                 <Dropdown
@@ -165,12 +131,12 @@ export default function Facilities() {
         {/* SECTION: Facilities - Power */}
         <SectionCard title="Power & Electrical" icon={<Zap size={14} />}>
           {isMobile ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="flex flex-col gap-3">
               {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
               
-              <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+              <div className="h-px w-full bg-[#E4E7EC]" />
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div className="grid grid-cols-2 gap-3">
                 <NumericField label="Power load (kW)" value={d.powerLoad} onChange={v => onUpdate({ powerLoad: v })} />
                 <Dropdown
                   label="Power phase"
@@ -182,7 +148,7 @@ export default function Facilities() {
               </div>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className="grid grid-cols-3 gap-4">
               {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
               <NumericField label="Power load (kW)" value={d.powerLoad} onChange={v => onUpdate({ powerLoad: v })} />
               <Dropdown
@@ -198,12 +164,12 @@ export default function Facilities() {
 
         {/* SECTIONS: Hygiene & Fire Safety — side by side on desktop */}
         {(show.washrooms || show.waterConnection || show.fireSprinklers) && (
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
+          <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2'}`}>
 
             {/* Facilities - Hygiene & Utilities */}
             {(show.washrooms || show.waterConnection) && (
               <SectionCard title="Hygiene & Utilities" icon={<Droplets size={14} />}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="flex flex-col gap-3">
                   {show.washrooms && (
                     <Dropdown
                       label="Washroom Configuration"
@@ -221,10 +187,10 @@ export default function Facilities() {
             {/* Facilities - Fire Safety */}
             {show.fireSprinklers && (
               <SectionCard title="Fire Safety" icon={<Flame size={14} />}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="flex flex-col gap-3">
                   {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
                   
-                  {isMobile && <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />}
+                  {isMobile && <div className="h-px w-full bg-[#E4E7EC]" />}
                   
                   {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
                 </div>

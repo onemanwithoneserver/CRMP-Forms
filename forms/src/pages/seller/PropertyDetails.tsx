@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import { Search, Building2, Plus, Building } from 'lucide-react'
@@ -16,95 +16,48 @@ function SelectionCard({
   onClick: () => void
   isAdd?: boolean
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  let bg = '#F5F7FA'
-  let border = '1px solid #E4E7EC'
-  let textColor = '#1C2A44'
-  let iconColor = '#667085'
-  let shadow = 'none'
-
-  if (selected) {
-    bg = 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)'
-    border = '1px solid #C89B3C'
-    textColor = '#FFFFFF'
-    iconColor = '#E6C36A'
-    shadow = '0 4px 12px rgba(15, 27, 46, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-  } else if (isHovered) {
-    bg = '#FFFFFF'
-    border = '1px solid #E6C36A'
-    iconColor = '#C89B3C'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.05)'
-  }
-
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
-        padding: '16px 20px',
-        width: '100%',
-        borderRadius: '4px',
-        background: bg,
-        border: border,
-        boxShadow: shadow,
-        cursor: 'pointer',
-        transition: 'all 250ms ease',
-        outline: 'none',
-        fontFamily: "'Outfit', sans-serif"
-      }}
+      className={`
+        group flex items-center gap-4 py-4 px-5 w-full rounded outline-none cursor-pointer transition-all duration-250 ease font-['Outfit',sans-serif]
+        ${selected 
+          ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#C89B3C] shadow-[0_4px_12px_rgba(15,27,46,0.15),inset_0_1px_0_rgba(255,255,255,0.05)] text-white' 
+          : 'bg-[#F5F7FA] border border-[#E4E7EC] hover:bg-white hover:border-[#E6C36A] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)] text-[#1C2A44]'
+        }
+      `}
     >
       <div
-        style={{
-          width: '20px',
-          height: '20px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          background: selected ? '#C89B3C' : '#FFFFFF',
-          border: selected ? '1px solid transparent' : `1px solid ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
-          transition: 'all 200ms ease',
-          boxShadow: selected ? '0 2px 4px rgba(200, 155, 60, 0.3)' : 'inset 0 1px 2px rgba(15,27,46,0.05)'
-        }}
+        className={`
+          w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ease border
+          ${selected 
+            ? 'bg-[#C89B3C] border-transparent shadow-[0_2px_4px_rgba(200,155,60,0.3)]' 
+            : 'bg-white border-[#E4E7EC] group-hover:border-[#C89B3C] shadow-[inset_0_1px_2px_rgba(15,27,46,0.05)]'
+          }
+        `}
       >
         {selected && (
-          <div
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#FFFFFF',
-              boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
-            }}
-          />
+          <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
         )}
       </div>
 
-      <span
-        style={{
-          flex: 1,
-          textAlign: 'left',
-          fontSize: '0.95rem',
-          fontWeight: 700,
-          color: textColor,
-          letterSpacing: '-0.01em',
-          transition: 'color 200ms ease'
-        }}
-      >
+      <span className="flex-1 text-left text-[0.95rem] font-bold tracking-[-0.01em] transition-colors duration-200 ease">
         {title}
       </span>
 
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', color: iconColor, transition: 'color 200ms ease' }}>
+      <div 
+        className={`relative flex items-center justify-center w-7 h-7 transition-colors duration-200 ease ${
+          selected ? 'text-[#E6C36A]' : 'text-[#667085] group-hover:text-[#C89B3C]'
+        }`}
+      >
         <Icon size={24} strokeWidth={1.5} />
         {isAdd && (
-          <div style={{ position: 'absolute', bottom: '-4px', right: '-4px', background: selected ? '#C89B3C' : isHovered ? '#C89B3C' : '#E4E7EC', color: '#FFFFFF', borderRadius: '50%', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 200ms ease' }}>
+          <div 
+            className={`absolute -bottom-1 -right-1 text-white rounded-full p-0.5 flex items-center justify-center transition-all duration-200 ease ${
+              selected ? 'bg-[#C89B3C]' : 'bg-[#E4E7EC] group-hover:bg-[#C89B3C]'
+            }`}
+          >
             <Plus size={10} strokeWidth={3} />
           </div>
         )}
@@ -117,9 +70,6 @@ export default function PropertyDetails() {
   const { state, dispatch, next, back } = useForm()
   const { buildingSelection, buildingName } = state.formData
 
-  const [isSearchHovered, setIsSearchHovered] = useState(false)
-  const [isSearchFocused, setIsSearchFocused] = useState(false)
-
   const onUpdate = (payload: Partial<typeof state.formData>) => {
     dispatch({ type: 'updateData', payload })
   }
@@ -131,40 +81,22 @@ export default function PropertyDetails() {
       onNext={next}
       icon={<Building size={20} color="#E6C36A" />}
     >
-      <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px', fontFamily: "'Outfit', sans-serif" }}>
+      <div className="max-w-[720px] mx-auto flex flex-col gap-5 font-['Outfit',sans-serif]">
         
-        <div style={{ position: 'relative', width: '100%' }}>
+        <div className="relative w-full">
           <input
             type="text"
             placeholder="Search Building Name"
             value={buildingName}
             onChange={(e) => onUpdate({ buildingName: e.target.value })}
-            onMouseEnter={() => setIsSearchHovered(true)}
-            onMouseLeave={() => setIsSearchHovered(false)}
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setIsSearchFocused(false)}
-            style={{
-              width: '100%',
-              height: '44px',
-              padding: '0 44px 0 16px',
-              fontSize: '0.95rem',
-              fontWeight: 500,
-              color: '#1C2A44',
-              background: isSearchFocused ? '#FFFFFF' : isSearchHovered ? '#FFFFFF' : '#F5F7FA',
-              border: `1px solid ${isSearchFocused ? '#C89B3C' : isSearchHovered ? '#E6C36A' : '#E4E7EC'}`,
-              borderRadius: '4px',
-              outline: 'none',
-              transition: 'all 250ms ease-in-out',
-              boxShadow: isSearchFocused ? '0 4px 12px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)' : isSearchHovered ? '0 2px 8px rgba(15, 27, 46, 0.05)' : 'inset 0 1px 3px rgba(15, 27, 46, 0.03)',
-              boxSizing: 'border-box',
-            }}
+            className="peer w-full h-[44px] pl-4 pr-11 text-[0.95rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded outline-none box-border transition-all duration-250 ease-in-out shadow-[inset_0_1px_3px_rgba(15,27,46,0.03)] hover:bg-white hover:border-[#E6C36A] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_4px_12px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
           />
-          <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: isSearchFocused ? '#C89B3C' : '#667085', pointerEvents: 'none', transition: 'color 250ms ease', display: 'flex' }}>
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex pointer-events-none transition-colors duration-250 ease text-[#667085] peer-focus:text-[#C89B3C]">
             <Search size={18} strokeWidth={2} />
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div className="flex flex-col gap-3">
           <SelectionCard
             title="Select from Existing"
             icon={Building2}
@@ -182,7 +114,7 @@ export default function PropertyDetails() {
         </div>
 
         {state.errors.buildingSelection && (
-          <div style={{ padding: '10px 14px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '4px', color: '#EF4444', fontSize: '0.8rem', fontWeight: 500 }}>
+          <div className="py-2.5 px-3.5 bg-[#FEF2F2] border border-[#FECACA] rounded text-[#EF4444] text-[0.8rem] font-medium">
             {state.errors.buildingSelection}
           </div>
         )}

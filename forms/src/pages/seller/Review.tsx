@@ -1,32 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import { ClipboardCheck, Edit2 } from 'lucide-react'
 
 function EditButton({ onClick }: { onClick: () => void }) {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        padding: '4px 10px',
-        background: isHovered ? 'rgba(200, 155, 60, 0.1)' : 'transparent',
-        border: '1px solid transparent',
-        borderRadius: '3px',
-        color: isHovered ? '#E6C36A' : '#C89B3C',
-        fontSize: '0.75rem',
-        fontWeight: 700,
-        cursor: 'pointer',
-        transition: 'all 200ms ease',
-        outline: 'none',
-      }}
+      className="flex items-center gap-1 py-1 px-2.5 bg-transparent hover:bg-[#C89B3C]/10 border border-transparent rounded-[3px] text-[#C89B3C] hover:text-[#E6C36A] text-[0.75rem] font-bold cursor-pointer transition-all duration-200 ease outline-none"
     >
       <Edit2 size={12} />
       Edit
@@ -38,34 +20,14 @@ function SummarySection({ title, stepIndex, children }: { title: string; stepInd
   const { goToStep } = useForm()
   
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        background: '#FFFFFF', 
-        borderRadius: '4px', 
-        border: '1px solid #E4E7EC', 
-        boxShadow: '0 2px 8px rgba(15, 27, 46, 0.04)',
-        overflow: 'hidden',
-        fontFamily: "'Outfit', sans-serif"
-      }}
-    >
-      <div 
-        style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          background: '#F5F7FA', 
-          padding: '10px 14px', 
-          borderBottom: '1px solid #E4E7EC' 
-        }}
-      >
-        <h2 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1C2A44', margin: 0, letterSpacing: '-0.01em' }}>
+    <div className="flex flex-col bg-white rounded border border-[#E4E7EC] shadow-[0_2px_8px_rgba(15,27,46,0.04)] overflow-hidden font-['Outfit',sans-serif]">
+      <div className="flex justify-between items-center bg-[#F5F7FA] py-2.5 px-3.5 border-b border-[#E4E7EC]">
+        <h2 className="text-[0.9rem] font-bold text-[#1C2A44] m-0 tracking-[-0.01em]">
           {title}
         </h2>
         <EditButton onClick={() => goToStep(stepIndex)} />
       </div>
-      <div style={{ padding: '4px 14px' }}>
+      <div className="py-1 px-3.5">
         {children}
       </div>
     </div>
@@ -78,19 +40,11 @@ function Row({ label, value }: { label: string; value?: string | boolean | null 
   if (!displayVal || displayVal === '—') return null
   
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-start', 
-        padding: '8px 0', 
-        borderBottom: '1px solid rgba(228, 231, 236, 0.5)' 
-      }}
-    >
-      <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#667085', flexShrink: 0 }}>
+    <div className="flex justify-between items-start py-2 border-b border-[#E4E7EC]/50">
+      <span className="text-[0.8rem] font-medium text-[#667085] shrink-0">
         {label}
       </span>
-      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44', textAlign: 'right', paddingLeft: '16px', wordBreak: 'break-word' }}>
+      <span className="text-[0.85rem] font-semibold text-[#1C2A44] text-right pl-4 break-words">
         {String(displayVal)}
       </span>
     </div>
@@ -123,9 +77,9 @@ export default function Review() {
       isLastStep
       nextLabel="Submit listing"
     >
-      <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
+      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
           
           <SummarySection title="Post Type & Location" stepIndex={getStepIndex('post-type')}>
             <Row label="Property type" value={
@@ -213,7 +167,7 @@ export default function Review() {
 
         </div>
 
-        <div style={{ textAlign: 'center', padding: '16px', fontSize: '0.8rem', fontWeight: 500, color: '#667085', lineHeight: 1.6, marginTop: '8px' }}>
+        <div className="text-center p-4 text-[0.8rem] font-medium text-[#667085] leading-[1.6] mt-2">
           By submitting, you agree to our listing terms and confirm all information is accurate.
         </div>
 

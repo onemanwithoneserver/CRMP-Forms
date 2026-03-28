@@ -16,37 +16,23 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   const isMobile = device === 'mobile'
 
   return (
-    <div 
-      ref={sectionRef} 
-      className={`relative max-w-[896px] mx-auto w-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] font-['Outfit',_sans-serif] z-20 ${
-        isMobile ? '-mt-6 px-0' : '-mt-8 px-4'
-      }`}
+    <div
+      ref={sectionRef}
+      className={`relative max-w-[896px] mx-auto w-full transition-all duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] font-outfit z-20 ${isMobile ? '-mt-[24px] px-0' : '-mt-[32px] px-[16px]'}`}
     >
-      <div 
-        className={`bg-white shadow-[0_8px_32px_rgba(15,27,46,0.08),0_2px_8px_rgba(15,27,46,0.04)]  overflow-hidden ${
-          isMobile 
-            ? 'rounded-none border-y border-x-0 border-[#E4E7EC]' 
-            : 'rounded-[4px] border border-[#E4E7EC]'
-        }`}
+      <div
+        className={`bg-white shadow-[0_8px_32px_rgba(15,27,46,0.08),0_2px_8px_rgba(15,27,46,0.04)] overflow-hidden ${isMobile ? 'rounded-none border-y border-x-0 border-border' : 'rounded-[4px] border border-border'}`}
       >
-        <div className="h-1 w-full bg-gradient-to-r from-[#1C2A44] to-[#C89B3C]" />
-
-        <div className={isMobile ? 'p-4' : 'py-2 px-4'}>
-          <div className={`flex items-center gap-3 ${isMobile ? 'mb-4' : 'mb-4'}`}>
-            <div 
-              className={`rounded-[3px] bg-[#F5F7FA] border border-[#E4E7EC] flex items-center justify-center shadow-[inset_0_1px_0_#FFFFFF,0_1px_2px_rgba(15,27,46,0.05)] ${
-                isMobile ? 'w-8 h-8' : 'w-9 h-9'
-              }`}
-            >
+        <div className="h-[4px] w-full bg-gradient-to-r from-navy to-gold" />
+        <div className={isMobile ? 'p-[16px]' : 'py-[8px] px-[16px]'}>
+          <div className={`flex items-center gap-[12px] mb-[16px]`}>
+            <div className={`rounded-[3px] bg-[#F5F7FA] border border-border flex items-center justify-center shadow-[inset_0_1px_0_#FFFFFF,0_1px_2px_rgba(15,27,46,0.05)] ${isMobile ? 'w-8 h-8' : 'w-9 h-9'}`}>
               <LayoutGrid size={isMobile ? 16 : 18} color="#1C2A44" />
             </div>
-            <h2 className={`font-bold text-[#1C2A44] m-0 tracking-[-0.01em] ${
-              isMobile ? 'text-[1.05rem]' : 'text-[1.15rem]'
-            }`}>
+            <h2 className={`font-bold text-navy m-0 tracking-[-0.01em] ${isMobile ? 'text-[1.05rem]' : 'text-[1.15rem]'}`}>
               Select Property Type
             </h2>
           </div>
-
           {isMobile ? (
             <SelectPropertyTypeMobile propertyType={propertyType} />
           ) : (

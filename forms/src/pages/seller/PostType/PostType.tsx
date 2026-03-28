@@ -25,6 +25,7 @@ import { PropertyCard } from '../../../components/inputs/PropertyCard'
 import { OptionButton } from '../../../components/inputs/OptionButton'
 import { TextFieldModern as TextField } from '../../../components/inputs/TextFieldModern'
 import SelectPropertyType from './SelectPropertyType'
+import { BuildingInfoPanel } from './BuildingInfo'
 
 const COUNTRIES = ['India']
 const STATES = [
@@ -346,9 +347,26 @@ export default function PostType() {
             </div>
           </div>
 
+          {/* ─── Building Information Section ─── */}
+          <div className="px-2 md:px-4 mt-2 w-full">
+            <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
+
+              {/* Header */}
+              <div className="flex items-center gap-3 px-4 py-3 bg-[#1C2A44]">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-sm">
+                  <Building2 size={18} className="text-white" />
+                </div>
+                <h2 className="text-[1.1rem] font-bold text-white font-['Outfit'] tracking-tight">Building Information</h2>
+              </div>
+
+              <div className="p-3">
+                <BuildingInfoPanel />
+              </div>
+
+            </div>
+          </div>
         </div>
 
-        {/* ─── Bottom Footer (unified with FormPage) ─── */}
         <div className="w-full bg-white border-t border-[#edf0f5] px-3.5 py-2.5 z-50 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.04)] mt-auto">
           <button
             title="Save as Draft"

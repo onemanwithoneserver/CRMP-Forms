@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
+  Building2,
   Compass,
-  Globe,
   MapPin,
   Navigation,
   X,
@@ -12,7 +12,8 @@ import { useForm } from '../../../context/FormContext'
 import { Dropdown } from '../../../components/inputs/Dropdown'
 import { TextFieldModern as TextField } from '../../../components/inputs/TextFieldModern'
 
-const COUNTRIES = ['India']
+
+const COUNTRIES = ['India', 'UAE', 'USA', 'UK', 'Others']
 const STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
   'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
@@ -29,6 +30,18 @@ const CORPORATIONS = [
 ]
 const CIRCLES = ['Circle 1', 'Circle 2', 'Circle 3', 'Circle 4', 'Circle 5', 'Circle 6']
 const ORR_ZONING_OPTIONS = ['ORR – Inner', 'ORR – Outer', 'ORR – On Ring Road', 'Beyond ORR']
+const BUILDING_TYPE_LABELS: Record<string, string> = {
+  independent_commercial: 'Independent Commercial Building',
+  semi_commercial: 'Semi-Commercial / Residential',
+  commercial_complex: 'Commercial Complex',
+  mall_retail: 'Mall (Retail only)',
+  mall_office: 'Mall with Office',
+  pure_office: 'Pure Office Building',
+  industrial: 'Industrial / Warehouse Facility',
+  institutional: 'Institutional Building',
+  institutional_mixed: 'Institutional Mixed-Use Building',
+  temporary: 'Temporary Commercial Structure',
+}
 
 interface LocationProps {
   sectionRef: React.RefObject<HTMLDivElement | null>
@@ -39,9 +52,14 @@ interface LocationProps {
 interface MapDialogProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: (lat: string, lng: string) => void
+  onConfirm: (lat: string, lng: string, country: string, state: string, zone: string, corporation: string, circle: string) => void
   initialLat: string
   initialLng: string
+  initialCountry: string
+  initialState: string
+  initialZone: string
+  initialCorporation: string
+  initialCircle: string
 }
 
 function MapDialog({
@@ -50,9 +68,19 @@ function MapDialog({
   onConfirm,
   initialLat,
   initialLng,
+  initialCountry,
+  initialState,
+  initialZone,
+  initialCorporation,
+  initialCircle,
 }: MapDialogProps) {
   const [lat, setLat] = useState(initialLat)
   const [lng, setLng] = useState(initialLng)
+  const [country, setCountry] = useState(initialCountry)
+  const [stateVal, setStateVal] = useState(initialState)
+  const [zone, setZone] = useState(initialZone)
+  const [corporation, setCorporation] = useState(initialCorporation)
+  const [circle, setCircle] = useState(initialCircle)
   const [pinPosition, setPinPosition] = useState<{ x: number; y: number } | null>(null)
   const [fetching, setFetching] = useState(false)
   const [error, setError] = useState('')
@@ -63,6 +91,11 @@ function MapDialog({
     if (isOpen) {
       setLat(initialLat)
       setLng(initialLng)
+      setCountry(initialCountry)
+      setStateVal(initialState)
+      setZone(initialZone)
+      setCorporation(initialCorporation)
+      setCircle(initialCircle)
       setPinPosition(null)
       setFetching(false)
       setError('')
@@ -156,7 +189,7 @@ function MapDialog({
         <div
           ref={mapRef}
           onClick={handleMapClick}
-          className="relative w-full overflow-hidden select-none cursor-pointer flex-1 min-h-[360px]"
+          className="relative w-full overflow-hidden select-none cursor-pointer flex-1 min-h-[220px]"
           role="application"
           aria-label="Map canvas – click to place pin"
         >
@@ -199,6 +232,92 @@ function MapDialog({
           </svg>
         </div>
 
+        {/* ── Location Fields Grid ─────────────────────────────────── */}
+        <div className="px-4 py-3 border-t border-[#F1F5F9] bg-[#FAFBFC] shrink-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Latitude</label>
+              <input
+                type="text"
+                value={lat}
+                onChange={e => { setLat(e.target.value); setError('') }}
+                placeholder="e.g. 17.41898"
+                className="h-[32px] w-full px-2.5 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Longitude</label>
+              <input
+                type="text"
+                value={lng}
+                onChange={e => { setLng(e.target.value); setError('') }}
+                placeholder="e.g. 78.34377"
+                className="h-[32px] w-full px-2.5 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Country</label>
+              <select
+                aria-label="Country"
+                value={country}
+                onChange={e => setCountry(e.target.value)}
+                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+              >
+                <option value="">Select country</option>
+                {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">State</label>
+              <select
+                aria-label="State"
+                value={stateVal}
+                onChange={e => setStateVal(e.target.value)}
+                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+              >
+                <option value="">Select state</option>
+                {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Zone</label>
+              <select
+                aria-label="Zone"
+                value={zone}
+                onChange={e => setZone(e.target.value)}
+                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+              >
+                <option value="">Select zone</option>
+                {ZONES.map(z => <option key={z} value={z}>{z}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Corporation</label>
+              <select
+                aria-label="Corporation"
+                value={corporation}
+                onChange={e => setCorporation(e.target.value)}
+                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+              >
+                <option value="">Select corporation</option>
+                {CORPORATIONS.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Circle</label>
+              <select
+                aria-label="Circle"
+                value={circle}
+                onChange={e => setCircle(e.target.value)}
+                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+              >
+                <option value="">Select circle</option>
+                {CIRCLES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
         {error && (
           <div className="flex items-center gap-1.5 px-4 py-2 bg-[#FEF2F2] border-t border-[#FECACA] text-[12px] font-['Outfit'] text-[#DC2626] shrink-0">
             <AlertCircle size={13} />
@@ -217,9 +336,8 @@ function MapDialog({
           </button>
           <button
             type="button"
-            onClick={() => onConfirm(lat, lng)}
-            disabled={!canConfirm}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] bg-[#0F172A] text-white hover:bg-[#1E293B] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            onClick={() => onConfirm(lat, lng, country, stateVal, zone, corporation, circle)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] bg-[#0F172A] text-white hover:bg-[#1E293B] transition-colors"
           >
             <Check size={13} />
             Confirm Location
@@ -244,8 +362,8 @@ export default function Location({ sectionRef }: LocationProps) {
   const openMap = () => { setMapOpen(true) }
   const closeMap = () => { setMapOpen(false) }
 
-  const handleMapConfirm = (lat: string, lng: string) => {
-    update({ latitude: lat, longitude: lng })
+  const handleMapConfirm = (lat: string, lng: string, country: string, state: string, zone: string, corporation: string, circle: string) => {
+    update({ latitude: lat, longitude: lng, country, state, zone, corporation, circle })
     closeMap()
   }
 
@@ -257,6 +375,11 @@ export default function Location({ sectionRef }: LocationProps) {
         onConfirm={handleMapConfirm}
         initialLat={fd.latitude}
         initialLng={fd.longitude}
+        initialCountry={fd.country || 'India'}
+        initialState={fd.state}
+        initialZone={fd.zone}
+        initialCorporation={fd.corporation}
+        initialCircle={fd.circle}
       />
 
       <div ref={sectionRef} className="px-2 md:px-3 mt-3 md:mt-4 w-full">
@@ -274,59 +397,25 @@ export default function Location({ sectionRef }: LocationProps) {
 
           <div className="p-3 md:p-4 space-y-3 md:space-y-4">
 
-            {/* ── Row 1 – Map Actions & Coordinates ─────────────────────── */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 md:gap-3 items-end">
-              <div className="flex flex-col gap-1 w-full">
-                <label className="text-[12px] font-medium text-[#475569] pl-0.5 font-['Outfit']">
-                  Map Location
-                </label>
-                <button
-                  type="button"
-                  onClick={openMap}
-                  className="h-[34px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#BFDBFE] bg-[#EFF6FF] text-[13px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-150 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
-                >
-                  <MapPin size={14} className="shrink-0 text-[#C89B3C]" />
-                  {fd.latitude && fd.longitude
-                    ? `${fd.latitude}, ${fd.longitude}`
-                    : 'Select Location on Map'}
-                  {fd.latitude && fd.longitude && (
-                    <span className="ml-auto text-[11px] font-normal text-[#64748B]">Change</span>
-                  )}
-                </button>
-              </div>
-              <TextField
-                label="Latitude"
-                value={fd.latitude}
-                placeholder="e.g. 17.41898"
-                onChange={val => update({ latitude: val })}
-              />
-              <TextField
-                label="Longitude"
-                value={fd.longitude}
-                placeholder="e.g. 78.34377"
-                onChange={val => update({ longitude: val })}
-              />
+            {/* ── Row 1 – Map Actions ────────────────────────────────────── */}
+            <div className="flex flex-col gap-1 w-full">
+              <label className="text-[12px] font-medium text-[#475569] pl-0.5 font-['Outfit']">
+                Map Location
+              </label>
+              <button
+                type="button"
+                onClick={openMap}
+                className="h-[34px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#BFDBFE] bg-[#EFF6FF] text-[13px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-150 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+              >
+                <MapPin size={14} className="shrink-0 text-[#C89B3C]" />
+                Select Location on Map
+              </button>
             </div>
 
             <div className="h-px w-full bg-[#F1F5F9]" />
 
             {/* ── Row 2 – Administrative Details ────────────────────────── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
-              <Dropdown
-                label="Country"
-                value={fd.country || 'India'}
-                options={COUNTRIES}
-                placeholder="Select country"
-                onChange={val => update({ country: val })}
-              />
-              <Dropdown
-                label="State"
-                value={fd.state}
-                options={STATES}
-                placeholder="Select state"
-                searchable
-                onChange={val => update({ state: val })}
-              />
+            <div className="grid grid-cols-2 gap-2.5 md:gap-3">
               <TextField
                 label="City"
                 value={fd.city}
@@ -344,7 +433,7 @@ export default function Location({ sectionRef }: LocationProps) {
             <div className="h-px w-full bg-[#F1F5F9]" />
 
             {/* ── Row 3 – Location Details ───────────────────────────────── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
+            <div className="grid grid-cols-2 gap-2.5 md:gap-3">
               <TextField
                 label="Location / Road"
                 value={fd.location}
@@ -357,27 +446,12 @@ export default function Location({ sectionRef }: LocationProps) {
                 placeholder="e.g. Financial District"
                 onChange={val => update({ microLocation: val })}
               />
-              <Dropdown
-                label="Zone"
-                value={fd.zone}
-                options={ZONES}
-                placeholder="Select zone"
-                onChange={val => update({ zone: val })}
-              />
-              <Dropdown
-                label="Corporation"
-                value={fd.corporation}
-                options={CORPORATIONS}
-                placeholder="Select corporation"
-                searchable
-                onChange={val => update({ corporation: val })}
-              />
             </div>
 
             <div className="h-px w-full bg-[#F1F5F9]" />
 
             {/* ── Row 4 – Additional Zoning Details ─────────────────────── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3 items-end">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-3 items-end">
               <Dropdown
                 label="ORR Zoning"
                 value={fd.orrZoning}
@@ -391,14 +465,6 @@ export default function Location({ sectionRef }: LocationProps) {
                 placeholder="Optional"
                 onChange={val => update({ colonyLayout: val })}
               />
-              <Dropdown
-                label="Circle"
-                value={fd.circle}
-                options={CIRCLES}
-                placeholder="Select circle"
-                onChange={val => update({ circle: val })}
-              />
-              {/* Add ORR Zoning */}
               <TextField
                 label="Pincode"
                 value={fd.pincode}
@@ -409,6 +475,38 @@ export default function Location({ sectionRef }: LocationProps) {
 
           </div>
         </div>
+
+        {/* ── Building Information ──────────────────────────────────────── */}
+        <div className="bg-white rounded-[7px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E2E8F0] overflow-hidden mt-3 md:mt-4">
+          <div className="bg-gradient-to-r from-[#F8FAFC] to-white border-b border-[#F1F5F9] px-3 py-2.5 md:px-4 md:py-3 flex items-center gap-2 md:gap-2.5">
+            <div className="w-6 h-6 md:w-7 md:h-7 rounded-[7px] bg-white flex items-center justify-center border border-[#E2E8F0] shadow-sm">
+              <Building2 size={15} className="text-[#475569]" />
+            </div>
+            <h2 className="text-[14px] font-semibold text-[#0F172A] font-['Outfit'] leading-tight">
+              Building Information
+            </h2>
+          </div>
+          <div className="p-3 md:p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
+              {[
+                { label: 'Building Type', value: BUILDING_TYPE_LABELS[fd.buildingType] ?? fd.buildingType },
+                { label: 'Building Name', value: fd.buildingName },
+                { label: 'Total Floors',  value: fd.totalFloors },
+                { label: 'Address',       value: fd.address },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex flex-col gap-1">
+                  <span className="text-[11px] font-medium text-[#64748B] font-['Outfit']">{label}</span>
+                  <div className={`h-[34px] px-2.5 flex items-center rounded-[6px] border text-[12px] font-['Outfit'] truncate ${
+                    value ? 'bg-white border-[#E2E8F0] text-[#0F172A] font-medium' : 'bg-[#F8FAFC] border-[#F1F5F9] text-[#94A3B8]'
+                  }`}>
+                    {value || '—'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
       </div>
     </>
   )

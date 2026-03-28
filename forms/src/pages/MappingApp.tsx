@@ -7,7 +7,7 @@ import Review from './seller/Review'
 
 import PropertyType from './seller/PropertyType'
 import PropertyDetails from './seller/PropertyDetails'
-import BuildingInfo from './seller/BuildingInfo'
+import BuildingInfo from './seller/PostType/BuildingInfo'
 import LocationPricing from './seller/LocationPricing'
 
 import UnitDetails from './seller/UnitDetails'

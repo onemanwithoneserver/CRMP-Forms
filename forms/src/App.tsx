@@ -10,12 +10,13 @@ function Header() {
 
   const sellerPages = [
     { key: 'post-type', label: '1. Post Type' },
-    { key: 'unit-details', label: '2. Unit Details' },
-    { key: 'facilities', label: '3. Facilities' },
-    { key: 'upload-photos', label: '4. Media' },
-    { key: 'lease-info', label: '5. Lease Information' },
-    { key: 'transaction-details', label: '5. Transactional Details' },
-    { key: 'review', label: '6. Review' },
+    { key: 'building-info', label: '2. Building Info' },
+    { key: 'unit-details', label: '3. Unit Details' },
+    { key: 'facilities', label: '4. Facilities' },
+    { key: 'upload-photos', label: '5. Media' },
+    { key: 'lease-info', label: '6. Lease Information' },
+    { key: 'transaction-details', label: '6. Transactional Details' },
+    { key: 'review', label: '7. Review' },
   ]
 
   return (

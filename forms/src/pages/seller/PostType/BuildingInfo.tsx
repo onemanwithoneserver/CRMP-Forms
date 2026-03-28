@@ -226,7 +226,7 @@ function YesNoRow({ label, status, value, onChange, isMobile = false, colSpan = 
 }) {
   if (isMobile) {
     return (
-      <div className="col-span-4 flex items-center justify-between gap-3 py-[5px] border-b border-[var(--border-light)] last:border-b-0">
+      <div className="col-span-4 flex items-center justify-between gap-3 py-[5px] last:border-b-0">
         <div className="flex items-center gap-1 min-w-0">
           <span className="text-[0.78rem] font-[600] text-[var(--text)] leading-snug">{label}</span>
           {status === 'M' && <span className="text-[#e53e3e] text-[10px] leading-none font-[700] flex-shrink-0">*</span>}
@@ -248,9 +248,14 @@ function YesNoRow({ label, status, value, onChange, isMobile = false, colSpan = 
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="col-span-4 flex items-center gap-2 pt-1 pb-0.5 border-b border-[var(--border-light)] mb-0">
-      <span className="text-[0.72rem] font-[700] tracking-[0.07em] text-[var(--text-secondary)] ">{children}</span>
-    </div>
+    <h3 className="col-span-4 flex items-center gap-2 pt-1 pb-0.5 mb-0 text-[0.95rem] font-bold tracking-wide text-[var(--text-primary)] font-['Outfit']">
+      {/* Section icon (gray) */}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 12h8M12 8v8" />
+      </svg>
+      {children}
+    </h3>
   )
 }
 
@@ -397,7 +402,7 @@ export function BuildingInfoPanel() {
                       <button
                         key={b.id}
                         type="button"
-                        className="w-full text-left px-3 py-2 hover:bg-[var(--accent-gold-subtle)] transition-colors border-b border-[var(--border-light)] last:border-b-0 flex flex-col gap-0.5"
+                        className="w-full text-left px-3 py-2 hover:bg-[var(--accent-gold-subtle)] transition-colors last:border-b-0 flex flex-col gap-0.5"
                         onClick={() => selectBuilding(b)}
                       >
                         <span className="text-[0.78rem] font-[600] text-[var(--text)]">{b.name}</span>

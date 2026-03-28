@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from '../../context/FormContext'
 import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
-import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
-import { Banknote, Tag, ClipboardList } from 'lucide-react'
+import { Banknote, Tag } from 'lucide-react'
 
 const SALE_TYPES = [
   { label: 'Vacant Space', value: 'Vacant Space' },
@@ -25,6 +24,157 @@ const INDUSTRY_CATEGORIES = [
   'E-commerce', 'Real Estate', 'Telecom', 'Media', 'Others',
 ]
 
+// Reusable numeric field with independent hover states
+function NumericField({
+  label,
+  value,
+  onChange,
+  placeholder = '0',
+  prefix,
+  suffix,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  prefix?: string
+  suffix?: string
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+
+  let borderColor = '#E4E7EC'
+  let background = '#F5F7FA'
+  let shadow = 'none'
+
+  if (isFocused) {
+    borderColor = '#C89B3C'
+    background = '#FFFFFF'
+    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
+  } else if (isHovered) {
+    borderColor = '#E6C36A'
+    background = '#FFFFFF'
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+      <div style={{ position: 'relative', width: '100%' }}>
+        {prefix && (
+          <span 
+            style={{ 
+              position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', 
+              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.85rem', fontWeight: 600, 
+              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
+            }}
+          >
+            {prefix}
+          </span>
+        )}
+        <input
+          type="number"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder={placeholder}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          style={{
+            width: '100%',
+            height: '34px',
+            paddingTop: 0,
+            paddingBottom: 0,
+            paddingLeft: prefix ? '24px' : '10px',
+            paddingRight: suffix ? '28px' : '10px',
+            fontSize: '0.85rem',
+            fontWeight: 500,
+            color: '#1C2A44',
+            background: background,
+            border: `1px solid ${borderColor}`,
+            borderRadius: '3px',
+            outline: 'none',
+            transition: 'all 250ms ease-in-out',
+            boxShadow: shadow,
+            boxSizing: 'border-box',
+          }}
+        />
+        {suffix && (
+          <span 
+            style={{ 
+              position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', 
+              color: isFocused ? '#C89B3C' : '#667085', fontSize: '0.8rem', fontWeight: 600, 
+              pointerEvents: 'none', zIndex: 10, transition: 'color 250ms ease'
+            }}
+          >
+            {suffix}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function StringField({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+
+  let borderColor = '#E4E7EC'
+  let background = '#F5F7FA'
+  let shadow = 'none'
+
+  if (isFocused) {
+    borderColor = '#C89B3C'
+    background = '#FFFFFF'
+    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
+  } else if (isHovered) {
+    borderColor = '#E6C36A'
+    background = '#FFFFFF'
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        style={{
+          width: '100%',
+          height: '34px',
+          padding: '0 10px',
+          fontSize: '0.85rem',
+          fontWeight: 500,
+          color: '#1C2A44',
+          background: background,
+          border: `1px solid ${borderColor}`,
+          borderRadius: '3px',
+          outline: 'none',
+          transition: 'all 250ms ease-in-out',
+          boxShadow: shadow,
+          boxSizing: 'border-box',
+        }}
+      />
+    </div>
+  )
+}
+
+
 export default function TransactionDetails() {
   const { state, dispatch, next, back } = useForm()
   const { device } = useDevice()
@@ -38,43 +188,24 @@ export default function TransactionDetails() {
   const pType = d.propertyType || 'office'
   const saleType = d.postSubCategory || 'Vacant Space'
 
-  const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0', prefix?: string) => (
-    <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="relative group">
-        {prefix && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[0.8rem] font-medium pointer-events-none z-10">
-            {prefix}
-          </span>
-        )}
-        <input
-          type="number"
-          className={`form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 ${prefix ? 'pl-6' : 'px-3'} pr-3 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all`}
-          value={d[field] as string || ''}
-          onChange={e => onUpdate({ [field]: e.target.value })}
-          placeholder={placeholder}
-        />
-      </div>
-    </div>
-  )
-
   const renderNumericWithUnit = (label: string, valField: keyof typeof state.formData, unitField: keyof typeof state.formData) => (
-    <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="flex items-center gap-1.5">
-        <input
-          type="number"
-          className="form-input bg-white w-20 border-[#e2e6ec] rounded-[6px] py-1.5 px-3 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
-          value={d[valField] as string || ''}
-          onChange={e => onUpdate({ [valField]: e.target.value })}
-          placeholder="0"
-        />
-        <div className="flex-1 min-w-[100px]">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ flex: 1 }}>
+          <NumericField 
+            label="" 
+            value={d[valField] as string || ''} 
+            onChange={v => onUpdate({ [valField]: v })} 
+            placeholder="0" 
+          />
+        </div>
+        <div style={{ width: '110px' }}>
           <Dropdown
+            label=""
             value={(d[unitField] as string) || 'Months'}
             options={['Months', 'Years']}
             onChange={v => onUpdate({ [unitField]: v })}
-            variant="compact"
           />
         </div>
       </div>
@@ -84,155 +215,114 @@ export default function TransactionDetails() {
   const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => {
     const control = (
       <SegmentedControl
+        compact={!isMobile}
         options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-        value={d[field] as string || 'No'}
+        value={(d[field] as string) || 'No'}
         onChange={v => onUpdate({ [field]: v })}
       />
     )
 
     if (isMobile) {
       return (
-        <div className="flex flex-col items-start justify-start w-full py-1.5 px-0.5">
-          <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-          <div className="w-[110px]">{control}</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '6px 0', fontFamily: "'Outfit', sans-serif" }}>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+          <div style={{ width: '120px' }}>{control}</div>
         </div>
       )
     }
 
     return (
-      <div className="flex flex-col gap-2 w-full py-1.5 px-0.5">
-        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-        <div className="w-[110px]">{control}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+        <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
+        <div>{control}</div>
       </div>
     )
   }
 
   return (
-    <FormPage title="Transactional Details" icon={<Banknote size={22} />} onBack={back} onNext={next}>
-      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-4">
+    <FormPage title="Transactional Details" icon={<Banknote size={20} color="#E6C36A" />} onBack={back} onNext={next}>
+      <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
         
-        <SectionCard title="Sale Type & Pricing" icon={<Tag size={18} />}>
-          <div className="flex flex-col gap-6">
-            {/* Row 1: Availability Type */}
-            <div className="flex flex-col gap-2 max-w-md">
-              <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Availability Type</label>
-              <div className="h-[32px] flex items-center">
-                <SegmentedControl
-                  options={SALE_TYPES}
-                  value={saleType}
-                  onChange={v => onUpdate({ postSubCategory: v })}
-                />
-              </div>
+        <SectionCard title="Sale Type & Pricing" icon={<Tag size={14} />}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            
+            {/* Availability Type */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '400px' }}>
+              <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>Availability Type</label>
+              <SegmentedControl
+                options={SALE_TYPES}
+                value={saleType}
+                onChange={v => onUpdate({ postSubCategory: v })}
+              />
             </div>
 
-            {/* Middle Section: Dynamic Details */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+
+            {/* Dynamic Details Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', alignItems: 'end' }}>
+              
               {saleType === 'Vacant Space' && (
                 <>
-                  {renderNumeric('Additional Charges', 'additionalCharges', 'e.g. ₹ 50000')}
-                  {renderNumeric('Existing Monthly Rent', 'existingMonthlyRent', 'e.g. ₹ 150000')}
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Expected Rental Yield (%)</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
-                        value={d.expectedRentalYield || ''}
-                        onChange={e => onUpdate({ expectedRentalYield: e.target.value })}
-                        placeholder="0"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
-                    </div>
-                  </div>
-                  <div className="hidden lg:block"></div>
-
+                  <NumericField label="Additional Charges" value={d.additionalCharges} onChange={v => onUpdate({ additionalCharges: v })} placeholder="e.g. 50000" prefix="₹" />
+                  <NumericField label="Existing Monthly Rent" value={d.existingMonthlyRent} onChange={v => onUpdate({ existingMonthlyRent: v })} placeholder="e.g. 150000" prefix="₹" />
+                  <NumericField label="Expected Rental Yield" value={d.expectedRentalYield} onChange={v => onUpdate({ expectedRentalYield: v })} placeholder="0" suffix="%" />
                   {renderNumericWithUnit('Existing Lease Tenure', 'existingLeaseTenure', 'existingLeaseTenureUnit')}
                   {renderNumericWithUnit('Remaining Tenure', 'remainingTenure', 'existingLeaseTenureUnit')}
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
-                        value={d.rentEscalation || ''}
-                        onChange={e => onUpdate({ rentEscalation: e.target.value })}
-                        placeholder="0"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
-                    </div>
-                  </div>
+                  <NumericField label="Rent Escalation" value={d.rentEscalation} onChange={v => onUpdate({ rentEscalation: v })} placeholder="0" suffix="%" />
                   {renderNumericWithUnit('Rent Escalation Every', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
                 </>
               )}
 
               {saleType === 'Pre-Leased' && (
                 <>
-                  <div className="sm:col-span-2 max-w-md">
-                    <TextField
-                      label="Existing Tenant Company Name"
-                      value={d.existingTenantCompany}
-                      onChange={v => onUpdate({ existingTenantCompany: v })}
-                      placeholder="e.g. Google India"
-                    />
-                  </div>
-                  <div className="max-w-[220px]">
-                    <Dropdown
-                      label="Tenant Category"
-                      value={d.tenantCategory}
-                      options={INDUSTRY_CATEGORIES}
-                      placeholder="Select industry"
-                      onChange={v => onUpdate({ tenantCategory: v })}
-                    />
-                  </div>
-                  {renderNumeric('Existing Monthly Rent', 'existingMonthlyRent', 'e.g. ₹ 150000')}
-
+                  <StringField label="Existing Tenant Company Name" value={d.existingTenantCompany} onChange={v => onUpdate({ existingTenantCompany: v })} placeholder="e.g. Google India" />
+                  <Dropdown
+                    label="Tenant Category"
+                    value={d.tenantCategory}
+                    options={INDUSTRY_CATEGORIES}
+                    placeholder="Select industry"
+                    onChange={v => onUpdate({ tenantCategory: v })}
+                  />
+                  <NumericField label="Existing Monthly Rent" value={d.existingMonthlyRent} onChange={v => onUpdate({ existingMonthlyRent: v })} placeholder="e.g. 150000" prefix="₹" />
                   {renderNumericWithUnit('Existing Lease Tenure', 'existingLeaseTenure', 'existingLeaseTenureUnit')}
                   {renderNumericWithUnit('Remaining Tenure', 'remainingTenure', 'existingLeaseTenureUnit')}
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
-                        value={d.rentEscalation || ''}
-                        onChange={e => onUpdate({ rentEscalation: e.target.value })}
-                        placeholder="0"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
-                    </div>
-                  </div>
+                  <NumericField label="Rent Escalation" value={d.rentEscalation} onChange={v => onUpdate({ rentEscalation: v })} placeholder="0" suffix="%" />
                   {renderNumericWithUnit('Rent Escalation Every', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
                 </>
               )}
 
               {saleType === 'Fractional' && (
                 <>
-                  {renderNumeric('Minimum Sq Ft', 'minimumSqFt', 'e.g. ₹ 500')}
-                  {renderNumeric('Assured Monthly Rent', 'assuredMonthlyRent', 'e.g. ₹ 50000')}
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Annual Yield (%)</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
-                        value={d.annualYield || ''}
-                        onChange={e => onUpdate({ annualYield: e.target.value })}
-                        placeholder="0"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">%</span>
-                    </div>
-                  </div>
+                  <NumericField label="Minimum Sq Ft" value={d.minimumSqFt} onChange={v => onUpdate({ minimumSqFt: v })} placeholder="0" suffix="sq ft" />
+                  <NumericField label="Assured Monthly Rent" value={d.assuredMonthlyRent} onChange={v => onUpdate({ assuredMonthlyRent: v })} placeholder="e.g. 50000" prefix="₹" />
+                  <NumericField label="Annual Yield" value={d.annualYield} onChange={v => onUpdate({ annualYield: v })} placeholder="0" suffix="%" />
                   {renderVerticalBoolean('Is it Pre-Leased', 'isPreLeased')}
                 </>
               )}
             </div>
 
             {saleType === 'Fractional' && (
-              <div className="w-full">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Remarks</label>
+              <div style={{ width: '100%', marginTop: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>Remarks</label>
                   <textarea
-                    className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-2 px-3 text-sm text-[#1C2A44] min-h-[80px] focus:outline-none"
+                    style={{
+                      width: '100%',
+                      minHeight: '80px',
+                      padding: '10px',
+                      fontSize: '0.85rem',
+                      fontWeight: 500,
+                      color: '#1C2A44',
+                      background: '#F5F7FA',
+                      border: '1px solid #E4E7EC',
+                      borderRadius: '3px',
+                      outline: 'none',
+                      resize: 'vertical',
+                      fontFamily: "'Outfit', sans-serif",
+                      transition: 'all 200ms ease'
+                    }}
+                    onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C'; e.target.style.boxShadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)' }}
+                    onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC'; e.target.style.boxShadow = 'none' }}
                     value={d.fractionalRemarks || ''}
                     onChange={e => onUpdate({ fractionalRemarks: e.target.value })}
                     placeholder="Enter details about the fractional opportunity..."
@@ -241,25 +331,28 @@ export default function TransactionDetails() {
               </div>
             )}
 
-            {/* Last Row: Pricing Type & Price Field */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end pt-4 border-t border-[#edf0f5] max-w-2xl">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Pricing Type</label>
-                <div className="h-[32px] flex items-center">
-                  <SegmentedControl
-                    options={PRICING_TYPES}
-                    value={d.rentPricingMode || 'Per Sq Ft'}
-                    onChange={v => onUpdate({ rentPricingMode: v })}
-                  />
-                </div>
+            <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
+
+            {/* Pricing Details */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', alignItems: 'end' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>Pricing Type</label>
+                <SegmentedControl
+                  options={PRICING_TYPES}
+                  value={d.rentPricingMode || 'Per Sq Ft'}
+                  onChange={v => onUpdate({ rentPricingMode: v })}
+                />
               </div>
 
-              {renderNumeric(
-                d.rentPricingMode === 'Box Price' ? 'Total Asking Price (Box Price)' : 'Price Per Sq Ft / Sq.yd',
-                d.rentPricingMode === 'Box Price' ? 'askingPriceTotal' : 'pricePerSqFt',
-                'e.g. ₹50000000'
-              )}
+              <NumericField
+                label={d.rentPricingMode === 'Box Price' ? 'Total Asking Price (Box Price)' : 'Price Per Sq Ft / Sq.yd'}
+                value={d.rentPricingMode === 'Box Price' ? d.askingPriceTotal : d.pricePerSqFt}
+                onChange={v => onUpdate({ [d.rentPricingMode === 'Box Price' ? 'askingPriceTotal' : 'pricePerSqFt']: v })}
+                placeholder="e.g. 50000000"
+                prefix="₹"
+              />
             </div>
+
           </div>
         </SectionCard>
 

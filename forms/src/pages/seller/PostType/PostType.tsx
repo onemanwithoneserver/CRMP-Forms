@@ -44,7 +44,6 @@ const CORPORATIONS = [
 ]
 const CIRCLES = ['Circle 1', 'Circle 2', 'Circle 3', 'Circle 4', 'Circle 5', 'Circle 6']
 
-// ─── Map Dialog ────────────────────────────────────────────────────────────────────────────────
 interface MapDialogProps {
   isOpen: boolean
   onClose: () => void
@@ -69,7 +68,7 @@ function MapDialog({
       setPinPosition(null)
       setFetching(false); setError('')
     }
-  }, [isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen]) 
 
   useEffect(() => {
     if (isOpen) { document.body.style.overflow = 'hidden' }
@@ -110,68 +109,57 @@ function MapDialog({
   const canConfirm = lat.trim() !== '' && lng.trim() !== ''
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" onClick={onClose} />
-      <div className="relative w-full max-w-3xl bg-white rounded-[12px] shadow-2xl border border-[#E2E8F0] overflow-hidden flex flex-col max-h-[calc(100vh-48px)]">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9] bg-gradient-to-r from-[#F8FAFC] to-white shrink-0">
-          <div className="flex items-center gap-2">
-            <MapPin size={15} className="text-[#C89B3C]" />
-            <span className="text-[14px] font-semibold text-[#0F172A] font-['Outfit']">Select Location on Map</span>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(15, 27, 46, 0.6)', backdropFilter: 'blur(4px)', fontFamily: "'Outfit', sans-serif" }}>
+      <div style={{ position: 'absolute', inset: 0 }} onClick={onClose} />
+      <div style={{ position: 'relative', width: '100%', maxWidth: '768px', background: '#FFFFFF', borderRadius: '4px', border: '1px solid #E4E7EC', boxShadow: '0 16px 48px rgba(15, 27, 46, 0.15)', display: 'flex', flexDirection: 'column', maxHeight: 'calc(100vh - 32px)', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #E4E7EC', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: '#E6C36A', display: 'flex' }}><MapPin size={16} /></span>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em' }}>Select Location on Map</span>
           </div>
-          <button type="button" onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-[6px] hover:bg-[#F1F5F9] transition-colors" aria-label="Close">
-            <X size={15} className="text-[#64748B]" />
+          <button type="button" onClick={onClose} style={{ width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: '#FFFFFF', cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)' }} onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }} aria-label="Close">
+            <X size={14} />
           </button>
         </div>
-        {/* Map Canvas */}
-        <div ref={mapRef} onClick={handleMapClick}
-          className="relative w-full overflow-hidden select-none cursor-pointer flex-1 min-h-[360px]"
-          role="application" aria-label="Map canvas">
-          <div className="absolute inset-0 bg-[#EEF1F6]" />
-          <div className="absolute inset-0 map-dot-bg" />
+        <div ref={mapRef} onClick={handleMapClick} style={{ position: 'relative', width: '100%', flex: 1, minHeight: '360px', background: '#F5F7FA', overflow: 'hidden', cursor: 'pointer', userSelect: 'none' }} role="application" aria-label="Map canvas">
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(#CBD5E1 1px, transparent 1px)', backgroundSize: '20px 20px', opacity: 0.5 }} />
           {!pinPosition && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 pointer-events-none">
-              <MapPin size={34} className="text-[#C89B3C]" />
-              <span className="text-[13px] font-medium font-['Outfit'] text-[#64748B]">
-                Pin drop selector will appear here
-              </span>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', pointerEvents: 'none', color: '#667085' }}>
+              <span style={{ color: '#C89B3C', display: 'flex' }}><MapPin size={32} /></span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>Pin drop selector will appear here</span>
             </div>
           )}
-          <div className="absolute bottom-4 inset-x-0 flex justify-center z-10">
-            <button type="button" onClick={e => { e.stopPropagation(); handleAutoFetch() }} disabled={fetching}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#E2E8F0] text-[13px] font-semibold font-['Outfit'] text-[#1C2A44] hover:bg-[#F8FAFC] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150">
-              <Navigation size={13} className={fetching ? 'animate-spin text-[#2563EB]' : 'text-[#2563EB]'} />
-              {fetching ? 'Fetching…' : 'Auto-fetch Location'}
+          <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
+            <button type="button" onClick={e => { e.stopPropagation(); handleAutoFetch() }} disabled={fetching} style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '34px', padding: '0 16px', borderRadius: '17px', background: '#FFFFFF', border: '1px solid #E4E7EC', color: '#1C2A44', fontSize: '0.85rem', fontWeight: 600, cursor: fetching ? 'not-allowed' : 'pointer', boxShadow: '0 4px 12px rgba(15,27,46,0.1)', transition: 'all 200ms ease', opacity: fetching ? 0.7 : 1 }} onMouseEnter={(e) => { if(!fetching) { e.currentTarget.style.borderColor = '#C89B3C'; e.currentTarget.style.transform = 'translateY(-1px)' } }} onMouseLeave={(e) => { if(!fetching) { e.currentTarget.style.borderColor = '#E4E7EC'; e.currentTarget.style.transform = 'translateY(0)' } }}>
+              <span style={{ display: 'flex' }}><Navigation size={14} className={fetching ? 'animate-spin text-[#C89B3C]' : 'text-[#C89B3C]'} /></span>
+              {fetching ? 'Fetching Location...' : 'Auto-fetch Location'}
             </button>
           </div>
-          <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'visible' }}>
             {pinPosition && (
               <g transform={`translate(${pinPosition.x}, ${pinPosition.y})`}>
-                <ellipse cx="0" cy="4" rx="5" ry="2" fill="rgba(0,0,0,0.18)" />
-                <path d="M0,-28 C-9,-28 -14,-20 -14,-13 C-14,0 0,4 0,4 C0,4 14,0 14,-13 C14,-20 9,-28 0,-28 Z" fill="#EF4444" stroke="#fff" strokeWidth="1.5" />
-                <circle cx="0" cy="-14" r="5" fill="white" opacity="0.9" />
+                <ellipse cx="0" cy="4" rx="6" ry="3" fill="rgba(15,27,46,0.2)" />
+                <path d="M0,-32 C-10,-32 -16,-22 -16,-14 C-16,0 0,4 0,4 C0,4 16,0 16,-14 C16,-22 10,-32 0,-32 Z" fill="#C89B3C" stroke="#FFFFFF" strokeWidth="2" />
+                <circle cx="0" cy="-16" r="6" fill="#1C2A44" />
               </g>
             )}
           </svg>
         </div>
         {error && (
-          <div className="flex items-center gap-1.5 px-4 py-2 bg-[#FEF2F2] border-t border-[#FECACA] text-[12px] font-['Outfit'] text-[#DC2626] shrink-0">
-            <AlertCircle size={13} />{error}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#FEF2F2', borderTop: '1px solid #FECACA', color: '#EF4444', fontSize: '0.8rem', fontWeight: 500, flexShrink: 0 }}>
+            <span style={{ display: 'flex' }}><AlertCircle size={14} /></span>{error}
           </div>
         )}
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[#F1F5F9] shrink-0">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] text-[#475569] border border-[#E2E8F0] hover:bg-[#F8FAFC] transition-colors">Cancel</button>
-          <button type="button" onClick={() => onConfirm(lat, lng)} disabled={!canConfirm}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] bg-[#0F172A] text-white hover:bg-[#1E293B] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-            <Check size={13} /> Confirm Location
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', padding: '12px 16px', borderTop: '1px solid #E4E7EC', background: '#F5F7FA', flexShrink: 0 }}>
+          <button type="button" onClick={onClose} style={{ height: '34px', padding: '0 16px', borderRadius: '3px', fontSize: '0.85rem', fontWeight: 600, color: '#667085', background: '#FFFFFF', border: '1px solid #E4E7EC', cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#C89B3C'; e.currentTarget.style.color = '#1C2A44' }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E4E7EC'; e.currentTarget.style.color = '#667085' }}>Cancel</button>
+          <button type="button" onClick={() => onConfirm(lat, lng)} disabled={!canConfirm} style={{ height: '34px', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 16px', borderRadius: '3px', fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', border: '1px solid #E6C36A', cursor: !canConfirm ? 'not-allowed' : 'pointer', opacity: !canConfirm ? 0.5 : 1, boxShadow: !canConfirm ? 'none' : '0 2px 6px rgba(15,27,46,0.25)', transition: 'all 200ms ease', outline: 'none' }} onMouseEnter={(e) => { if (canConfirm) e.currentTarget.style.transform = 'translateY(-1px)' }} onMouseLeave={(e) => { if (canConfirm) e.currentTarget.style.transform = 'translateY(0)' }}>
+            <span style={{ display: 'flex' }}><Check size={14} /></span> Confirm Location
           </button>
         </div>
       </div>
     </div>
   )
 }
-
 
 export default function PostType() {
   const { state, dispatch, next } = useForm()
@@ -245,15 +233,14 @@ export default function PostType() {
         initialLat={localLocation.latitude}
         initialLng={localLocation.longitude}
       />
-      <div className="flex flex-col h-full bg-[#fafafa]">
-        <div className="flex-1 overflow-y-auto scroll-smooth">
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F5F7FA', fontFamily: "'Outfit', sans-serif" }}>
+        <div style={{ flex: 1, overflowY: 'auto', scrollBehavior: 'smooth' }}>
 
-          {/* ─── Hero ─── */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#1C2A44] via-[#243352] to-[#1a2740] pt-3 pb-8 rounded-b-[4px]">
-            <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '20px 20px' }} />
-            <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C]" />
-            <div className="relative max-w-3xl mx-auto text-center px-4">
-              <h1 className="text-xl md:text-2xl font-bold text-white font-['Outfit'] tracking-tight leading-snug">
+          <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', paddingTop: '12px', paddingBottom: '32px' }}>
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0)', backgroundSize: '12px 12px', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent 0%, rgba(200, 155, 60, 0.8) 50%, transparent 100%)' }} />
+            <div style={{ position: 'relative', maxWidth: '768px', margin: '0 auto', textAlign: 'center', padding: '0 16px' }}>
+              <h1 style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.01em', lineHeight: 1.2, margin: 0 }}>
                 What type of property do you want to list?
               </h1>
             </div>
@@ -261,132 +248,74 @@ export default function PostType() {
 
           <SelectPropertyType sectionRef={postTypeSectionRef} />
 
-          {/* ─── Location Section ─── */}
-          <div
-            ref={locationSectionRef}
-            className="px-2 md:px-4 mt-2 w-full"
-          >
-            <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
+          <div ref={locationSectionRef} style={{ padding: isMobile ? '0 8px' : '0 16px', marginTop: '16px', width: '100%' }}>
+            <div style={{ background: '#FFFFFF', borderRadius: '4px', boxShadow: '0 4px 16px rgba(15, 27, 46, 0.04)', border: '1px solid #E4E7EC', overflow: 'hidden' }}>
 
-              {/* Header */}
-              <div className="flex items-center gap-3 px-4 py-3 bg-[#1C2A44]">
-                <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-sm">
-                  <MapPin size={18} className="text-white" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', borderBottom: '1px solid rgba(200, 155, 60, 0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)' }}>
+                  <MapPin size={14} color="#E6C36A" />
                 </div>
-                <h2 className="text-[1.1rem] font-bold text-white font-['Outfit'] tracking-tight">Location</h2>
+                <h2 style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em', margin: 0 }}>Location</h2>
               </div>
 
-              <div className="p-3 space-y-3">
-
-                {/* Row 1 – Map Actions & Coordinates */}
-                {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end">
-                  <div className="flex flex-col gap-1 w-full">
-                    <label className="text-xs font-semibold text-[#445069] pl-0.5 font-['Outfit']">Map Location</label>
+              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: '12px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>Map location <span style={{ color: '#EF4444' }}>*</span></label>
                     <button
                       type="button"
                       onClick={openMap}
-                      className="h-[34px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#BFDBFE] bg-[#EFF6FF] text-[13px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-150"
+                      style={{ height: '34px', width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', borderRadius: '3px', border: '1px solid #C89B3C', background: '#F5F7FA', color: '#1C2A44', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', outline: 'none', boxShadow: '0 1px 3px rgba(15,27,46,0.05)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.borderColor = '#E6C36A' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F7FA'; e.currentTarget.style.borderColor = '#C89B3C' }}
                     >
-                      <MapPin size={14} className="shrink-0 text-[#C89B3C]" />
-                      {localLocation.latitude && localLocation.longitude
-                        ? `${localLocation.latitude}, ${localLocation.longitude}`
-                        : 'Select Location on Map'}
-                      {localLocation.latitude && localLocation.longitude && (
-                        <span className="ml-auto text-[11px] font-normal text-[#64748B]">Change</span>
-                      )}
+                      <span style={{ color: '#C89B3C', display: 'flex' }}><MapPin size={14} /></span>
+                      {localLocation.latitude && localLocation.longitude ? `${localLocation.latitude}, ${localLocation.longitude}` : 'Select location on map'}
                     </button>
                   </div>
-                  <TextField label="Latitude" value={localLocation.latitude} placeholder="e.g. 17.41898" onChange={val => setLocalLocation(s => ({ ...s, latitude: val }))} />
-                  <TextField label="Longitude" value={localLocation.longitude} placeholder="e.g. 78.34377" onChange={val => setLocalLocation(s => ({ ...s, longitude: val }))} />
-                </div> */}
-
-                <div className="h-px w-full bg-[#F1F5F9]" />
-
-                {/* Location Details – 4-column grid, 2 rows */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2.5">
-                  {/* Row 1 */}
-                  <div className="flex flex-col">
-                    <label className="text-xs font-semibold text-[#1C2A44] pl-0.5 font-['Outfit'] mb-1">Map location <span className="text-[#E11D48]">*</span></label>
-                    <button
-                      type="button"
-                      onClick={openMap}
-                      className="h-[38px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#2563EB] bg-[#F5F8FF] text-[14px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#E0E7FF] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
-                    >
-                      <MapPin size={16} className="shrink-0 text-[#2563EB]" />
-                      {localLocation.latitude && localLocation.longitude
-                        ? `${localLocation.latitude}, ${localLocation.longitude}`
-                        : 'Select location on map'}
-                    </button>
-                  </div>
-                  <TextField label="City *" value={city || ''} placeholder="e.g. Hyderabad"
-                    onChange={val => dispatch({ type: 'updateData', payload: { city: val } })} />
-                  <TextField label="District" value={localLocation.district} placeholder="e.g. Rangareddy"
-                    onChange={val => setLocalLocation(s => ({ ...s, district: val }))} />
-                  <TextField label="Location / Road" value={localLocation.location} placeholder="e.g. Honeywell Driveway"
-                    onChange={val => setLocalLocation(s => ({ ...s, location: val }))} />
-
-                  {/* Row 2 */}
-                  <TextField label="Micro location" value={localLocation.microLocation} placeholder="e.g. Financial District"
-                    onChange={val => setLocalLocation(s => ({ ...s, microLocation: val }))} />
-                  <TextField label="Building name" value={localLocation.buildingName || ''} placeholder="e.g. Infinity Towers"
-                    onChange={val => setLocalLocation(s => ({ ...s, buildingName: val }))} />
-                  <TextField label="Colony / Layout name" value={localLocation.colonyLayout} placeholder="Optional"
-                    onChange={val => setLocalLocation(s => ({ ...s, colonyLayout: val }))} />
-                  <TextField label="Pincode *" value={localLocation.pincode} placeholder="e.g. 500032"
-                    onChange={val => setLocalLocation(s => ({ ...s, pincode: val.replace(/\D/g, '').slice(0, 6) }))} />
+                  <TextField label="City *" value={city || ''} placeholder="e.g. Hyderabad" onChange={val => dispatch({ type: 'updateData', payload: { city: val } })} />
+                  <TextField label="District" value={localLocation.district} placeholder="e.g. Rangareddy" onChange={val => setLocalLocation(s => ({ ...s, district: val }))} />
+                  <TextField label="Location / Road" value={localLocation.location} placeholder="e.g. Honeywell Driveway" onChange={val => setLocalLocation(s => ({ ...s, location: val }))} />
+                  <TextField label="Micro location" value={localLocation.microLocation} placeholder="e.g. Financial District" onChange={val => setLocalLocation(s => ({ ...s, microLocation: val }))} />
+                  <TextField label="Building name" value={localLocation.buildingName || ''} placeholder="e.g. Infinity Towers" onChange={val => setLocalLocation(s => ({ ...s, buildingName: val }))} />
+                  <TextField label="Colony / Layout name" value={localLocation.colonyLayout} placeholder="Optional" onChange={val => setLocalLocation(s => ({ ...s, colonyLayout: val }))} />
+                  <TextField label="Pincode *" value={localLocation.pincode} placeholder="e.g. 500032" onChange={val => setLocalLocation(s => ({ ...s, pincode: val.replace(/\D/g, '').slice(0, 6) }))} />
                 </div>
-
               </div>
             </div>
           </div>
 
-          {/* ─── Building Information Section ─── */}
-          <div className="px-2 md:px-4 mt-2 w-full">
-            <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] overflow-hidden">
-
-              {/* Header */}
-              <div className="flex items-center gap-3 px-4 py-3 bg-[#1C2A44]">
-                <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-sm">
-                  <Building2 size={18} className="text-white" />
+          <div style={{ padding: isMobile ? '0 8px' : '0 16px', marginTop: '16px', width: '100%', marginBottom: '16px' }}>
+            <div style={{ background: '#FFFFFF', borderRadius: '4px', boxShadow: '0 4px 16px rgba(15, 27, 46, 0.04)', border: '1px solid #E4E7EC', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', borderBottom: '1px solid rgba(200, 155, 60, 0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)' }}>
+                  <Building2 size={14} color="#E6C36A" />
                 </div>
-                <h2 className="text-[1.1rem] font-bold text-white font-['Outfit'] tracking-tight">Building Information</h2>
+                <h2 style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em', margin: 0 }}>Building Information</h2>
               </div>
-
-              <div className="p-2">
+              <div style={{ padding: '8px' }}>
                 <BuildingInfoPanel />
               </div>
-
             </div>
           </div>
         </div>
 
-        <div className="w-full bg-white border-t border-[#edf0f5] px-3.5 py-2.5 z-50 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.04)] mt-auto">
+        <div style={{ width: '100%', background: '#FFFFFF', borderTop: '1px solid #E4E7EC', padding: '10px 16px', zIndex: 50, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 -4px 16px rgba(15, 27, 46, 0.04)', marginTop: 'auto', flexShrink: 0 }}>
           <button
             title="Save as Draft"
-            style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              padding: '7px 14px', borderRadius: '6px',
-              border: '1.5px solid rgba(200,155,60,0.5)',
-              background: 'rgba(200,155,60,0.05)',
-              color: '#C89B3C',
-              fontFamily: "'Outfit', sans-serif", fontSize: '0.8rem', fontWeight: 700,
-              cursor: 'pointer',
-            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '3px', background: 'transparent', border: '1px solid transparent', color: '#C89B3C', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(200, 155, 60, 0.1)'; e.currentTarget.style.borderColor = '#C89B3C' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' }}
           >
-            <Save size={14} />
+            <span style={{ display: 'flex' }}><Save size={14} /></span>
             <span>Save draft</span>
           </button>
 
-          <div className="flex gap-2 items-center">
+          <div style={{ display: 'flex', gap: '8px', items: 'center' }}>
             <button
               title="Back"
               disabled
-              style={{
-                width: '34px', height: '34px', borderRadius: '6px',
-                border: '1.5px solid #e2e6ec', background: '#ffffff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                opacity: 0.35, cursor: 'not-allowed', color: '#445069',
-              }}
+              style={{ width: '32px', height: '32px', borderRadius: '3px', border: '1px solid #E4E7EC', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.6, cursor: 'not-allowed', color: '#A0AAB8', outline: 'none' }}
             >
               <ChevronLeft size={16} />
             </button>
@@ -395,19 +324,11 @@ export default function PostType() {
               onClick={next}
               disabled={!postType || !propertyType || !city}
               title="Save & Next"
-              style={{
-                height: '34px', minWidth: '48px',
-                borderRadius: '6px', border: 'none',
-                background: 'linear-gradient(135deg, #1C2A44 0%, #2a3f66 100%)',
-                color: '#ffffff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: !postType || !propertyType || !city ? 'not-allowed' : 'pointer',
-                opacity: !postType || !propertyType || !city ? 0.5 : 1,
-                boxShadow: '0 4px 12px rgba(28,42,68,0.25)',
-                transition: 'all 200ms ease',
-              }}
+              style={{ height: '32px', minWidth: '48px', borderRadius: '3px', border: 'none', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: !postType || !propertyType || !city ? 'not-allowed' : 'pointer', opacity: !postType || !propertyType || !city ? 0.5 : 1, boxShadow: !postType || !propertyType || !city ? 'none' : '0 2px 6px rgba(15, 27, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)', transition: 'all 200ms ease', outline: 'none' }}
+              onMouseEnter={(e) => { if (!(!postType || !propertyType || !city)) e.currentTarget.style.transform = 'translateY(-1px)' }}
+              onMouseLeave={(e) => { if (!(!postType || !propertyType || !city)) e.currentTarget.style.transform = 'translateY(0)' }}
             >
-              <ChevronRight size={16} className="text-white" />
+              <ChevronRight size={16} color="#FFFFFF" />
             </button>
           </div>
         </div>

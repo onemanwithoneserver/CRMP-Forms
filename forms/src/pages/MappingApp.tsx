@@ -23,7 +23,6 @@ import UserLocationPref from './user/LocationPref'
 
 const COMPONENT_MAP: Record<string, React.ComponentType> = {
   'post-type': PostType,
-
   'property-type': PropertyType,
   'property-details': PropertyDetails,
   'building-info': BuildingInfo,
@@ -34,11 +33,9 @@ const COMPONENT_MAP: Record<string, React.ComponentType> = {
   'business-info': BusinessInfo,
   'transaction-details': TransactionDetails,
   'upload-photos': UploadPhotos,
-
   'looking-for': UserLookingFor,
   'budget-area': UserBudgetArea,
   'location-pref': UserLocationPref,
-
   'review': Review,
 }
 
@@ -55,20 +52,67 @@ export default function MappingApp() {
   const StepComponent = COMPONENT_MAP[currentStepData.key]
 
   if (!StepComponent) {
-    return <div style={{ padding: 40, textAlign: 'center' }}>Component not bound: {currentStepData.key}</div>
+    return (
+      <div 
+        style={{ 
+          padding: '40px', 
+          textAlign: 'center', 
+          fontFamily: "'Outfit', sans-serif",
+          color: '#667085',
+          background: '#F5F7FA',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '4px', border: '1px solid #E4E7EC', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+           <strong>Configuration Error:</strong> Component not bound for key: <code style={{ color: '#C89B3C' }}>{currentStepData.key}</code>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div 
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100%', 
+        overflow: 'hidden', 
+        background: '#F5F7FA',
+        fontFamily: "'Outfit', sans-serif"
+      }}
+    >
+      {/* Premium Step Navigation Bar */}
       {!state.designStepOverride && (
-        <StepHeader
-          steps={steps}
-          currentStep={state.step}
-          onStepClick={goToStep}
-        />
+        <div 
+          style={{ 
+            background: '#FFFFFF', 
+            padding: '12px 16px', 
+            borderBottom: '1px solid #E4E7EC',
+            boxShadow: '0 2px 8px rgba(15, 27, 46, 0.03)',
+            zIndex: 50
+          }}
+        >
+          <div style={{ maxWidth: '896px', margin: '0 auto' }}>
+            <StepHeader
+              steps={steps}
+              currentStep={state.step}
+              onStepClick={goToStep}
+            />
+          </div>
+        </div>
       )}
 
-      <div className="flex-1 overflow-hidden">
+      {/* Main Content Area */}
+      <div 
+        style={{ 
+          flex: 1, 
+          overflow: 'hidden',
+          position: 'relative'
+        }}
+      >
         <StepComponent key={state.step} />
       </div>
     </div>

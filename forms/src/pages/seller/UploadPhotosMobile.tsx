@@ -1,107 +1,112 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
-import { Camera, Plus, Library, Image, Video, Map, MapPin } from 'lucide-react'
+import { Camera, Plus, Library, Image as ImageIcon, Video, FileText } from 'lucide-react'
 
 interface UploadZoneProps {
   label: string
   description: string
   accept: string
   note?: string
+  isMultiple?: boolean
 }
 
-function UploadTile({ accept, index }: { accept: string; index: number }) {
+function UploadTile({ accept, index, type = 'image' }: { accept: string; index: number, type?: 'image' | 'video' | 'document' }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const isMain = index === 0
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
     <div
       onClick={() => inputRef.current?.click()}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
-        border: `1.5px dashed ${isMain ? 'var(--accent-gold)' : 'var(--border)'}`,
-        borderRadius: '6px',
-        height: '38px',
+        border: `1px dashed ${isMain ? '#C89B3C' : isHovered ? '#C89B3C' : '#E4E7EC'}`,
+        borderRadius: '3px',
+        height: '42px',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '6px',
+        gap: '8px',
         cursor: 'pointer',
-        background: isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)',
-        transition: 'border-color 200ms ease, background 200ms ease',
+        background: isMain ? 'rgba(200,155,60,0.05)' : isHovered ? '#FFFFFF' : '#F5F7FA',
+        transition: 'all 200ms ease',
         position: 'relative',
-      }}
-      onMouseEnter={e => {
-        ; (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--accent-gold)'
-          ; (e.currentTarget as HTMLDivElement).style.background = 'rgba(200,155,60,0.06)'
-      }}
-      onMouseLeave={e => {
-        ; (e.currentTarget as HTMLDivElement).style.borderColor = isMain ? 'var(--accent-gold)' : 'var(--border)'
-          ; (e.currentTarget as HTMLDivElement).style.background = isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)'
+        boxShadow: isHovered && !isMain ? '0 2px 8px rgba(15, 27, 46, 0.05)' : 'none'
       }}
     >
       <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
-      {/* Camera / image icon */}
-      <span className="flex items-center justify-center" style={{ filter: isMain ? 'grayscale(0) brightness(1.1)' : 'grayscale(100%) opacity(50%)' }}>
-        <Camera size={18} color={isMain ? '#C89B3C' : '#8993a4'} />
+      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: isMain ? '#C89B3C' : isHovered ? '#C89B3C' : '#667085', transition: 'color 200ms ease' }}>
+        {type === 'image' && <Camera size={16} strokeWidth={isMain ? 2.5 : 2} />}
+        {type === 'video' && <Video size={16} strokeWidth={isMain ? 2.5 : 2} />}
+        {type === 'document' && <FileText size={16} strokeWidth={isMain ? 2.5 : 2} />}
       </span>
       <span style={{
-        fontSize: '0.75rem',
+        fontSize: '0.8rem',
         fontWeight: isMain ? 700 : 500,
-        color: isMain ? 'var(--accent-gold)' : 'var(--text-tertiary)',
-        letterSpacing: '0.01em',
+        color: isMain ? '#C89B3C' : isHovered ? '#1C2A44' : '#667085',
+        letterSpacing: '-0.01em',
+        transition: 'color 200ms ease'
       }}>
-        {isMain ? 'Main Photo' : `Photo ${index + 1}`}
+        {isMain ? 'Main Cover' : `Slot ${index + 1}`}
       </span>
     </div>
   )
 }
 
-function UploadZone({ label, description, accept, note }: UploadZoneProps) {
+function UploadZone({ label, description, accept, note, isMultiple = true }: UploadZoneProps) {
   const addMoreRef = useRef<HTMLInputElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+
+  const type = accept.includes('video') ? 'video' : accept.includes('pdf') ? 'document' : 'image'
 
   return (
-    <div className="flex flex-col gap-3">
-      <label className="text-[13px] font-semibold text-[#445069] pl-0.5">{label}</label>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+      <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1C2A44' }}>{label}</label>
 
-      {/* 1×2 grid of upload tiles (responsive) */}
-      <div className="grid grid-cols-1 gap-2.5">
-        {[0, 1].map(i => (
-          <UploadTile key={i} accept={accept} index={i} />
-        ))}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+        {isMultiple ? (
+          <>
+            <UploadTile accept={accept} index={0} type={type} />
+            <UploadTile accept={accept} index={1} type={type} />
+          </>
+        ) : (
+          <div style={{ gridColumn: '1 / -1' }}>
+            <UploadTile accept={accept} index={0} type={type} />
+          </div>
+        )}
       </div>
 
-      {/* Add more button */}
       <button
         type="button"
         onClick={() => addMoreRef.current?.click()}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-          height: '38px', borderRadius: '6px',
-          border: '1.5px dashed var(--border)',
-          background: 'transparent',
-          color: 'var(--text-secondary)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+          height: '42px', borderRadius: '3px',
+          border: `1px dashed ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
+          background: isHovered ? '#FFFFFF' : 'transparent',
+          color: isHovered ? '#1C2A44' : '#667085',
           fontSize: '0.8rem', fontWeight: 600,
-          cursor: 'pointer', fontFamily: "'Outfit', sans-serif",
-          transition: 'border-color 200ms ease, color 200ms ease',
-          width: '100%',
-        }}
-        onMouseEnter={e => {
-          ; (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--accent-gold)'
-            ; (e.currentTarget as HTMLButtonElement).style.color = 'var(--accent-gold)'
-        }}
-        onMouseLeave={e => {
-          ; (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'
-            ; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'
+          cursor: 'pointer', transition: 'all 200ms ease',
+          width: '100%', outline: 'none',
+          boxShadow: isHovered ? '0 2px 8px rgba(15, 27, 46, 0.05)' : 'none'
         }}
       >
         <input ref={addMoreRef} type="file" accept={accept} multiple style={{ display: 'none' }} />
-        <Plus size={16} />
+        <Plus size={16} strokeWidth={2.5} color={isHovered ? '#C89B3C' : '#667085'} style={{ transition: 'color 200ms ease' }} />
         {description}
       </button>
 
       {note && (
-        <p style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', textAlign: 'center', marginTop: '-4px' }}>{note}</p>
+        <p style={{ fontSize: '0.75rem', color: '#A0AAB8', margin: '0', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', background: '#C89B3C' }} />
+          {note}
+        </p>
       )}
     </div>
   )
@@ -126,49 +131,52 @@ export default function UploadPhotosMobile() {
   }
 
   return (
-    <FormPage title="Property Gallery" icon={<Library size={22} />} onBack={back} onNext={handleNext}>
-      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
+    <FormPage title="Property Gallery" icon={<Library size={20} color="#E6C36A" />} onBack={back} onNext={handleNext}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif" }}>
 
         {/* IMAGES */}
-        <SectionCard title="Images" icon={<Image size={18} />}>
+        <SectionCard title="Property Photos" icon={<ImageIcon size={14} />}>
           <UploadZone
-            label="Upload Images"
-            description="Drag & drop photos here"
+            label="Image Gallery"
+            description="Upload more photos"
             accept="image/jpeg,image/png,image/webp"
-            note="JPG, PNG, WEBP — Max 15 images"
+            note="JPG, PNG, WEBP (Max 15 images)"
           />
         </SectionCard>
 
         {/* VIDEO */}
-        <SectionCard title="Video" icon={<Video size={18} />}>
+        <SectionCard title="Walkthrough Video" icon={<Video size={14} />}>
           <UploadZone
-            label="Upload Video"
-            description="Drag & drop a walkthrough video here"
+            label="Video Tour"
+            description="Upload a video tour"
             accept="video/mp4,video/webm,video/quicktime"
-            note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
+            note="MP4, MOV, WebM (Max 1 video, 200MB)"
+            isMultiple={false}
           />
         </SectionCard>
 
-        {/* FLOOR PLAN — Retail, Office, Coworking, Entire Building */}
+        {/* FLOOR PLAN */}
         {showFloorPlan && (
-          <SectionCard title="Floor Plan" icon={<Map size={18} />}>
+          <SectionCard title="Architectural Documents" icon={<FileText size={14} />}>
             <UploadZone
-              label="Upload Floor Plan"
-              description="Drag & drop floor plan here"
+              label="Floor Plan"
+              description="Upload architectural plans"
               accept="image/jpeg,image/png,application/pdf"
-              note="JPG, PNG, PDF — architectural or space layout"
+              note="JPG, PNG, PDF (High resolution)"
+              isMultiple={false}
             />
           </SectionCard>
         )}
 
-        {/* LAYOUT PLAN — Land only */}
+        {/* LAYOUT PLAN */}
         {showLayoutPlan && (
-          <SectionCard title="Layout Plan" icon={<MapPin size={18} />}>
+          <SectionCard title="Site Documentation" icon={<FileText size={14} />}>
             <UploadZone
-              label="Upload Layout Plan"
-              description="Drag & drop your layout / site plan here"
+              label="Site / Layout Plan"
+              description="Upload demarcation plan"
               accept="image/jpeg,image/png,application/pdf"
-              note="JPG, PNG, PDF — demarcation or survey plan"
+              note="JPG, PNG, PDF (Official documents)"
+              isMultiple={false}
             />
           </SectionCard>
         )}

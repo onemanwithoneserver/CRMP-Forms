@@ -26,26 +26,31 @@ export function Dropdown({
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [openUpward, setOpenUpward] = useState(false)
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({})
+  
+  const [isHovered, setIsHovered] = useState(false)
+
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  // Compute position for portal panel
   const computeDirection = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect()
       const spaceBelow = window.innerHeight - rect.bottom
       const goUp = spaceBelow < 220
       setOpenUpward(goUp)
+      
+      const panelSpacing = 4 // Sharp 4px gap instead of attaching directly
+      
       setPanelStyle({
         position: 'fixed',
         left: rect.left,
         width: rect.width,
         zIndex: 9999,
         ...(goUp
-          ? { bottom: window.innerHeight - rect.top }
-          : { top: rect.bottom }),
+          ? { bottom: window.innerHeight - rect.top + panelSpacing }
+          : { top: rect.bottom + panelSpacing }),
       })
     }
   }, [])
@@ -123,79 +128,177 @@ export function Dropdown({
     }
   }
 
-  // Dynamic border-radius for trigger button
-  const triggerRadius = isOpen
-    ? openUpward
-      ? 'rounded-b-[6px] rounded-t-none'
-      : 'rounded-t-[6px] rounded-b-none'
-    : 'rounded-[6px]'
-
-  // Dynamic panel border-radius (no positional class — portal uses fixed coords)
-  const panelRadiusClass = openUpward
-    ? 'rounded-t-[6px] rounded-b-none border-b-0 border-t border-x'
-    : 'rounded-b-[6px] rounded-t-none border-t-0 border-b border-x'
-
   const panelEl = (
     <div
-      style={panelStyle}
-      className={`
-        bg-white ${panelRadiusClass} border-[#C89B3C] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
-        transition-all duration-200
-        ${openUpward ? 'origin-bottom' : 'origin-top'}
-        ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 pointer-events-none'}
-      `}
+      style={{
+        ...panelStyle,
+        background: '#FFFFFF',
+        border: '1px solid #E4E7EC',
+        borderRadius: '3px',
+        boxShadow: '0 8px 24px rgba(15, 27, 46, 0.15), 0 2px 6px rgba(15, 27, 46, 0.08)',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        transition: 'opacity 200ms ease, transform 200ms ease',
+        transformOrigin: openUpward ? 'bottom' : 'top',
+        opacity: isOpen ? 1 : 0,
+        transform: isOpen ? 'scaleY(1) translateY(0)' : 'scaleY(0.95)',
+        pointerEvents: isOpen ? 'auto' : 'none',
+        fontFamily: "'Outfit', sans-serif"
+      }}
     >
       {searchable && (
-        <div className="p-2 border-b border-[#e2e6ec] bg-[#f8f9fb]">
-          <div className="relative">
-            <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#a0a8b5]" />
+        <div style={{ padding: '8px', borderBottom: '1px solid #E4E7EC', background: '#F5F7FA' }}>
+          <div style={{ position: 'relative' }}>
+            <Search size={14} color="#667085" style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
               ref={inputRef}
               type="text"
-              className="w-full pl-7 pr-2 py-1.5 text-[12px] rounded-[5px] border border-[#d0d4dc] bg-white font-['Outfit'] font-medium placeholder-[#a0a8b5] text-[#1C2A44] focus:outline-none focus:border-[#C89B3C] focus:shadow-[0_0_0_2px_rgba(200,155,60,0.1)] transition-all duration-200"
+              style={{
+                width: '100%',
+                padding: '6px 24px 6px 28px',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                borderRadius: '3px',
+                border: '1px solid #E4E7EC',
+                background: '#FFFFFF',
+                color: '#1C2A44',
+                outline: 'none',
+                transition: 'border-color 200ms ease, box-shadow 200ms ease',
+                boxSizing: 'border-box'
+              }}
               placeholder="Search..."
               value={search}
               onChange={e => setSearch(e.target.value)}
+              onFocus={(e) => {
+                 e.target.style.borderColor = '#C89B3C';
+                 e.target.style.boxShadow = '0 0 0 2px rgba(200,155,60,0.1)';
+              }}
+              onBlur={(e) => {
+                 e.target.style.borderColor = '#E4E7EC';
+                 e.target.style.boxShadow = 'none';
+              }}
               tabIndex={isOpen ? 0 : -1}
             />
             {search && (
-              <button onClick={() => setSearch('')} tabIndex={isOpen ? 0 : -1} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#a0a8b5] hover:text-[#4a5568]">
-                <X size={12} />
+              <button 
+                onClick={() => setSearch('')} 
+                tabIndex={isOpen ? 0 : -1} 
+                style={{ 
+                  position: 'absolute', 
+                  right: '8px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                <X size={14} color="#667085" />
               </button>
             )}
           </div>
         </div>
       )}
 
-      <div className="max-h-52 overflow-y-auto custom-scrollbar py-1" ref={listRef}>
+      <div style={{ maxHeight: '200px', overflowY: 'auto', padding: '4px' }} ref={listRef}>
         {filtered.length === 0 ? (
-          <div className="px-3 py-4 text-center text-[12.5px] text-[#667085] font-semibold font-['Outfit']">No results</div>
+          <div style={{ padding: '12px', textAlign: 'center', fontSize: '0.8rem', color: '#667085', fontWeight: 500 }}>No results</div>
         ) : (
-          filtered.map((option, index) => (
-            <button
-              key={option}
-              type="button"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
-              onMouseEnter={() => setFocusedIndex(index)}
-              className={`
-                w-full flex items-center justify-between px-3 py-2 text-left text-[13px] font-['Outfit'] transition-colors duration-150 cursor-pointer block
-                ${value === option
-                  ? 'bg-[#FFFBF0] text-[#C89B3C] font-bold border-l-2 border-[#C89B3C]'
-                  : focusedIndex === index
-                    ? 'bg-[#f8f9fb] text-[#1C2A44] font-semibold border-l-2 border-transparent'
-                    : 'text-[#4a5568] font-semibold hover:bg-[#f8f9fb] hover:text-[#1C2A44] border-l-2 border-transparent'
-                }
-              `}
-            >
-              <span className="truncate">{option}</span>
-              {value === option && <Check size={14} className="text-[#C89B3C] shrink-0 ml-2 drop-shadow-sm" />}
-            </button>
-          ))
+          filtered.map((option, index) => {
+            const isSelected = value === option;
+            const isFocused = focusedIndex === index;
+            
+            return (
+              <button
+                key={option}
+                type="button"
+                tabIndex={isOpen ? 0 : -1}
+                onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
+                onMouseEnter={() => setFocusedIndex(index)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '8px 10px',
+                  textAlign: 'left',
+                  fontSize: '0.85rem',
+                  fontWeight: isSelected ? 600 : 500,
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  border: 'none',
+                  outline: 'none',
+                  transition: 'all 150ms ease',
+                  background: isSelected ? 'rgba(200, 155, 60, 0.08)' : isFocused ? '#F5F7FA' : 'transparent',
+                  color: isSelected ? '#C89B3C' : isFocused ? '#1C2A44' : '#667085',
+                }}
+              >
+                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{option}</span>
+                {isSelected && <Check size={14} color="#C89B3C" style={{ flexShrink: 0, marginLeft: '8px' }} />}
+              </button>
+            )
+          })
         )}
       </div>
     </div>
   )
 
-  return null
+  return (
+    <div ref={ref} style={{ position: 'relative', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+      {label && (
+        <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>
+          {label}
+        </label>
+      )}
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: variant === 'compact' ? '30px' : '34px',
+          padding: '0 10px',
+          background: isHovered && !isOpen ? '#FFFFFF' : '#F5F7FA',
+          border: `1px solid ${isOpen ? '#C89B3C' : isHovered ? '#E6C36A' : '#E4E7EC'}`,
+          borderRadius: '3px',
+          cursor: 'pointer',
+          outline: 'none',
+          transition: 'all 250ms ease-in-out',
+          boxShadow: isOpen ? '0 2px 8px rgba(15, 27, 46, 0.08)' : 'none',
+        }}
+      >
+        <span style={{ 
+          fontSize: '0.85rem', 
+          fontWeight: 500, 
+          color: value ? '#1C2A44' : '#667085',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>
+          {value || placeholder}
+        </span>
+        <ChevronDown 
+          size={16} 
+          color={isOpen || isHovered ? '#C89B3C' : '#667085'} 
+          style={{ 
+            transition: 'all 250ms ease-in-out',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)'
+          }} 
+        />
+      </button>
+
+      {/* Render the panel using a Portal so it doesn't get clipped by parents with overflow: hidden */}
+      {typeof document !== 'undefined' && ReactDOM.createPortal(panelEl, document.body)}
+    </div>
+  )
 }

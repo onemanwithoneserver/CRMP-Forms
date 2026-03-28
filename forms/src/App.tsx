@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import MappingApp from './pages/MappingApp'
 import { DeviceProvider, useDevice } from './context/DeviceContext'
 import { FormProvider, useForm } from './context/FormContext'
+import { Monitor, Tablet, Smartphone, RotateCcw, ChevronDown } from 'lucide-react'
 
 function Header() {
   const { device, setDevice } = useDevice()
@@ -20,71 +21,110 @@ function Header() {
   ]
 
   return (
-    <header className="sticky top-0 z-40 bg-[rgba(255,255,255,0.85)] backdrop-blur-[24px] backdrop-saturate-[150%] border-b border-[var(--border-light)]">
-      <div className="max-w-[72rem] mx-auto p-[8px_16px] flex items-center justify-between">
-        <h1 className="font-['Outfit'] font-[700] text-[1rem] text-[var(--text)] m-0 flex-1 tracking-[-0.02em]">
-          CRMP Forms
-        </h1>
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      background: 'rgba(255, 255, 255, 0.8)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: '1px solid #E4E7EC',
+      fontFamily: "'Outfit', sans-serif"
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '8px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}>
+        <div style={{ flex: 1 }}>
+          <h1 style={{
+            fontSize: '0.95rem',
+            fontWeight: 800,
+            color: '#1C2A44',
+            margin: 0,
+            letterSpacing: '-0.02em',
+            textTransform: 'uppercase'
+          }}>
+            CREMP <span style={{ color: '#C89B3C' }}>Forms</span>
+          </h1>
+        </div>
 
-        <div className="flex-1 flex justify-center items-center gap-4">
-          <select
-            value={state.designStepOverride || ''}
-            onChange={(e) => {
-              dispatch({ type: 'setDesignOverride', key: e.target.value || null })
-            }}
-            className={`p-[4px_10px] rounded-[6px] border border-[var(--border)] bg-[var(--surface-lowest)] font-['Outfit'] text-[0.85rem] font-[600] cursor-pointer outline-none ${state.designStepOverride ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'
-              }`}
-          >
-            <option value="">— Dynamic Flow (Default) —</option>
-            {sellerPages.map(p => (
-              <option key={p.key} value={p.key}>{p.label}</option>
-            ))}
-          </select>
+        <div style={{ flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <select
+              value={state.designStepOverride || ''}
+              onChange={(e) => dispatch({ type: 'setDesignOverride', key: e.target.value || null })}
+              style={{
+                appearance: 'none',
+                padding: '6px 32px 6px 12px',
+                borderRadius: '4px',
+                border: '1px solid #E4E7EC',
+                background: '#F5F7FA',
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                color: state.designStepOverride ? '#C89B3C' : '#667085',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value="">— Dynamic Flow (Default) —</option>
+              {sellerPages.map(p => <option key={p.key} value={p.key}>{p.label}</option>)}
+            </select>
+            <ChevronDown size={14} style={{ position: 'absolute', right: '10px', pointerEvents: 'none', color: '#667085' }} />
+          </div>
 
           {state.step > 1 && !state.designStepOverride && (
             <button
               type="button"
               onClick={resetToStart}
-              className="bg-transparent border-none cursor-pointer text-[0.85rem] font-[600] text-[var(--text-tertiary)] font-['Outfit'] flex items-center p-1"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#EF4444',
+                padding: '4px 8px',
+                borderRadius: '4px'
+              }}
             >
-              Start Over
+              <RotateCcw size={14} />
+              Reset
             </button>
           )}
         </div>
 
-        <div className="flex-1 flex items-center justify-end gap-1">
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
           {(['desktop', 'tablet', 'mobile'] as const).map((d) => {
-            const icons: Record<string, React.ReactElement> = {
-              desktop: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <rect x="1" y="2" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M5 14h6M8 12v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              ),
-              tablet: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <rect x="3.5" y="1" width="9" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-                  <circle cx="8" cy="13" r="0.75" fill="currentColor" />
-                </svg>
-              ),
-              mobile: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <rect x="5" y="1" width="6" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-                  <circle cx="8" cy="13" r="0.75" fill="currentColor" />
-                </svg>
-              ),
-            }
             const isActive = device === d
             return (
               <button
                 key={d}
                 type="button"
                 onClick={() => setDevice(d)}
-                title={d.charAt(0).toUpperCase() + d.slice(1)}
-                className={`flex items-center justify-center w-[32px] h-[28px] rounded-[4px] cursor-pointer transition-all duration-200 p-0 border-[1.5px] ${isActive ? 'border-[var(--accent-gold)] bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)]' : 'border-[var(--border)] bg-transparent text-[var(--text-tertiary)]'
-                  }`}
+                style={{
+                  width: '36px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '3px',
+                  border: `1px solid ${isActive ? '#C89B3C' : '#E4E7EC'}`,
+                  background: isActive ? 'rgba(200, 155, 60, 0.05)' : '#FFFFFF',
+                  color: isActive ? '#C89B3C' : '#667085',
+                  cursor: 'pointer',
+                  padding: 0
+                }}
               >
-                {icons[d]}
+                {d === 'desktop' && <Monitor size={16} strokeWidth={isActive ? 2.5 : 2} />}
+                {d === 'tablet' && <Tablet size={16} strokeWidth={isActive ? 2.5 : 2} />}
+                {d === 'mobile' && <Smartphone size={16} strokeWidth={isActive ? 2.5 : 2} />}
               </button>
             )
           })}
@@ -97,20 +137,48 @@ function Header() {
 function InnerApp() {
   const { device } = useDevice()
 
+  const getWidth = () => {
+    if (device === 'mobile') return '414px'
+    if (device === 'tablet') return '768px'
+    return '100%'
+  }
+
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[var(--surface)]">
+    <div style={{ 
+      height: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      background: '#F5F7FA', 
+      overflow: 'hidden' 
+    }}>
       <Header />
-      <main
-        data-device={device}
-        className={`flex-1 overflow-hidden flex flex-col ${device === 'desktop' ? 'max-w-5xl mx-auto w-full' :
-            device === 'mobile' ? 'max-w-[430px] mx-auto w-full' : 'w-full'
-          }`}
-      >
-        <Routes>
-          <Route path="/" element={<MappingApp />} />
-          <Route path="/mapping" element={<MappingApp />} />
-        </Routes>
-      </main>
+      <div style={{ 
+        flex: 1, 
+        overflow: 'hidden', 
+        display: 'flex', 
+        padding: device === 'desktop' ? '0' : '20px 0' 
+      }}>
+        <main style={{ 
+          flex: 1,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          margin: '0 auto',
+          width: '100%',
+          maxWidth: getWidth(),
+          background: '#FFFFFF',
+          position: 'relative',
+          boxShadow: device !== 'desktop' ? '0 10px 40px rgba(15, 27, 46, 0.1)' : 'none',
+          borderLeft: device !== 'desktop' ? '1px solid #E4E7EC' : 'none',
+          borderRight: device !== 'desktop' ? '1px solid #E4E7EC' : 'none',
+          transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'
+        }}>
+          <Routes>
+            <Route path="/" element={<MappingApp />} />
+            <Route path="/mapping" element={<MappingApp />} />
+          </Routes>
+        </main>
+      </div>
     </div>
   )
 }

@@ -12,9 +12,53 @@ type Props = {
   className?: string
 }
 
+function SelectOption({
+  option,
+  isSelected,
+  onClick
+}: {
+  option: Option
+  isSelected: boolean
+  onClick: () => void
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        padding: '8px 10px',
+        borderRadius: '3px',
+        fontSize: '0.85rem',
+        fontWeight: isSelected ? 600 : 500,
+        color: isSelected ? '#C89B3C' : isHovered ? '#1C2A44' : '#667085',
+        background: isSelected ? 'rgba(200, 155, 60, 0.08)' : isHovered ? '#F5F7FA' : 'transparent',
+        cursor: 'pointer',
+        transition: 'all 150ms ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {option.label}
+      </span>
+      {isSelected && (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C89B3C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginLeft: '8px' }}>
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+    </div>
+  )
+}
+
 export default function SelectField({ label, value, onChange, options, placeholder, error, className }: Props) {
   const [open, setOpen] = useState(false)
   const [openUpward, setOpenUpward] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  
   const containerRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLDivElement>(null)
 
@@ -38,63 +82,111 @@ export default function SelectField({ label, value, onChange, options, placehold
     setOpen(!open)
   }
 
+  const borderColor = error ? '#EF4444' : open ? '#C89B3C' : isHovered ? '#E6C36A' : '#E4E7EC'
+
   return (
-    <div className={`block relative${className ? ` ${className}` : ''}`} ref={containerRef}>
+    <div 
+      className={className} 
+      ref={containerRef} 
+      style={{ position: 'relative', width: '100%', fontFamily: "'Outfit', sans-serif" }}
+    >
       {label && (
-        <div className="text-[0.78rem] font-[600] text-[var(--text)] mb-[3px]">
+        <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44', marginBottom: '4px' }}>
           {label}
         </div>
       )}
 
       <div
         ref={triggerRef}
-        className={`form-input ${error ? 'error' : ''} flex items-center justify-between cursor-pointer select-none h-[34px] ${
-          open ? 'border-[var(--accent-gold)] shadow-[0_0_0_3px_rgba(200,155,60,0.15)]' : ''
-        } ${
-          open 
-            ? openUpward ? 'rounded-b-[6px] rounded-t-0' : 'rounded-t-[6px] rounded-b-0'
-            : 'rounded-[6px]'
-        }`}
         onClick={handleToggle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          height: '34px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 10px',
+          background: isHovered && !open ? '#FFFFFF' : '#F5F7FA',
+          border: `1px solid ${borderColor}`,
+          borderRadius: '3px',
+          cursor: 'pointer',
+          userSelect: 'none',
+          transition: 'all 250ms ease-in-out',
+          boxShadow: open ? '0 2px 8px rgba(15, 27, 46, 0.08)' : 'none',
+        }}
       >
-        <span className={`text-[13px] ${selectedOption ? 'text-[var(--text)] font-[600]' : 'text-[var(--text-tertiary)] font-[400]'} overflow-hidden text-ellipsis whitespace-nowrap`}>
+        <span style={{ 
+          fontSize: '0.85rem', 
+          fontWeight: selectedOption ? 600 : 500, 
+          color: selectedOption ? '#1C2A44' : '#667085',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          transition: 'color 250ms ease-in-out'
+        }}>
           {selectedOption ? selectedOption.label : (placeholder || 'Select...')}
         </span>
         <svg 
           width="12" height="7" viewBox="0 0 12 7" 
-          className={`transition-transform duration-200 ease-in-out shrink-0 ml-[6px] ${open ? 'rotate-180' : 'rotate-0'}`}
+          style={{
+            flexShrink: 0,
+            marginLeft: '8px',
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 250ms ease-in-out'
+          }}
         >
-          <path d="M1 1l5 5 5-5" stroke="#667085" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+          <path 
+            d="M1 1l5 5 5-5" 
+            stroke={open || isHovered ? '#C89B3C' : '#667085'} 
+            strokeWidth="1.5" 
+            fill="none" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            style={{ transition: 'stroke 250ms ease-in-out' }}
+          />
         </svg>
       </div>
 
       {open && (
         <div 
-          className={`absolute left-0 right-0 bg-white border border-[var(--accent-gold)] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] z-[50] overflow-hidden p-[2px] ${
-            openUpward ? 'bottom-full rounded-t-[6px] border-b-0' : 'top-full rounded-b-[6px] border-t-0'
-          }`}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            zIndex: 50,
+            background: '#FFFFFF',
+            border: '1px solid #E4E7EC',
+            borderRadius: '3px',
+            boxShadow: '0 8px 24px rgba(15, 27, 46, 0.15), 0 2px 6px rgba(15, 27, 46, 0.08)',
+            padding: '4px',
+            marginTop: openUpward ? '0' : '4px',
+            marginBottom: openUpward ? '4px' : '0',
+            bottom: openUpward ? '100%' : 'auto',
+            top: openUpward ? 'auto' : '100%',
+            maxHeight: '220px',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+          }}
         >
-          {options.map(o => {
-            const isSel = o.value === value
-            return (
-              <div
-                key={o.value}
-                onClick={() => { onChange?.(o.value); setOpen(false); }}
-                className={`p-[8px_12px] rounded-[4px] text-[0.82rem] cursor-pointer transition-all duration-150 ease-in-out border-l-2 ${
-                  isSel 
-                    ? 'font-[700] bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)] border-[var(--accent-gold)]' 
-                    : 'font-[500] bg-transparent text-[var(--text)] border-transparent'
-                }`}
-              >
-                {o.label}
-              </div>
-            )
-          })}
+          {options.map(o => (
+            <SelectOption
+              key={o.value}
+              option={o}
+              isSelected={o.value === value}
+              onClick={() => {
+                if (onChange) onChange(o.value)
+                setOpen(false)
+              }}
+            />
+          ))}
         </div>
       )}
 
       {error && (
-        <div className="text-[0.75rem] text-[#ef4444] mt-[2px] font-[500]">
+        <div style={{ fontSize: '0.75rem', color: '#EF4444', marginTop: '4px', fontWeight: 500 }}>
           {error}
         </div>
       )}

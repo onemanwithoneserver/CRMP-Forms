@@ -12,7 +12,6 @@ import { useForm } from '../../../context/FormContext'
 import { Dropdown } from '../../../components/inputs/Dropdown'
 import { TextFieldModern as TextField } from '../../../components/inputs/TextFieldModern'
 
-
 const COUNTRIES = ['India', 'UAE', 'USA', 'UK', 'Others']
 const STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
@@ -86,7 +85,6 @@ function MapDialog({
   const [error, setError] = useState('')
   const mapRef = useRef<HTMLDivElement>(null)
 
-  // Reset state each time the dialog opens
   useEffect(() => {
     if (isOpen) {
       setLat(initialLat)
@@ -100,9 +98,8 @@ function MapDialog({
       setFetching(false)
       setError('')
     }
-  }, [isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen]) 
 
-  // Lock body scroll while open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -145,7 +142,6 @@ function MapDialog({
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     setPinPosition({ x, y })
-    // Map pixel position → pseudo lat/lng (Hyderabad-centered demo)
     const latVal = (17.385 + (0.5 - y / rect.height) * 0.25).toFixed(6)
     const lngVal = (78.487 + (x / rect.width - 0.5) * 0.25).toFixed(6)
     setLat(latVal)
@@ -155,33 +151,73 @@ function MapDialog({
 
   if (!isOpen) return null
 
-  const canConfirm = lat.trim() !== '' && lng.trim() !== ''
-
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity duration-200"
+    <div 
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 60,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+        background: 'rgba(15, 27, 46, 0.6)',
+        backdropFilter: 'blur(4px)',
+        fontFamily: "'Outfit', sans-serif"
+      }}
+    >
+      <div 
+        style={{
+          position: 'absolute', inset: 0
+        }}
         onClick={onClose}
       />
 
-      {/* Sheet */}
-      <div className="relative w-full max-w-3xl bg-white rounded-[12px] shadow-2xl border border-[#E2E8F0] overflow-hidden flex flex-col max-h-[calc(100vh-48px)]">
+      <div 
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '768px',
+          background: '#FFFFFF',
+          borderRadius: '4px', // Standardized 4px outer
+          border: '1px solid #E4E7EC',
+          boxShadow: '0 16px 48px rgba(15, 27, 46, 0.15)',
+          display: 'flex',
+          flexDirection: 'column',
+          maxHeight: 'calc(100vh - 32px)',
+          overflow: 'hidden'
+        }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#F1F5F9] bg-gradient-to-r from-[#F8FAFC] to-white shrink-0">
-          <div className="flex items-center gap-2">
-            <MapPin size={15} className="text-[#C89B3C]" />
-            <span className="text-[14px] font-semibold text-[#0F172A] font-['Outfit']">
+        <div 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '12px 16px',
+            borderBottom: '1px solid #E4E7EC',
+            background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', // Premium Navy Header
+            flexShrink: 0
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: '#E6C36A', display: 'flex' }}><MapPin size={16} /></span>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
               Select Location on Map
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-[6px] hover:bg-[#F1F5F9] transition-colors"
-            aria-label="Close"
+            style={{
+              width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderRadius: '3px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: '#FFFFFF',
+              cursor: 'pointer', transition: 'all 200ms ease', outline: 'none'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
           >
-            <X size={15} className="text-[#64748B]" />
+            <X size={14} />
           </button>
         </div>
 
@@ -189,127 +225,148 @@ function MapDialog({
         <div
           ref={mapRef}
           onClick={handleMapClick}
-          className="relative w-full overflow-hidden select-none cursor-pointer flex-1 min-h-[220px]"
-          role="application"
-          aria-label="Map canvas – click to place pin"
+          style={{
+            position: 'relative', width: '100%', flex: 1, minHeight: '260px',
+            background: '#F5F7FA', overflow: 'hidden', cursor: 'pointer', userSelect: 'none'
+          }}
         >
-          {/* Background */}
-          <div className="absolute inset-0 bg-[#EEF1F6]" />
-          <div className="absolute inset-0 map-dot-bg" />
+          <div 
+            style={{
+              position: 'absolute', inset: 0,
+              backgroundImage: 'radial-gradient(#CBD5E1 1px, transparent 1px)',
+              backgroundSize: '20px 20px',
+              opacity: 0.5
+            }} 
+          />
 
-          {/* Empty state */}
           {!pinPosition && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 pointer-events-none">
-              <MapPin size={34} className="text-[#C89B3C]" />
-              <span className="text-[13px] font-medium font-['Outfit'] text-[#64748B]">
-                Pin drop selector will appear here
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', pointerEvents: 'none', color: '#667085' }}>
+              <span style={{ color: '#C89B3C', display: 'flex' }}><MapPin size={32} /></span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+                Click anywhere on the map to drop a pin
               </span>
             </div>
           )}
 
-          {/* Auto-fetch button */}
-          <div className="absolute bottom-4 inset-x-0 flex justify-center z-10">
+          <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
             <button
               type="button"
               onClick={e => { e.stopPropagation(); handleAutoFetch() }}
               disabled={fetching}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#E2E8F0] text-[13px] font-semibold font-['Outfit'] text-[#1C2A44] hover:bg-[#F8FAFC] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px', height: '34px', padding: '0 16px',
+                borderRadius: '17px', background: '#FFFFFF', border: '1px solid #E4E7EC',
+                color: '#1C2A44', fontSize: '0.85rem', fontWeight: 600, cursor: fetching ? 'not-allowed' : 'pointer',
+                boxShadow: '0 4px 12px rgba(15,27,46,0.1)', transition: 'all 200ms ease', opacity: fetching ? 0.7 : 1
+              }}
+              onMouseEnter={(e) => { if(!fetching) { e.currentTarget.style.borderColor = '#C89B3C'; e.currentTarget.style.transform = 'translateY(-1px)' } }}
+              onMouseLeave={(e) => { if(!fetching) { e.currentTarget.style.borderColor = '#E4E7EC'; e.currentTarget.style.transform = 'translateY(0)' } }}
             >
-              <Navigation size={13} className={fetching ? 'animate-spin text-[#2563EB]' : 'text-[#2563EB]'} />
-              {fetching ? 'Fetching…' : 'Auto-fetch Location'}
+              <span style={{ display: 'flex' }}>
+                <Navigation size={14} className={fetching ? 'animate-spin text-[#C89B3C]' : 'text-[#C89B3C]'} />
+              </span>
+              {fetching ? 'Fetching Location...' : 'Auto-fetch Location'}
             </button>
           </div>
 
-          {/* Pin Marker SVG overlay */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'visible' }}>
             {pinPosition && (
               <g transform={`translate(${pinPosition.x}, ${pinPosition.y})`}>
-                <ellipse cx="0" cy="4" rx="5" ry="2" fill="rgba(0,0,0,0.18)" />
-                <path d="M0,-28 C-9,-28 -14,-20 -14,-13 C-14,0 0,4 0,4 C0,4 14,0 14,-13 C14,-20 9,-28 0,-28 Z" fill="#EF4444" stroke="#fff" strokeWidth="1.5" />
-                <circle cx="0" cy="-14" r="5" fill="white" opacity="0.9" />
+                <ellipse cx="0" cy="4" rx="6" ry="3" fill="rgba(15,27,46,0.2)" />
+                <path d="M0,-32 C-10,-32 -16,-22 -16,-14 C-16,0 0,4 0,4 C0,4 16,0 16,-14 C16,-22 10,-32 0,-32 Z" fill="#C89B3C" stroke="#FFFFFF" strokeWidth="2" />
+                <circle cx="0" cy="-16" r="6" fill="#1C2A44" />
               </g>
             )}
           </svg>
         </div>
 
-        {/* ── Location Fields Grid ─────────────────────────────────── */}
-        <div className="px-4 py-3 border-t border-[#F1F5F9] bg-[#FAFBFC] shrink-0">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Latitude</label>
+        {/* Location Fields Grid */}
+        <div style={{ padding: '16px', borderTop: '1px solid #E4E7EC', background: '#FFFFFF', flexShrink: 0 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>Latitude</label>
               <input
                 type="text"
                 value={lat}
                 onChange={e => { setLat(e.target.value); setError('') }}
                 placeholder="e.g. 17.41898"
-                className="h-[32px] w-full px-2.5 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Longitude</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>Longitude</label>
               <input
                 type="text"
                 value={lng}
                 onChange={e => { setLng(e.target.value); setError('') }}
                 placeholder="e.g. 78.34377"
-                className="h-[32px] w-full px-2.5 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Country</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>Country</label>
               <select
-                aria-label="Country"
                 value={country}
                 onChange={e => setCountry(e.target.value)}
-                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               >
                 <option value="">Select country</option>
                 {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">State</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>State</label>
               <select
-                aria-label="State"
                 value={stateVal}
                 onChange={e => setStateVal(e.target.value)}
-                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               >
                 <option value="">Select state</option>
                 {STATES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Zone</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>Zone</label>
               <select
-                aria-label="Zone"
                 value={zone}
                 onChange={e => setZone(e.target.value)}
-                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               >
                 <option value="">Select zone</option>
                 {ZONES.map(z => <option key={z} value={z}>{z}</option>)}
               </select>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Corporation</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>Corporation</label>
               <select
-                aria-label="Corporation"
                 value={corporation}
                 onChange={e => setCorporation(e.target.value)}
-                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               >
                 <option value="">Select corporation</option>
                 {CORPORATIONS.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-[11px] font-medium text-[#64748B] font-['Outfit']">Circle</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>Circle</label>
               <select
-                aria-label="Circle"
                 value={circle}
                 onChange={e => setCircle(e.target.value)}
-                className="h-[32px] w-full px-2 text-[12px] font-['Outfit'] text-[#0F172A] bg-white border border-[#E2E8F0] rounded-[6px] focus:outline-none focus:border-[#C89B3C] transition-colors cursor-pointer"
+                style={{ height: '32px', width: '100%', padding: '0 8px', fontSize: '0.8rem', fontWeight: 500, color: '#1C2A44', background: '#F5F7FA', border: '1px solid #E4E7EC', borderRadius: '3px', outline: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
+                onFocus={(e) => { e.target.style.background = '#FFFFFF'; e.target.style.borderColor = '#C89B3C' }}
+                onBlur={(e) => { e.target.style.background = '#F5F7FA'; e.target.style.borderColor = '#E4E7EC' }}
               >
                 <option value="">Select circle</option>
                 {CIRCLES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -319,27 +376,31 @@ function MapDialog({
         </div>
 
         {error && (
-          <div className="flex items-center gap-1.5 px-4 py-2 bg-[#FEF2F2] border-t border-[#FECACA] text-[12px] font-['Outfit'] text-[#DC2626] shrink-0">
-            <AlertCircle size={13} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#FEF2F2', borderTop: '1px solid #FECACA', color: '#EF4444', fontSize: '0.8rem', fontWeight: 500, flexShrink: 0 }}>
+            <span style={{ display: 'flex' }}><AlertCircle size={14} /></span>
             {error}
           </div>
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-4 py-3 border-t border-[#F1F5F9] shrink-0">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', padding: '12px 16px', borderTop: '1px solid #E4E7EC', background: '#F5F7FA', flexShrink: 0 }}>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] text-[#475569] border border-[#E2E8F0] hover:bg-[#F8FAFC] transition-colors"
+            style={{ height: '34px', padding: '0 16px', borderRadius: '3px', fontSize: '0.85rem', fontWeight: 600, color: '#667085', background: '#FFFFFF', border: '1px solid #E4E7EC', cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#C89B3C'; e.currentTarget.style.color = '#1C2A44' }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E4E7EC'; e.currentTarget.style.color = '#667085' }}
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={() => onConfirm(lat, lng, country, stateVal, zone, corporation, circle)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] text-[13px] font-semibold font-['Outfit'] bg-[#0F172A] text-white hover:bg-[#1E293B] transition-colors"
+            style={{ height: '34px', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 16px', borderRadius: '3px', fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFF', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', border: '1px solid #E6C36A', cursor: 'pointer', boxShadow: '0 2px 6px rgba(15,27,46,0.25)', transition: 'all 200ms ease', outline: 'none' }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
-            <Check size={13} />
+            <span style={{ display: 'flex' }}><Check size={14} /></span>
             Confirm Location
           </button>
         </div>
@@ -368,7 +429,7 @@ export default function Location({ sectionRef }: LocationProps) {
   }
 
   return (
-    <>
+    <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       <MapDialog
         isOpen={mapOpen}
         onClose={closeMap}
@@ -382,123 +443,91 @@ export default function Location({ sectionRef }: LocationProps) {
         initialCircle={fd.circle}
       />
 
-      <div ref={sectionRef} className="px-2 md:px-3 mt-3 md:mt-4 w-full">
-        <div className="bg-white rounded-[7px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E2E8F0] overflow-hidden">
-
-          {/* Header */}
-          <div className="bg-gradient-to-r from-[#F8FAFC] to-white border-b border-[#F1F5F9] px-3 py-2.5 md:px-4 md:py-3 flex items-center gap-2 md:gap-2.5">
-            <div className="w-6 h-6 md:w-7 md:h-7 rounded-[7px] bg-white flex items-center justify-center border border-[#E2E8F0] shadow-sm">
-              <Compass size={15} className="text-[#475569]" />
+      <div ref={sectionRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
+        
+        {/* Estate Positioning Card */}
+        <div style={{ background: '#FFFFFF', borderRadius: '4px', border: '1px solid #E4E7EC', boxShadow: '0 4px 16px rgba(15, 27, 46, 0.04)', overflow: 'hidden' }}>
+          <div style={{ background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', borderBottom: '1px solid rgba(200, 155, 60, 0.3)', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)' }}>
+              <Compass size={14} color="#E6C36A" />
             </div>
-            <h2 className="text-[14px] font-semibold text-[#0F172A] font-['Outfit'] leading-tight">
+            <h2 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
               Estate Positioning
             </h2>
           </div>
 
-          <div className="p-3 md:p-4 space-y-3 md:space-y-4">
-
-            {/* ── Row 1 – Map Actions ────────────────────────────────────── */}
-            <div className="flex flex-col gap-1 w-full">
-              <label className="text-[12px] font-medium text-[#475569] pl-0.5 font-['Outfit']">
-                Map Location
-              </label>
+          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>Map Location</label>
               <button
                 type="button"
                 onClick={openMap}
-                className="h-[34px] w-full flex items-center gap-2 px-3 rounded-[6px] border border-[#BFDBFE] bg-[#EFF6FF] text-[13px] font-semibold font-['Outfit'] text-[#2563EB] hover:bg-[#DBEAFE] hover:border-[#93C5FD] transition-all duration-150 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                style={{ height: '34px', width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', borderRadius: '3px', border: '1px solid #C89B3C', background: '#F5F7FA', color: '#1C2A44', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', outline: 'none', boxShadow: '0 1px 3px rgba(15,27,46,0.05)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.borderColor = '#E6C36A' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#F5F7FA'; e.currentTarget.style.borderColor = '#C89B3C' }}
               >
-                <MapPin size={14} className="shrink-0 text-[#C89B3C]" />
+                <span style={{ color: '#C89B3C', display: 'flex' }}><MapPin size={14} /></span>
                 Select Location on Map
               </button>
             </div>
 
-            <div className="h-px w-full bg-[#F1F5F9]" />
+            <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
 
-            {/* ── Row 2 – Administrative Details ────────────────────────── */}
-            <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-              <TextField
-                label="City"
-                value={fd.city}
-                placeholder="e.g. Hyderabad"
-                onChange={val => update({ city: val })}
-              />
-              <TextField
-                label="District"
-                value={fd.district}
-                placeholder="e.g. Rangareddy"
-                onChange={val => update({ district: val })}
-              />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <TextField label="City" value={fd.city} placeholder="e.g. Hyderabad" onChange={val => update({ city: val })} />
+              <TextField label="District" value={fd.district} placeholder="e.g. Rangareddy" onChange={val => update({ district: val })} />
             </div>
 
-            <div className="h-px w-full bg-[#F1F5F9]" />
+            <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
 
-            {/* ── Row 3 – Location Details ───────────────────────────────── */}
-            <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-              <TextField
-                label="Location / Road"
-                value={fd.location}
-                placeholder="e.g. Honeywell Driveway"
-                onChange={val => update({ location: val })}
-              />
-              <TextField
-                label="Micro Location"
-                value={fd.microLocation}
-                placeholder="e.g. Financial District"
-                onChange={val => update({ microLocation: val })}
-              />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <TextField label="Location / Road" value={fd.location} placeholder="e.g. Honeywell Driveway" onChange={val => update({ location: val })} />
+              <TextField label="Micro Location" value={fd.microLocation} placeholder="e.g. Financial District" onChange={val => update({ microLocation: val })} />
             </div>
 
-            <div className="h-px w-full bg-[#F1F5F9]" />
+            <div style={{ height: '1px', width: '100%', background: '#E4E7EC' }} />
 
-            {/* ── Row 4 – Additional Zoning Details ─────────────────────── */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-3 items-end">
-              <Dropdown
-                label="ORR Zoning"
-                value={fd.orrZoning}
-                options={orrZoningList}
-                placeholder="Select ORR zoning"
-                onChange={val => update({ orrZoning: val })}
-              />
-              <TextField
-                label="Colony / Layout Name"
-                value={fd.colonyLayout}
-                placeholder="Optional"
-                onChange={val => update({ colonyLayout: val })}
-              />
-              <TextField
-                label="Pincode"
-                value={fd.pincode}
-                placeholder="e.g. 500032"
-                onChange={val => update({ pincode: val.replace(/\D/g, '').slice(0, 6) })}
-              />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', alignItems: 'flex-end' }}>
+              <Dropdown label="ORR Zoning" value={fd.orrZoning} options={orrZoningList} placeholder="Select ORR zoning" onChange={val => update({ orrZoning: val })} />
+              <TextField label="Colony / Layout Name" value={fd.colonyLayout} placeholder="Optional" onChange={val => update({ colonyLayout: val })} />
+              <TextField label="Pincode" value={fd.pincode} placeholder="e.g. 500032" onChange={val => update({ pincode: val.replace(/\D/g, '').slice(0, 6) })} />
             </div>
 
           </div>
         </div>
 
-        {/* ── Building Information ──────────────────────────────────────── */}
-        <div className="bg-white rounded-[7px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E2E8F0] overflow-hidden mt-3 md:mt-4">
-          <div className="bg-gradient-to-r from-[#F8FAFC] to-white border-b border-[#F1F5F9] px-3 py-2.5 md:px-4 md:py-3 flex items-center gap-2 md:gap-2.5">
-            <div className="w-6 h-6 md:w-7 md:h-7 rounded-[7px] bg-white flex items-center justify-center border border-[#E2E8F0] shadow-sm">
-              <Building2 size={15} className="text-[#475569]" />
+        {/* Building Information Card */}
+        <div style={{ background: '#FFFFFF', borderRadius: '4px', border: '1px solid #E4E7EC', boxShadow: '0 4px 16px rgba(15, 27, 46, 0.04)', overflow: 'hidden' }}>
+          <div style={{ background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', borderBottom: '1px solid rgba(200, 155, 60, 0.3)', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)' }}>
+              <Building2 size={14} color="#E6C36A" />
             </div>
-            <h2 className="text-[14px] font-semibold text-[#0F172A] font-['Outfit'] leading-tight">
+            <h2 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
               Building Information
             </h2>
           </div>
-          <div className="p-3 md:p-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
+          
+          <div style={{ padding: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
               {[
                 { label: 'Building Type', value: BUILDING_TYPE_LABELS[fd.buildingType] ?? fd.buildingType },
                 { label: 'Building Name', value: fd.buildingName },
                 { label: 'Total Floors',  value: fd.totalFloors },
                 { label: 'Address',       value: fd.address },
               ].map(({ label, value }) => (
-                <div key={label} className="flex flex-col gap-1">
-                  <span className="text-[11px] font-medium text-[#64748B] font-['Outfit']">{label}</span>
-                  <div className={`h-[34px] px-2.5 flex items-center rounded-[6px] border text-[12px] font-['Outfit'] truncate ${
-                    value ? 'bg-white border-[#E2E8F0] text-[#0F172A] font-medium' : 'bg-[#F8FAFC] border-[#F1F5F9] text-[#94A3B8]'
-                  }`}>
+                <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085' }}>{label}</span>
+                  <div 
+                    style={{ 
+                      height: '34px', padding: '0 10px', display: 'flex', alignItems: 'center', 
+                      borderRadius: '3px', border: '1px solid #E4E7EC', fontSize: '0.85rem', 
+                      background: value ? '#FFFFFF' : '#F5F7FA', 
+                      color: value ? '#1C2A44' : '#A0AAB8', 
+                      fontWeight: value ? 500 : 400,
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                    }}
+                  >
                     {value || '—'}
                   </div>
                 </div>
@@ -508,6 +537,6 @@ export default function Location({ sectionRef }: LocationProps) {
         </div>
 
       </div>
-    </>
+    </div>
   )
 }

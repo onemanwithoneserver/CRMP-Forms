@@ -1,11 +1,76 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm, SELLER_POST_TYPES } from '../../../context/FormContext'
 import { PropertyCard } from '../../../components/inputs/PropertyCard'
-import { OptionButton } from '../../../components/inputs/OptionButton'
 import { PROPERTY_TYPE_CARDS } from './PropertySelectionConstants'
 
 interface SelectPropertyTypeMobileProps {
   propertyType: string | undefined
+}
+
+// Ultra-premium radio component used inside the expanded card configuration.
+function PostTypeOptionMobile({
+  option,
+  selected,
+  onClick
+}: {
+  option: { value: string; label: string }
+  selected: boolean
+  onClick: (e: React.MouseEvent) => void
+}) {
+  const [isActive, setIsActive] = useState(false)
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onPointerDown={() => setIsActive(true)}
+      onPointerUp={() => setIsActive(false)}
+      onPointerLeave={() => setIsActive(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '12px',
+        padding: '12px 14px', width: '100%', textAlign: 'left',
+        background: selected ? 'linear-gradient(135deg, rgba(28, 42, 68, 0.05) 0%, rgba(15, 27, 46, 0.02) 100%)' : '#FFFFFF',
+        border: selected ? '1px solid rgba(200, 155, 60, 0.3)' : '1px solid #E4E7EC',
+        borderRadius: '4px', cursor: 'pointer',
+        transition: 'all 200ms ease',
+        transform: isActive ? 'scale(0.98)' : 'scale(1)',
+        outline: 'none',
+        fontFamily: "'Outfit', sans-serif"
+      }}
+    >
+      <div
+        style={{
+          width: '18px', height: '18px', borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          background: selected ? '#C89B3C' : '#F5F7FA',
+          border: selected ? '1px solid transparent' : '1px solid #E4E7EC',
+          transition: 'all 200ms ease',
+          boxShadow: selected ? '0 2px 4px rgba(200, 155, 60, 0.3)' : 'none'
+        }}
+      >
+        {selected && (
+          <div
+            style={{
+              width: '8px', height: '8px', borderRadius: '50%',
+              background: '#FFFFFF',
+              boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
+            }}
+          />
+        )}
+      </div>
+      <span
+        style={{
+          fontSize: '0.9rem',
+          fontWeight: selected ? 600 : 500,
+          color: selected ? '#1C2A44' : '#445069',
+          transition: 'color 200ms ease',
+          letterSpacing: '-0.01em'
+        }}
+      >
+        {option.label}
+      </span>
+    </button>
+  )
 }
 
 export default function SelectPropertyTypeMobile({ propertyType }: SelectPropertyTypeMobileProps) {
@@ -13,14 +78,16 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
   const { postType } = state.formData
 
   const selectedCardContent = (
-    <div className="flex flex-col gap-3 py-1">
-      <div className="mb-1">
-        <p className="text-[15px] font-bold text-[#445069] m-0 font-['Outfit'] tracking-tight opacity-90">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px 0', fontFamily: "'Outfit', sans-serif" }}>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1C2A44', margin: 0, letterSpacing: '-0.01em' }}>
           What do you want to do?
-        </p>
+        </h2>
+        <div style={{ height: '1px', width: '100%', background: 'linear-gradient(90deg, rgba(200, 155, 60, 0.3) 0%, transparent 100%)' }} />
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {SELLER_POST_TYPES.filter(option => {
           if (propertyType === 'land') {
             return option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
@@ -29,34 +96,36 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
         }).map(option => {
           const selected = postType === option.value
           return (
-            <button
+            <PostTypeOptionMobile
               key={option.value}
-              type="button"
-              className="flex items-center gap-3 py-2.5 w-full text-left transition-all duration-200 group active:scale-[0.98]"
-              onClick={(e: React.MouseEvent) => {
+              option={option}
+              selected={selected}
+              onClick={(e) => {
                 e.stopPropagation()
                 if (!selected) {
                   dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
                 }
               }}
-            >
-              <div className={`radio-circle shrink-0 ${selected ? 'active scale-110' : 'group-hover:border-[#C89B3C]/50'}`} />
-              <span className={`text-[14px] font-['Outfit'] tracking-tight transition-colors ${selected ? 'font-bold text-[#1C2A44]' : 'font-medium text-[#445069] opacity-80'}`}>
-                {option.label}
-              </span>
-            </button>
+            />
           )
         })}
       </div>
     </div>
   )
 
-  return (
-    <div className="flex flex-col gap-4">
+return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: "'Outfit', sans-serif", padding: '0 8px' }}>
       {propertyType ? (
         <>
-          {/* Top Row: Unselected items in a compact 4-col grid */}
-          <div className="grid grid-cols-4 gap-2">
+          {/* Active Handoff: Compact 4-Column Grid */}
+          <div 
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(4, 1fr)', 
+              gap: '8px',
+              transition: 'all 300ms ease'
+            }}
+          >
             {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
               <PropertyCard
                 key={type.id}
@@ -72,34 +141,51 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
             ))}
           </div>
 
-          {/* Bottom Card: Selected item with configuration question */}
-          {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
-            <PropertyCard
-              key={type.id}
-              icon={type.icon}
-              label={type.label}
-              selected={true}
-              onClick={() => { }}
-            >
-              {selectedCardContent}
-            </PropertyCard>
-          ))}
+          {/* Elevated Active Card below */}
+          <div style={{ transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
+            {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
+              <PropertyCard
+                key={type.id}
+                icon={type.icon}
+                label={type.label}
+                selected={true}
+                onClick={() => { }}
+              >
+                {selectedCardContent}
+              </PropertyCard>
+            ))}
+          </div>
         </>
       ) : (
-        /* Default: 2-column grid for all items (2x3 feel) */
-        <div className="grid grid-cols-2 gap-2">
-          {PROPERTY_TYPE_CARDS.map((type, idx) => (
-            <PropertyCard
+        /* Default View: Staggered Flex Layout (Centers the bottom 2) */
+        <div 
+          style={{ 
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '8px',
+            width: '100%',
+            transition: 'all 300ms ease'
+          }}
+        >
+          {PROPERTY_TYPE_CARDS.map((type) => (
+            <div
               key={type.id}
-              icon={type.icon}
-              label={type.label}
-              selected={false}
-              className={idx === 4 ? 'col-span-2' : ''}
-              onClick={() => dispatch({
-                type: 'updateData',
-                payload: { propertyType: type.id, postType: '', postSubCategory: '' },
-              })}
-            />
+              style={{
+                width: 'calc(33.333% - 6px)',
+              }}
+            >
+              <PropertyCard
+                icon={type.icon}
+                label={type.label}
+                selected={false}
+                compact={true}
+                onClick={() => dispatch({
+                  type: 'updateData',
+                  payload: { propertyType: type.id, postType: '', postSubCategory: '' },
+                })}
+              />
+            </div>
           ))}
         </div>
       )}

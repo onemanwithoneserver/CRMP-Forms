@@ -1,27 +1,73 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 
-type Props = {
-  title?: string
-  icon?: ReactNode
-  children: ReactNode
+interface SectionCardProps {
+  title: string
+  icon?: React.ReactNode
+  children: React.ReactNode
 }
 
-export default function SectionCard({ title, icon, children }: Props) {
+export default function SectionCard({ title, icon, children }: SectionCardProps) {
   return (
-    <div className="bg-white rounded-[5px] shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-[var(--border-light)] mb-4">
-      {title && (
-        <h2 className="bg-[#1C2A44] text-[#FFFFFF] text-[12px] md:text-[14px] font-semibold px-[14px] py-[10px] m-0 border-b border-[#1C2943] rounded-t-[5px] flex items-center gap-2">
+    <div
+      style={{
+        background: '#FFFFFF',
+        borderRadius: '4px',
+        border: '1px solid #E4E7EC',
+        boxShadow: '0 4px 12px rgba(15, 27, 46, 0.05)',
+        overflow: 'hidden',
+        marginBottom: '16px',
+        width: '100%',
+        boxSizing: 'border-box',
+        fontFamily: "'Outfit', sans-serif"
+      }}
+    >
+      <div 
+        style={{ 
+          height: '6px', 
+          width: '100%', 
+          background: 'linear-gradient(90deg, #1C2A44 0%, #3b5998 50%, #C89B3C 100%)' 
+        }} 
+      />
+      
+      <div style={{ padding: '16px 20px' }}>
+        <div 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '10px', 
+            marginBottom: '20px' 
+          }}
+        >
           {icon && (
-            <span className="flex items-center justify-center w-7 h-7 rounded-[4px] bg-white/10 backdrop-blur-md border border-white/20 text-white mr-1 shadow-[0_2px_8px_rgba(255,255,255,0.05)]">
-              {React.cloneElement(icon as any, { size: 14 })}
-            </span>
+            <div 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                color: '#C89B3C' 
+              }}
+            >
+              {icon}
+            </div>
           )}
-          {title}
-        </h2>
-      )}
-      <div className="p-4 md:p-4">
-        {children}
+          <h3 
+            style={{ 
+              fontSize: '0.9rem', 
+              fontWeight: 700, 
+              color: '#1C2A44', 
+              margin: 0,
+              letterSpacing: '-0.01em'
+            }}
+          >
+            {title}
+          </h3>
+        </div>
+        
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {children}
+        </div>
       </div>
+      
     </div>
   )
 }

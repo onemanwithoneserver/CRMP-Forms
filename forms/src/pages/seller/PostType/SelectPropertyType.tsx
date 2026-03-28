@@ -16,18 +16,58 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   const isMobile = device === 'mobile'
 
   return (
-    <div ref={sectionRef} className="relative -mt-6 md:-mt-8 px-0 md:px-4 max-w-4xl mx-auto w-full transition-all duration-500">
-      <div className="bg-white md:rounded-[4px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] border-y md:border border-[var(--border-light)] overflow-hidden">
-        {/* Premium Gradient accent bar */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C] shadow-sm" />
+    <div 
+      ref={sectionRef} 
+      style={{
+        position: 'relative',
+        marginTop: isMobile ? '-24px' : '-32px',
+        padding: isMobile ? '0' : '0 16px',
+        maxWidth: '896px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: '100%',
+        transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+        fontFamily: "'Outfit', sans-serif",
+        zIndex: 20
+      }}
+    >
+      <div 
+        style={{
+          background: '#FFFFFF',
+          borderRadius: isMobile ? '0' : '4px',
+          boxShadow: '0 8px 32px rgba(15, 27, 46, 0.08), 0 2px 8px rgba(15, 27, 46, 0.04)',
+          border: isMobile ? 'none' : '1px solid #E4E7EC',
+          borderTop: isMobile ? '1px solid #E4E7EC' : '1px solid #E4E7EC',
+          borderBottom: isMobile ? '1px solid #E4E7EC' : '1px solid #E4E7EC',
+          overflow: 'hidden'
+        }}
+      >
+        <div 
+          style={{ 
+            height: '4px', 
+            width: '100%', 
+            background: 'linear-gradient(90deg, #1C2A44 0%, #C89B3C 100%)' 
+          }} 
+        />
 
-        <div className="p-4">
-          {/* Section heading */}
-          <div className="flex items-center gap-3 mb-5 md:mb-6">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-[#1C2A44]/5 backdrop-blur-md border border-[#1C2A44]/15 flex items-center justify-center shadow-sm">
-              <LayoutGrid size={18} className="text-[#1C2A44]" />
+        <div style={{ padding: isMobile ? '16px' : '24px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: isMobile ? '16px' : '24px' }}>
+            <div 
+              style={{ 
+                width: isMobile ? '32px' : '36px', 
+                height: isMobile ? '32px' : '36px', 
+                borderRadius: '3px', 
+                background: '#F5F7FA', 
+                border: '1px solid #E4E7EC', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                boxShadow: 'inset 0 1px 0 #FFFFFF, 0 1px 2px rgba(15, 27, 46, 0.05)' 
+              }}
+            >
+              <LayoutGrid size={isMobile ? 16 : 18} color="#1C2A44" />
             </div>
-            <h2 className="text-[1.1rem] font-bold text-[#1C2A44] font-['Outfit'] tracking-tight">
+            <h2 style={{ fontSize: isMobile ? '1.05rem' : '1.15rem', fontWeight: 700, color: '#1C2A44', margin: 0, letterSpacing: '-0.01em' }}>
               Select Property Type
             </h2>
           </div>

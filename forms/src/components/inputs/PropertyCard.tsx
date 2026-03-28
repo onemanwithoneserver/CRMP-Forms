@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CheckCircle2, LucideIcon } from 'lucide-react'
 import { useDevice } from '../../context/DeviceContext'
 
@@ -16,89 +16,188 @@ export interface PropertyCardProps {
 export function PropertyCard({ label, icon: Icon, selected, compact, row, className, onClick, children }: PropertyCardProps) {
   const { device } = useDevice()
   const isMobile = device === 'mobile'
+  const [isHovered, setIsHovered] = useState(false)
 
+  // 1. SELECTED STATE (Premium layout with children support)
   if (selected) {
     return (
-      <div className={`w-full flex flex-col md:flex-row rounded-[4px] border border-[#C89B3C] bg-[#FFFBF0] shadow-[0_4px_24px_rgba(200,155,60,0.12)] overflow-hidden transition-all duration-500 scale-[1.01] ${className || ''}`}>
+      <div 
+        style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          width: '100%',
+          borderRadius: '3px',
+          border: '1px solid #C89B3C',
+          background: '#FFFFFF',
+          boxShadow: '0 4px 16px rgba(15, 27, 46, 0.08), 0 2px 4px rgba(200, 155, 60, 0.05)',
+          overflow: 'hidden',
+          transition: 'all 250ms ease-in-out',
+          fontFamily: "'Outfit', sans-serif"
+        }}
+        className={className}
+      >
         {/* Left Side: Property Identifier */}
         <div
-          className={`flex items-center md:flex-col md:justify-center relative cursor-pointer md:w-40 md:min-h-[140px] md:border-r md:border-[#C89B3C]/15 ${isMobile ? 'px-3 py-2.5' : 'px-4 py-6'}`}
           onClick={onClick}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: isMobile ? 'row' : 'column',
+            justifyContent: isMobile ? 'flex-start' : 'center',
+            position: 'relative',
+            cursor: 'pointer',
+            width: isMobile ? '100%' : '150px',
+            minHeight: isMobile ? 'auto' : '130px',
+            borderRight: isMobile ? 'none' : '1px solid #E4E7EC',
+            borderBottom: isMobile && children ? '1px solid #E4E7EC' : 'none',
+            padding: isMobile ? '10px 12px' : '20px',
+            background: '#F5F7FA', // Subtle Light Gray contrast
+            flexShrink: 0,
+          }}
         >
-          <div className="flex items-center md:flex-col gap-3 md:gap-2 text-center">
-            <div className={`rounded-[4px] bg-[#C89B3C]/15 backdrop-blur-md border border-[#C89B3C]/20 flex items-center justify-center shadow-[0_2px_8px_rgba(200,155,60,0.1)] ${isMobile ? 'w-8 h-8' : 'w-14 h-14'}`}>
-              <Icon size={isMobile ? 16 : 28} className="text-[#C89B3C]" />
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: isMobile ? 'row' : 'column', gap: isMobile ? '10px' : '12px' }}>
+            <div 
+              style={{
+                width: isMobile ? '32px' : '48px',
+                height: isMobile ? '32px' : '48px',
+                borderRadius: '3px',
+                background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', // Premium Navy Gradient
+                border: '1px solid #E6C36A',
+                boxShadow: '0 2px 6px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Icon size={isMobile ? 16 : 24} color="#E6C36A" />
             </div>
-            <span className={`font-bold text-[#1C2A44] font-['Outfit'] leading-tight tracking-tight ${isMobile ? 'text-[14px]' : 'text-[18px]'}`}>
+            <span style={{
+              fontWeight: 600,
+              color: '#1C2A44',
+              fontSize: isMobile ? '0.85rem' : '0.95rem',
+              textAlign: 'center',
+              lineHeight: 1.1,
+              paddingRight: isMobile ? '24px' : '0' // space for checkmark
+            }}>
               {label}
             </span>
           </div>
-          <div className={`absolute ${isMobile ? 'top-2.5 right-3' : 'top-3 right-4'}`}>
-            <CheckCircle2 size={isMobile ? 16 : 18} className="text-[#C89B3C] fill-[#C89B3C] stroke-[#FFFBF0]" />
+          <div style={{ position: 'absolute', top: isMobile ? '10px' : '12px', right: isMobile ? '12px' : '12px' }}>
+            <CheckCircle2 size={isMobile ? 16 : 18} color="#C89B3C" fill="#FFFFFF" />
           </div>
         </div>
 
         {/* Right Side / Bottom: Sub-options (Children) */}
         {children && (
-          <div className={`flex-1 bg-white/40 backdrop-blur-sm self-stretch flex items-center ${isMobile ? 'border-t border-[#C89B3C]/15 px-3 pb-4 pt-3' : 'px-6 py-4'}`}>
-            <div className="w-full">
-              {children}
-            </div>
+          <div style={{ flex: 1, padding: isMobile ? '12px' : '16px', background: '#FFFFFF' }}>
+            {children}
           </div>
         )}
       </div>
     )
   }
 
+  // 2. ROW STATE (Horizontal List Layout)
   if (row) {
     return (
       <button
         type="button"
         onClick={onClick}
-        className={`
-          w-full flex items-center gap-3 px-3 py-2.5 rounded-[4px] border border-[#E2E8F0] bg-white
-          hover:border-[#C89B3C]/40 hover:bg-[#FFFBF0]/40 hover:scale-[1.02] hover:shadow-md
-          shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 cursor-pointer
-          ${className || ''}
-        `}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={className}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          width: '100%',
+          padding: '8px 10px',
+          borderRadius: '3px',
+          border: `1px solid ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
+          background: isHovered ? '#FFFFFF' : '#F5F7FA',
+          boxShadow: isHovered ? '0 2px 8px rgba(15, 27, 46, 0.08)' : 'none',
+          transition: 'all 250ms ease-in-out',
+          cursor: 'pointer',
+          outline: 'none',
+          fontFamily: "'Outfit', sans-serif"
+        }}
       >
-        <div className="w-8 h-8 rounded-[4px] bg-[#1C2A44]/5 border border-[#1C2A44]/10 shadow-sm flex items-center justify-center flex-shrink-0">
-          <Icon size={16} className="text-[#445069]" />
+        <div style={{
+          width: '28px', height: '28px', borderRadius: '3px',
+          background: isHovered ? '#F5F7FA' : '#FFFFFF',
+          border: `1px solid ${isHovered ? '#E6C36A' : '#E4E7EC'}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          transition: 'all 250ms ease-in-out'
+        }}>
+          <Icon size={14} color={isHovered ? '#C89B3C' : '#667085'} style={{ transition: 'color 250ms ease-in-out' }} />
         </div>
-        <span className="font-bold text-[#445069] font-['Outfit'] text-[13px] text-left flex-1 leading-tight tracking-tight">
+        <span style={{
+          fontWeight: isHovered ? 600 : 500,
+          color: isHovered ? '#1C2A44' : '#667085',
+          fontSize: '0.85rem',
+          textAlign: 'left',
+          flex: 1,
+          transition: 'color 250ms ease-in-out'
+        }}>
           {label}
         </span>
       </button>
     )
   }
 
+  // 3. DEFAULT STATE (Grid / Vertical Block Layout)
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`
-       w-auto h-auto flex flex-col items-center justify-center transition-all duration-300 cursor-pointer rounded-[4px] border border-[#E2E8F0] bg-white 
-       hover:border-[#C89B3C]/40 hover:shadow-xl hover:scale-[1.05] relative z-10
-        ${compact
-          ? 'gap-1 py-1.5 px-0.5'
-          : (isMobile ? 'gap-2 py-3 px-2' : 'gap-3 py-6 px-4 min-w-auto')}
-        ${className || ''}
-      `}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={className}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        padding: compact ? '6px 4px' : (isMobile ? '10px 8px' : '16px 12px'),
+        gap: compact ? '4px' : (isMobile ? '6px' : '10px'),
+        borderRadius: '3px',
+        border: `1px solid ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
+        background: isHovered ? '#FFFFFF' : '#F5F7FA',
+        boxShadow: isHovered ? '0 4px 12px rgba(15, 27, 46, 0.08)' : 'none',
+        transform: isHovered ? 'translateY(-1px)' : 'none',
+        transition: 'all 250ms ease-in-out',
+        cursor: 'pointer',
+        outline: 'none',
+        fontFamily: "'Outfit', sans-serif"
+      }}
     >
-      <div className={`
-        rounded-[4px] bg-[#1C2A44]/5 border border-[#1C2A44]/10 shadow-sm flex items-center justify-center transition-colors
-        ${compact
-          ? 'w-7 h-7 mb-0'
-          : (isMobile ? 'w-7 h-7 mb-0.5' : 'w-11 h-11 mb-1.5')}
-      `}>
-        <Icon size={compact ? 14 : (isMobile ? 16 : 22)} className="text-[#445069]" />
+      <div style={{
+        width: compact ? '24px' : (isMobile ? '28px' : '40px'),
+        height: compact ? '24px' : (isMobile ? '28px' : '40px'),
+        borderRadius: '3px',
+        background: isHovered ? 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)' : '#FFFFFF',
+        border: `1px solid ${isHovered ? '#E6C36A' : '#E4E7EC'}`,
+        boxShadow: isHovered ? '0 2px 4px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)' : 'none',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'all 250ms ease-in-out'
+      }}>
+        <Icon 
+          size={compact ? 12 : (isMobile ? 14 : 18)} 
+          color={isHovered ? '#E6C36A' : '#667085'} 
+          style={{ transition: 'color 250ms ease-in-out' }} 
+        />
       </div>
-      <span className={`
-        font-bold text-[#445069] font-['Outfit'] text-center w-full px-0.5 break-words tracking-tight
-        ${compact
-          ? (isMobile ? 'text-[10px] leading-[1.1] line-clamp-2' : 'text-[11px] leading-[1.1] line-clamp-2')
-          : (isMobile ? 'text-[12px] leading-[1.2]' : 'text-[15px] leading-[1.2]')}
-      `}>
+      <span style={{
+        fontWeight: isHovered ? 600 : 500,
+        color: isHovered ? '#1C2A44' : '#667085',
+        fontSize: compact ? (isMobile ? '0.65rem' : '0.7rem') : (isMobile ? '0.75rem' : '0.85rem'),
+        textAlign: 'center',
+        lineHeight: 1.15,
+        wordBreak: 'break-word',
+        letterSpacing: '-0.01em',
+        transition: 'color 250ms ease-in-out'
+      }}>
         {label === 'Entire Building' && compact ? 'Building' : label}
       </span>
     </button>

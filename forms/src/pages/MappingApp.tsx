@@ -66,7 +66,7 @@ export default function MappingApp() {
     <div className="flex flex-col h-full overflow-hidden bg-[#F5F7FA] font-['Outfit',sans-serif]">
       {/* Premium Step Navigation Bar */}
       {!state.designStepOverride && (
-        <div className="z-50 bg-white py-3 px-4 border-b border-[#E4E7EC] shadow-[0_2px_8px_rgba(15,27,46,0.03)]">
+        <div className="z-50 bg-white px-1 pb-1 border-b border-[#E4E7EC] shadow-[0_2px_8px_rgba(15,27,46,0.03)]">
           <div className="max-w-[896px] mx-auto">
             <StepHeader
               steps={steps}

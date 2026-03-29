@@ -64,8 +64,21 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
             return (
               <div
                 key={type.id}
-                className="flex items-center gap-[12px] px-[12px] py-[8px] rounded-[3px] border border-gold bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06),0_1px_3px_rgba(200,155,60,0.08)] font-outfit"
+                // Added 'relative' to the container classes below
+                className="relative flex justify-end gap-[12px] px-[12px] py-[8px] rounded-[3px] border border-gold bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06),0_1px_3px_rgba(200,155,60,0.08)] font-outfit"
               >
+                {/* --- Added Checkbox Indicator --- */}
+                <div 
+                  className="absolute -top-[10px] -right-[10px] bg-white rounded-full flex items-center justify-center shadow-sm"
+                  title="Selected Property Type"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" className="fill-navy" />
+                    <path d="M8 12.5L10.5 15L16 9" stroke="#E6C36A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                {/* -------------------------------- */}
+
                 {/* Selected property icon + label */}
                 <button
                   type="button"
@@ -80,13 +93,8 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
                     {type.label}
                   </span>
                 </button>
-                {/* Divider */}
-                <div className="w-px h-[24px] bg-border flex-shrink-0" />
-                {/* "What do you want to do?" + post-type buttons */}
-                <div className="flex items-center justify-between gap-[16px] flex-1 min-w-0">
-                  <h2 className="text-[0.88rem] font-bold text-navy m-0 tracking-[-0.01em] whitespace-nowrap">
-                    What do you want to do?
-                  </h2>
+                <div className="w-px h-auto bg-border flex-shrink-0" />
+                <div className="flex  justify-end gap-auto flex-1 min-w-0">
                   <div className="flex items-center bg-[#F5F7FA] p-[2px] rounded-[6px] border border-border flex-shrink-0">
                     {SELLER_POST_TYPES.filter(option =>
                       option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'

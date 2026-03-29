@@ -20,7 +20,8 @@ function PostTypeTabOptionMobile({
     <button
       type="button"
       onClick={onClick}
-      className={`px-[12px] py-[4px] text-center text-[0.8rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out active:scale-[0.98] outline-none ${
+      // Adjusted px-padding slightly to ensure it fits side-by-side on small mobile screens
+      className={`px-[8px] xs:px-[12px] py-[4px] text-center text-[0.8rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out active:scale-[0.98] outline-none whitespace-nowrap ${
         selected
           ? 'bg-navy text-white font-semibold shadow-[0_1px_3px_rgba(15,27,46,0.2)]'
           : 'bg-transparent text-text-tertiary font-medium'
@@ -31,58 +32,15 @@ function PostTypeTabOptionMobile({
   )
 }
 
-import { ChevronRight } from 'lucide-react'
-
 export default function SelectPropertyTypeMobile({ propertyType }: SelectPropertyTypeMobileProps) {
-  const { state, dispatch, next } = useForm()
+  const { state, dispatch } = useForm()
   const { postType } = state.formData
-
-  const selectedCardContent = (
-    <div className="flex items-center justify-between gap-[8px] py-[4px] px-[4px] font-outfit">
-      {/* 1. Question Section */}
-      <h2 className="text-[12px] font-bold text-navy m-0 tracking-[-0.01em] leading-tight">
-        What do you want to do?
-      </h2>
-      {/* 2. Tab Controls Beside Question */}
-      <div className="flex items-center shrink-0 bg-[#F5F7FA] p-[2px] rounded-[6px] border border-border">
-        {SELLER_POST_TYPES.filter(option => 
-          option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
-        ).map(option => {
-          const selected = postType === option.value
-          return (
-            <PostTypeTabOptionMobile
-              key={option.value}
-              option={option}
-              selected={selected}
-              onClick={(e) => {
-                e.stopPropagation()
-                if (!selected) {
-                  dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
-                }
-              }}
-            />
-          )
-        })}
-      </div>
-      {/* 3. Arrow Control to Advance Step */}
-      <button
-        type="button"
-        aria-label="Next"
-        className="ml-[8px] flex items-center justify-center w-[28px] h-[28px] rounded-full bg-gradient-to-br from-navy to-navy-dark border border-gold shadow-[0_2px_6px_rgba(15,27,46,0.10)] active:scale-95 transition"
-        onClick={(e) => {
-          e.stopPropagation()
-          next()
-        }}
-      >
-        <ChevronRight size={18} color="#E6C36A" />
-      </button>
-    </div>
-  )
 
   return (
     <div className="flex flex-col gap-[8px] font-outfit px-[4px]">
       {propertyType ? (
         <>
+          {/* Unselected options grid */}
           <div className="grid grid-cols-4 gap-[6px] transition-all duration-300 ease-out">
             {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
               <PropertyCard
@@ -98,19 +56,71 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
               />
             ))}
           </div>
-          <div className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
-            {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => (
-              <PropertyCard
-                key={type.id}
-                icon={type.icon}
-                label={type.label}
-                selected={true}
-                compact={true}
-                onClick={() => { }}
-              >
-                {selectedCardContent}
-              </PropertyCard>
-            ))}
+
+          {/* Selected Option (Horizontal Layout matching image) */}
+          <div className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] mt-[4px]">
+            {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => {
+              const Icon = type.icon
+              return (
+                <div 
+                  key={type.id} 
+                  className="relative flex items-center justify-between gap-[6px] px-[8px] py-[6px] rounded-[4px] border border-[#C89B3C] bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06)]"
+                >
+                  {/* Outer Gold Checkmark */}
+                  <div 
+                    className="absolute -top-[8px] -right-[8px] z-10 bg-white rounded-full flex items-center justify-center shadow-sm"
+                    title="Selected Property Type"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#C89B3C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                  </div>
+
+                  {/* Left Side: Icon & Label */}
+                  <button
+                    type="button"
+                    onClick={() => dispatch({ type: 'updateData', payload: { propertyType: '', postType: '', postSubCategory: '' } })}
+                    className="flex items-center gap-[8px] flex-shrink-0 cursor-pointer bg-transparent border-none p-0 outline-none group"
+                  >
+                    <div className="w-[32px] h-[32px] rounded-[3px] bg-navy border border-[#C89B3C] flex items-center justify-center flex-shrink-0 shadow-[0_2px_6px_rgba(15,27,46,0.25)]">
+                      <Icon size={16} color="#E6C36A" />
+                    </div>
+                    <span className="text-[0.85rem] font-semibold text-navy whitespace-nowrap">
+                      {type.label}
+                    </span>
+                  </button>
+
+                  {/* Vertical Separator Line */}
+                  <div className="w-px h-[24px] bg-border flex-shrink-0" />
+
+                  {/* Right Side: Tab Controls */}
+                  <div className="flex flex-1 justify-end min-w-0">
+                    <div className="flex items-center bg-[#F5F7FA] p-[2px] rounded-[6px] border border-border flex-shrink-0">
+                      {SELLER_POST_TYPES.filter(option => 
+                        option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+                      ).map(option => {
+                        const selected = postType === option.value
+                        return (
+                          <PostTypeTabOptionMobile
+                            key={option.value}
+                            option={option}
+                            selected={selected}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              if (!selected) {
+                                dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
+                              }
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+              )
+            })}
           </div>
         </>
       ) : (

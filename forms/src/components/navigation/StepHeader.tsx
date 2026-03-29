@@ -106,7 +106,7 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
   const prev = currentStep > 1 ? steps[currentStep - 2] : null
 
   return (
-    <div className="flex flex-col w-full gap-3 py-2 font-['Outfit',sans-serif]">
+    <div className="flex flex-col w-full gap-1 py-2 font-['Outfit',sans-serif]">
       
       {/* Top Row: Back Button & Current Step */}
       <div className="flex items-center justify-center relative h-[34px] px-1">

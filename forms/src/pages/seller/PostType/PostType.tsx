@@ -42,8 +42,8 @@ export default function PostType() {
       <div className="flex flex-col h-full bg-[#F5F7FA] font-['Outfit',sans-serif]">
         <div className="flex-1 overflow-y-auto scroll-smooth">
 
-          {/* FIXED: Restored vertical padding (py-8) so the container doesn't collapse and hide the text */}
-          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] py-8 mb-[2px]">
+          {/* CHANGED: Replaced py-8 with pt-8 pb-12 to add extra space below the title */}
+          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] pt-4 pb-12 mb-[2px]">
             <div 
               className="absolute inset-0 pointer-events-none" 
               style={{ 
@@ -53,9 +53,9 @@ export default function PostType() {
             />
             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[linear-gradient(90deg,transparent_0%,rgba(200,155,60,0.8)_50%,transparent_100%)]" />
             
-            <div className="relative max-w-[768px] mx-auto text-center px-4 z-10">
+            <div className="relative max-w-[768px] mx-auto text-center px-1 z-10">
               <h1 className={`font-bold text-white tracking-[-0.01em] leading-[1.2] m-0 ${isMobile ? 'text-[1.2rem]' : 'text-[1.5rem]'}`}>
-                What type of property do you want to list?
+                Select Property Type
               </h1>
             </div>
           </div>

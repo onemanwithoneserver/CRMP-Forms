@@ -42,7 +42,8 @@ export default function PostType() {
       <div className="flex flex-col h-full bg-[#F5F7FA] font-['Outfit',sans-serif]">
         <div className="flex-1 overflow-y-auto scroll-smooth">
 
-          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] pt-[2px] pb-[2px]">
+          {/* FIXED: Restored vertical padding (py-8) so the container doesn't collapse and hide the text */}
+          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] py-8 mb-[2px]">
             <div 
               className="absolute inset-0 pointer-events-none" 
               style={{ 
@@ -52,7 +53,7 @@ export default function PostType() {
             />
             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[linear-gradient(90deg,transparent_0%,rgba(200,155,60,0.8)_50%,transparent_100%)]" />
             
-            <div className="relative max-w-[768px] mx-auto text-center px-[2px]">
+            <div className="relative max-w-[768px] mx-auto text-center px-4 z-10">
               <h1 className={`font-bold text-white tracking-[-0.01em] leading-[1.2] m-0 ${isMobile ? 'text-[1.2rem]' : 'text-[1.5rem]'}`}>
                 What type of property do you want to list?
               </h1>
@@ -61,6 +62,7 @@ export default function PostType() {
 
           <SelectPropertyType sectionRef={postTypeSectionRef} />
 
+          {/* The rest remains tightly packed at 2px as requested */}
           <div className={`w-full max-w-[896px] mx-auto mt-[2px] mb-[2px] ${isMobile ? 'px-0' : 'px-[2px]'}`}>
             <div className={`bg-white shadow-[0_4px_16px_rgba(15,27,46,0.04)] border border-[#E4E7EC] overflow-hidden ${isMobile ? 'rounded-none' : 'rounded-[4px]'}`}>
               <div className="flex items-center gap-[2px] p-[2px] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border-b border-[rgba(200,155,60,0.3)]">

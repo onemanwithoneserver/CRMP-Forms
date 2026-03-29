@@ -109,8 +109,6 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
                   </span>
                 </button>
 
-                {/* Vertical Separator Line */}
-                <div className="w-px h-[24px] bg-border flex-shrink-0" />
 
                 {/* Right Side: Radio Controls */}
                 <div className="flex flex-col gap-[10px] min-w-0">

@@ -83,10 +83,9 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
             return (
               <div
                 key={type.id}
-                // Added 'relative' to the container classes below
-                className={`relative flex justify-end gap-[12px] px-[12px] rounded-[3px] border border-gold bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06),0_1px_3px_rgba(200,155,60,0.08)] font-outfit ${noBuilding ? 'min-h-[100px] py-0 items-center' : 'py-[8px]'}`}
+                className={`relative flex justify-end px-[12px] rounded-[3px] border border-gold bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06),0_1px_3px_rgba(200,155,60,0.08)] font-outfit ${noBuilding ? 'min-h-[100px] py-0 items-center' : 'py-[8px]'}`}
+                style={{ gap: '37.5%' }}
               >
-                {/* --- Added Checkbox Indicator --- */}
                 <div 
                   className="absolute -top-[10px] -right-[10px] bg-white rounded-full flex items-center justify-center shadow-sm"
                   title="Selected Property Type"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 type Props = {
   label: string
@@ -7,24 +7,9 @@ type Props = {
 }
 
 export default function Toggle({ label, checked, onChange }: Props) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  let trackBg = '#F5F7FA'
-  let trackBorder = '1px solid #E4E7EC'
-  let trackShadow = 'inset 0 1px 3px rgba(15, 27, 46, 0.05)'
-
-  if (checked) {
-    trackBg = 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)'
-    trackBorder = `1px solid ${isHovered ? '#E6C36A' : '#C89B3C'}`
-    trackShadow = '0 2px 6px rgba(15, 27, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-  } else if (isHovered) {
-    trackBorder = '1px solid #C89B3C'
-    trackBg = '#FFFFFF'
-  }
-
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
-      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: checked ? '#1C2A44' : '#667085', transition: 'color 250ms ease-in-out' }}>
+    <div className="flex items-center justify-between py-1.5 w-full font-['Outfit',sans-serif]">
+      <span className={`text-[0.85rem] font-semibold transition-colors duration-250 ease-in-out ${checked ? 'text-[#1C2A44]' : 'text-[#667085]'}`}>
         {label}
       </span>
       <button
@@ -32,38 +17,22 @@ export default function Toggle({ label, checked, onChange }: Props) {
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{
-          width: '42px',
-          height: '24px',
-          borderRadius: '4px',
-          position: 'relative',
-          cursor: 'pointer',
-          border: trackBorder,
-          background: trackBg,
-          boxShadow: trackShadow,
-          transition: 'all 250ms ease-in-out',
-          outline: 'none',
-          padding: 0,
-          boxSizing: 'border-box',
-          flexShrink: 0
-        }}
+        className={`
+          relative w-[42px] h-[24px] rounded shrink-0 cursor-pointer p-0 box-border outline-none transition-all duration-250 ease-in-out border
+          ${checked
+            ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border-[#C89B3C] hover:border-[#E6C36A] shadow-[0_2px_6px_rgba(15,27,46,0.2),inset_0_1px_0_rgba(255,255,255,0.05)]'
+            : 'bg-[#F5F7FA] hover:bg-white border-[#E4E7EC] hover:border-[#C89B3C] shadow-[inset_0_1px_3px_rgba(15,27,46,0.05)] hover:shadow-none'
+          }
+        `}
       >
         <div
-          style={{
-            width: '16px',
-            height: '16px',
-            borderRadius: '3px',
-            background: '#FFFFFF',
-            position: 'absolute',
-            top: '3px',
-            left: checked ? '21px' : '3px',
-            boxShadow: checked 
-              ? '0 2px 4px rgba(15, 27, 46, 0.25)' 
-              : '0 1px 3px rgba(15, 27, 46, 0.15)',
-            transition: 'all 250ms cubic-bezier(0.4, 0.0, 0.2, 1)',
-          }}
+          className={`
+            absolute top-[3px] w-4 h-4 bg-white rounded-[3px] transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)]
+            ${checked 
+              ? 'left-[21px] shadow-[0_2px_4px_rgba(15,27,46,0.25)]' 
+              : 'left-[3px] shadow-[0_1px_3px_rgba(15,27,46,0.15)]'
+            }
+          `}
         />
       </button>
     </div>

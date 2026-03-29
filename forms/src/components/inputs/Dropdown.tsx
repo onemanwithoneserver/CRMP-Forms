@@ -26,8 +26,6 @@ export function Dropdown({
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [openUpward, setOpenUpward] = useState(false)
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({})
-  
-  const [isHovered, setIsHovered] = useState(false)
 
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -130,72 +128,32 @@ export function Dropdown({
 
   const panelEl = (
     <div
-      style={{
-        ...panelStyle,
-        background: '#FFFFFF',
-        border: '1px solid #E4E7EC',
-        borderRadius: '3px',
-        boxShadow: '0 8px 24px rgba(15, 27, 46, 0.15), 0 2px 6px rgba(15, 27, 46, 0.08)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        transition: 'opacity 200ms ease, transform 200ms ease',
-        transformOrigin: openUpward ? 'bottom' : 'top',
-        opacity: isOpen ? 1 : 0,
-        transform: isOpen ? 'scaleY(1) translateY(0)' : 'scaleY(0.95)',
-        pointerEvents: isOpen ? 'auto' : 'none',
-        fontFamily: "'Outfit', sans-serif"
-      }}
+      style={panelStyle}
+      className={`
+        bg-white border border-[#E4E7EC] rounded-[3px] shadow-[0_8px_24px_rgba(15,27,46,0.15),0_2px_6px_rgba(15,27,46,0.08)] 
+        flex flex-col overflow-hidden font-['Outfit',sans-serif] transition-all duration-200 ease
+        ${openUpward ? 'origin-bottom' : 'origin-top'}
+        ${isOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-95 pointer-events-none'}
+      `}
     >
       {searchable && (
-        <div style={{ padding: '8px', borderBottom: '1px solid #E4E7EC', background: '#F5F7FA' }}>
-          <div style={{ position: 'relative' }}>
-            <Search size={14} color="#667085" style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)' }} />
+        <div className="p-2 border-b border-[#E4E7EC] bg-[#F5F7FA]">
+          <div className="relative">
+            <Search size={14} color="#667085" className="absolute left-2 top-1/2 -translate-y-1/2" />
             <input
               ref={inputRef}
               type="text"
-              style={{
-                width: '100%',
-                padding: '6px 24px 6px 28px',
-                fontSize: '0.8rem',
-                fontWeight: 500,
-                borderRadius: '3px',
-                border: '1px solid #E4E7EC',
-                background: '#FFFFFF',
-                color: '#1C2A44',
-                outline: 'none',
-                transition: 'border-color 200ms ease, box-shadow 200ms ease',
-                boxSizing: 'border-box'
-              }}
               placeholder="Search..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              onFocus={(e) => {
-                 e.target.style.borderColor = '#C89B3C';
-                 e.target.style.boxShadow = '0 0 0 2px rgba(200,155,60,0.1)';
-              }}
-              onBlur={(e) => {
-                 e.target.style.borderColor = '#E4E7EC';
-                 e.target.style.boxShadow = 'none';
-              }}
               tabIndex={isOpen ? 0 : -1}
+              className="w-full py-1.5 pl-7 pr-6 text-[0.8rem] font-medium rounded-[3px] border border-[#E4E7EC] bg-white text-[#1C2A44] outline-none transition-all duration-200 ease box-border focus:border-[#C89B3C] focus:shadow-[0_0_0_2px_rgba(200,155,60,0.1)]"
             />
             {search && (
               <button 
                 onClick={() => setSearch('')} 
                 tabIndex={isOpen ? 0 : -1} 
-                style={{ 
-                  position: 'absolute', 
-                  right: '8px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  background: 'none', 
-                  border: 'none', 
-                  cursor: 'pointer',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer p-0 flex items-center outline-none"
               >
                 <X size={14} color="#667085" />
               </button>
@@ -204,14 +162,23 @@ export function Dropdown({
         </div>
       )}
 
-      <div style={{ maxHeight: '200px', overflowY: 'auto', padding: '4px' }} ref={listRef}>
+      <div className="max-h-[200px] overflow-y-auto p-1" ref={listRef}>
         {filtered.length === 0 ? (
-          <div style={{ padding: '12px', textAlign: 'center', fontSize: '0.8rem', color: '#667085', fontWeight: 500 }}>No results</div>
+          <div className="p-3 text-center text-[0.8rem] text-[#667085] font-medium">No results</div>
         ) : (
           filtered.map((option, index) => {
             const isSelected = value === option;
             const isFocused = focusedIndex === index;
             
+            let btnClass = "w-full flex items-center justify-between py-2 px-2.5 text-left text-[0.85rem] rounded-[3px] cursor-pointer border-none outline-none transition-all duration-150 ease "
+            if (isSelected) {
+              btnClass += "bg-[#C89B3C]/10 text-[#C89B3C] font-semibold"
+            } else if (isFocused) {
+              btnClass += "bg-[#F5F7FA] text-[#1C2A44] font-medium"
+            } else {
+              btnClass += "bg-transparent text-[#667085] font-medium"
+            }
+
             return (
               <button
                 key={option}
@@ -219,26 +186,10 @@ export function Dropdown({
                 tabIndex={isOpen ? 0 : -1}
                 onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
                 onMouseEnter={() => setFocusedIndex(index)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '8px 10px',
-                  textAlign: 'left',
-                  fontSize: '0.85rem',
-                  fontWeight: isSelected ? 600 : 500,
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  border: 'none',
-                  outline: 'none',
-                  transition: 'all 150ms ease',
-                  background: isSelected ? 'rgba(200, 155, 60, 0.08)' : isFocused ? '#F5F7FA' : 'transparent',
-                  color: isSelected ? '#C89B3C' : isFocused ? '#1C2A44' : '#667085',
-                }}
+                className={btnClass}
               >
-                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{option}</span>
-                {isSelected && <Check size={14} color="#C89B3C" style={{ flexShrink: 0, marginLeft: '8px' }} />}
+                <span className="whitespace-nowrap overflow-hidden text-ellipsis">{option}</span>
+                {isSelected && <Check size={14} color="#C89B3C" className="shrink-0 ml-2" />}
               </button>
             )
           })
@@ -248,9 +199,9 @@ export function Dropdown({
   )
 
   return (
-    <div ref={ref} style={{ position: 'relative', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+    <div ref={ref} className="relative w-full font-['Outfit',sans-serif]">
       {label && (
-        <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>
+        <label className="block mb-1 text-[0.8rem] font-semibold text-[#1C2A44]">
           {label}
         </label>
       )}
@@ -259,41 +210,21 @@ export function Dropdown({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: variant === 'compact' ? '30px' : '34px',
-          padding: '0 10px',
-          background: isHovered && !isOpen ? '#FFFFFF' : '#F5F7FA',
-          border: `1px solid ${isOpen ? '#C89B3C' : isHovered ? '#E6C36A' : '#E4E7EC'}`,
-          borderRadius: '3px',
-          cursor: 'pointer',
-          outline: 'none',
-          transition: 'all 250ms ease-in-out',
-          boxShadow: isOpen ? '0 2px 8px rgba(15, 27, 46, 0.08)' : 'none',
-        }}
+        className={`
+          group w-full flex items-center justify-between px-[10px] rounded-[3px] cursor-pointer outline-none transition-all duration-250 ease-in-out border
+          ${variant === 'compact' ? 'h-[30px]' : 'h-[34px]'}
+          ${isOpen 
+            ? 'bg-[#F5F7FA] border-[#C89B3C] shadow-[0_2px_8px_rgba(15,27,46,0.08)]' 
+            : 'bg-[#F5F7FA] border-[#E4E7EC] hover:bg-white hover:border-[#E6C36A]'
+          }
+        `}
       >
-        <span style={{ 
-          fontSize: '0.85rem', 
-          fontWeight: 500, 
-          color: value ? '#1C2A44' : '#667085',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis'
-        }}>
+        <span className={`text-[0.85rem] font-medium whitespace-nowrap overflow-hidden text-ellipsis ${value ? 'text-[#1C2A44]' : 'text-[#667085]'}`}>
           {value || placeholder}
         </span>
         <ChevronDown 
           size={16} 
-          color={isOpen || isHovered ? '#C89B3C' : '#667085'} 
-          style={{ 
-            transition: 'all 250ms ease-in-out',
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)'
-          }} 
+          className={`transition-all duration-250 ease-in-out ${isOpen ? 'text-[#C89B3C] rotate-180' : 'text-[#667085] group-hover:text-[#C89B3C] rotate-0'}`} 
         />
       </button>
 

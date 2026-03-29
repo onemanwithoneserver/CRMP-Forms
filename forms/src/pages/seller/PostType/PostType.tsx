@@ -21,7 +21,6 @@ import { OptionButton } from '../../../components/inputs/OptionButton'
 import SelectPropertyType from './SelectPropertyType'
 import { BuildingInfoPanel } from '../BuildingInfo'
 
-
 export default function PostType() {
   const { state, next } = useForm()
   const { device } = useDevice()
@@ -38,18 +37,23 @@ export default function PostType() {
     }
   }, [propertyType])
 
-
-
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F5F7FA', fontFamily: "'Outfit', sans-serif" }}>
-        <div style={{ flex: 1, overflowY: 'auto', scrollBehavior: 'smooth' }}>
+      <div className="flex flex-col h-full bg-[#F5F7FA] font-['Outfit',sans-serif]">
+        <div className="flex-1 overflow-y-auto scroll-smooth">
 
-          <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', paddingTop: '12px', paddingBottom: '32px' }}>
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0)', backgroundSize: '12px 12px', pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent 0%, rgba(200, 155, 60, 0.8) 50%, transparent 100%)' }} />
-            <div style={{ position: 'relative', maxWidth: '768px', margin: '0 auto', textAlign: 'center', padding: '0 16px' }}>
-              <h1 style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.01em', lineHeight: 1.2, margin: 0 }}>
+          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] pt-[2px] pb-[2px]">
+            <div 
+              className="absolute inset-0 pointer-events-none" 
+              style={{ 
+                backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0)', 
+                backgroundSize: '12px 12px' 
+              }} 
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[linear-gradient(90deg,transparent_0%,rgba(200,155,60,0.8)_50%,transparent_100%)]" />
+            
+            <div className="relative max-w-[768px] mx-auto text-center px-[2px]">
+              <h1 className={`font-bold text-white tracking-[-0.01em] leading-[1.2] m-0 ${isMobile ? 'text-[1.2rem]' : 'text-[1.5rem]'}`}>
                 What type of property do you want to list?
               </h1>
             </div>
@@ -57,37 +61,37 @@ export default function PostType() {
 
           <SelectPropertyType sectionRef={postTypeSectionRef} />
 
-          <div style={{ padding: isMobile ? '0' : '0 16px', marginTop: '16px', width: '100%', marginBottom: '16px', maxWidth: '896px', marginLeft: 'auto', marginRight: 'auto' }}>
-            <div style={{ background: '#FFFFFF', borderRadius: isMobile ? '0' : '4px', boxShadow: '0 4px 16px rgba(15, 27, 46, 0.04)', border: '1px solid #E4E7EC', overflow: 'hidden' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', borderBottom: '1px solid rgba(200, 155, 60, 0.3)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)' }}>
+          <div className={`w-full max-w-[896px] mx-auto mt-[2px] mb-[2px] ${isMobile ? 'px-0' : 'px-[2px]'}`}>
+            <div className={`bg-white shadow-[0_4px_16px_rgba(15,27,46,0.04)] border border-[#E4E7EC] overflow-hidden ${isMobile ? 'rounded-none' : 'rounded-[4px]'}`}>
+              <div className="flex items-center gap-[2px] p-[2px] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border-b border-[rgba(200,155,60,0.3)]">
+                <div className="flex items-center justify-center w-[26px] h-[26px] rounded-[3px] bg-white/5 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                   <Building2 size={14} color="#E6C36A" />
                 </div>
-                <h2 style={{ fontSize: '0.9rem', fontWeight: 600, color: '#FFFFFF', letterSpacing: '-0.01em', margin: 0 }}>Building Information</h2>
+                <h2 className="text-[0.9rem] font-semibold text-white tracking-[-0.01em] m-0">
+                  Building Information
+                </h2>
               </div>
-              <div style={{ padding: '8px' }}>
+              <div className="p-[2px]">
                 <BuildingInfoPanel />
               </div>
             </div>
           </div>
         </div>
 
-        <div style={{ width: '100%', background: '#FFFFFF', borderTop: '1px solid #E4E7EC', padding: '10px 16px', zIndex: 50, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 -4px 16px rgba(15, 27, 46, 0.04)', marginTop: 'auto', flexShrink: 0 }}>
+        <div className="w-full bg-white border-t border-[#E4E7EC] p-[2px] z-50 flex justify-between items-center shadow-[0_-4px_16px_rgba(15,27,46,0.04)] mt-auto shrink-0">
           <button
             title="Save as Draft"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '3px', background: 'transparent', border: '1px solid transparent', color: '#C89B3C', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 200ms ease', outline: 'none' }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(200, 155, 60, 0.1)'; e.currentTarget.style.borderColor = '#C89B3C' }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' }}
+            className="flex items-center gap-[2px] p-[2px] rounded-[3px] bg-transparent border border-transparent text-[#C89B3C] text-[0.8rem] font-semibold cursor-pointer transition-all duration-200 ease outline-none hover:bg-[#C89B3C]/10 hover:border-[#C89B3C]"
           >
-            <span style={{ display: 'flex' }}><Save size={14} /></span>
+            <span className="flex"><Save size={14} /></span>
             <span>Save draft</span>
           </button>
 
-          <div style={{ display: 'flex', gap: '8px', items: 'center' }}>
+          <div className="flex items-center gap-[2px]">
             <button
               title="Back"
               disabled
-              style={{ width: '32px', height: '32px', borderRadius: '3px', border: '1px solid #E4E7EC', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.6, cursor: 'not-allowed', color: '#A0AAB8', outline: 'none' }}
+              className="w-8 h-8 rounded-[3px] border border-[#E4E7EC] bg-white flex items-center justify-center opacity-60 cursor-not-allowed text-[#A0AAB8] outline-none"
             >
               <ChevronLeft size={16} />
             </button>
@@ -96,9 +100,13 @@ export default function PostType() {
               onClick={next}
               disabled={!propertyType}
               title="Save & Next"
-              style={{ height: '32px', minWidth: '48px', borderRadius: '3px', border: 'none', background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: !propertyType ? 'not-allowed' : 'pointer', opacity: !propertyType ? 0.5 : 1, boxShadow: !propertyType ? 'none' : '0 2px 6px rgba(15, 27, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)', transition: 'all 200ms ease', outline: 'none' }}
-              onMouseEnter={(e) => { if (!(!propertyType)) e.currentTarget.style.transform = 'translateY(-1px)' }}
-              onMouseLeave={(e) => { if (!(!propertyType)) e.currentTarget.style.transform = 'translateY(0)' }}
+              className={`
+                flex items-center justify-center h-8 min-w-[48px] rounded-[3px] border-none bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] text-white transition-all duration-200 ease outline-none
+                ${!propertyType 
+                  ? 'opacity-50 cursor-not-allowed shadow-none' 
+                  : 'opacity-100 cursor-pointer shadow-[0_2px_6px_rgba(15,27,46,0.2),inset_0_1px_0_rgba(255,255,255,0.05)] enabled:hover:-translate-y-[1px]'
+                }
+              `}
             >
               <ChevronRight size={16} color="#FFFFFF" />
             </button>

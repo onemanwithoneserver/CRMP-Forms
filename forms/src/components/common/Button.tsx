@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode } from 'react'
 
 type Props = {
   variant?: 'primary' | 'secondary' | 'ghost'
@@ -9,64 +9,39 @@ type Props = {
 }
 
 export default function Button({ variant = 'primary', onClick, disabled, children, fullWidth }: Props) {
-  // Added local state to handle the required Gold Highlight hover effects via inline styles
-  const [isHovered, setIsHovered] = useState(false)
+  
+  const baseClasses = `
+    inline-flex items-center justify-center gap-[6px] py-[5px] px-[12px] 
+    font-['Outfit',sans-serif] text-[0.85rem] font-medium rounded-[3px] border outline-none
+    transition-all duration-250 ease-in-out cursor-pointer
+    disabled:cursor-not-allowed disabled:opacity-40
+    ${fullWidth ? 'w-full' : 'w-auto'}
+  `
 
-  const base: React.CSSProperties = {
-    fontFamily: "'Outfit', sans-serif",
-    fontSize: '0.85rem',
-    fontWeight: 500, // Slightly dialed back from 600 for a cleaner, premium typographic feel
-    borderRadius: '3px', // Sharp, modern 3px radius
-    padding: '5px 12px', // Tighter, more compact padding
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    opacity: disabled ? 0.4 : 1,
-    transition: 'all 250ms ease-in-out', // Smoother easing
-    border: 'none',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px', // Reduced gap for tighter alignment
-    width: fullWidth ? '100%' : 'auto',
-    outline: 'none',
-  }
-
-  const styles: Record<string, React.CSSProperties> = {
-    primary: {
-      ...base,
-      // Soft gradient blending CREMP Navy into Dark Navy
-      background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)',
-      color: '#FFFFFF',
-      // Subtle CREMP Gold border transitioning to Gold Highlight on hover
-      border: `1px solid ${isHovered && !disabled ? '#E6C36A' : 'rgba(200, 155, 60, 0.4)'}`,
-      // Subtle depth combining a soft Dark Navy drop shadow and a premium inner top highlight
-      boxShadow: disabled 
-        ? 'none' 
-        : '0 2px 6px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-      transform: isHovered && !disabled ? 'translateY(-1px)' : 'translateY(0)',
-    },
-    secondary: {
-      ...base,
-      background: isHovered && !disabled ? '#FFFFFF' : '#F5F7FA', // Light Gray default
-      color: '#1C2A44', // CREMP Navy text
-      border: `1px solid ${isHovered && !disabled ? '#C89B3C' : '#E4E7EC'}`, // Border Gray to CREMP Gold on hover
-      boxShadow: disabled ? 'none' : '0 1px 2px rgba(15, 27, 46, 0.05)',
-    },
-    ghost: {
-      ...base,
-      background: isHovered && !disabled ? '#F5F7FA' : 'transparent',
-      color: isHovered && !disabled ? '#1C2A44' : '#667085', // Text Gray transitioning to Navy
-      border: '1px solid transparent',
-    },
+  const variantClasses = {
+    primary: `
+      bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] text-white 
+      border-[#C89B3C]/40 enabled:hover:border-[#E6C36A] 
+      shadow-[0_2px_6px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] disabled:shadow-none 
+      enabled:hover:-translate-y-[1px]
+    `,
+    secondary: `
+      bg-[#F5F7FA] text-[#1C2A44] border-[#E4E7EC] 
+      enabled:hover:bg-white enabled:hover:border-[#C89B3C] 
+      shadow-[0_1px_2px_rgba(15,27,46,0.05)] disabled:shadow-none
+    `,
+    ghost: `
+      bg-transparent text-[#667085] border-transparent 
+      enabled:hover:bg-[#F5F7FA] enabled:hover:text-[#1C2A44]
+    `,
   }
 
   return (
     <button
       type="button"
-      style={styles[variant]}
+      className={`${baseClasses} ${variantClasses[variant]}`}
       onClick={onClick}
       disabled={disabled}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {children}
     </button>

@@ -132,7 +132,7 @@ export default function LeaseInfo() {
 
   return (
     <FormPage title="Lease Information" icon={<Handshake size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
 
         <SectionCard title="Lease Type & Pricing" icon={<Handshake size={14} />}>
           <div className="flex flex-col gap-5">

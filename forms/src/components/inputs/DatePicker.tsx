@@ -16,18 +16,11 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
   const [position, setPosition] = useState<'bottom' | 'top'>('bottom')
   const [viewDate, setViewDate] = useState(() => value ? new Date(value) : new Date())
 
-  const [isInputHovered, setIsInputHovered] = useState(false)
-  const [hoveredDay, setHoveredDay] = useState<number | null>(null)
-  const [hoveredPrev, setHoveredPrev] = useState(false)
-  const [hoveredNext, setHoveredNext] = useState(false)
-  const [hoveredClear, setHoveredClear] = useState(false)
-  const [hoveredToday, setHoveredToday] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (open && value) setViewDate(new Date(value))
   }, [open, value])
-
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -65,7 +58,7 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
   }
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+    <div ref={containerRef} className="relative w-full font-['Outfit',sans-serif]">
       <div
         onClick={() => {
           if (!open && containerRef.current) {
@@ -75,108 +68,57 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
           }
           setOpen(!open)
         }}
-        onMouseEnter={() => setIsInputHovered(true)}
-        onMouseLeave={() => setIsInputHovered(false)}
-        style={{
-          height: '34px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 10px',
-          cursor: 'pointer',
-          background: isInputHovered && !open ? '#FFFFFF' : '#F5F7FA',
-          border: `1px solid ${open ? '#C89B3C' : isInputHovered ? '#E6C36A' : '#E4E7EC'}`,
-          borderRadius: '3px',
-          transition: 'all 250ms ease-in-out',
-          boxShadow: open ? '0 2px 8px rgba(15, 27, 46, 0.08)' : 'none',
-        }}
+        className={`
+          group h-[34px] flex items-center justify-between px-[10px] cursor-pointer rounded-[3px] transition-all duration-250 ease-in-out border outline-none
+          ${open 
+            ? 'bg-white border-[#C89B3C] shadow-[0_2px_8px_rgba(15,27,46,0.08)]' 
+            : 'bg-[#F5F7FA] border-[#E4E7EC] hover:bg-white hover:border-[#E6C36A]'
+          }
+        `}
       >
-        <span style={{ 
-          fontSize: '0.85rem', 
-          fontWeight: 500, 
-          color: value ? '#1C2A44' : '#667085',
-          transition: 'color 250ms ease-in-out'
-        }}>
+        <span className={`text-[0.85rem] font-medium transition-colors duration-250 ease-in-out ${value ? 'text-[#1C2A44]' : 'text-[#667085]'}`}>
           {value ? formatDate(value) : placeholder}
         </span>
-        <Calendar size={16} color={open || isInputHovered ? '#C89B3C' : '#667085'} style={{ transition: 'color 250ms ease-in-out' }} />
+        <Calendar 
+          size={16} 
+          className={`transition-colors duration-250 ease-in-out ${open ? 'text-[#C89B3C]' : 'text-[#667085] group-hover:text-[#C89B3C]'}`} 
+        />
       </div>
 
       {open && (
         <div 
-          style={{
-            position: 'absolute',
-            right: 0,
-            width: '260px',
-            background: '#FFFFFF',
-            border: '1px solid #E4E7EC',
-            borderRadius: '5px',
-            boxShadow: '0 8px 24px rgba(15, 27, 46, 0.15), 0 2px 6px rgba(15, 27, 46, 0.08)',
-            zIndex: 100,
-            padding: '12px',
-            marginTop: position === 'bottom' ? '6px' : '0',
-            marginBottom: position === 'top' ? '6px' : '0',
-            top: position === 'bottom' ? '100%' : 'auto',
-            bottom: position === 'top' ? '100%' : 'auto',
-          }}
+          className={`
+            absolute right-0 w-[260px] bg-white border border-[#E4E7EC] rounded-[5px] shadow-[0_8px_24px_rgba(15,27,46,0.15),0_2px_6px_rgba(15,27,46,0.08)] z-[100] p-3
+            ${position === 'bottom' ? 'mt-1.5 top-full' : 'mb-1.5 bottom-full'}
+          `}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <div className="flex justify-between items-center mb-3">
             <button 
               type="button" 
               onClick={prevMonth}
-              onMouseEnter={() => setHoveredPrev(true)}
-              onMouseLeave={() => setHoveredPrev(false)}
-              style={{
-                background: hoveredPrev ? '#F5F7FA' : 'transparent',
-                border: 'none',
-                color: hoveredPrev ? '#1C2A44' : '#667085',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '26px',
-                width: '26px',
-                borderRadius: '3px',
-                transition: 'all 200ms ease',
-                outline: 'none',
-              }}
+              className="flex items-center justify-center h-[26px] w-[26px] rounded-[3px] bg-transparent border-none text-[#667085] cursor-pointer transition-all duration-200 ease outline-none hover:bg-[#F5F7FA] hover:text-[#1C2A44]"
             >
               <ChevronLeft size={16} />
             </button>
-            <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1C2A44' }}>
+            <span className="font-semibold text-[0.9rem] text-[#1C2A44]">
               {viewDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
             </span>
             <button 
               type="button" 
               onClick={nextMonth}
-              onMouseEnter={() => setHoveredNext(true)}
-              onMouseLeave={() => setHoveredNext(false)}
-              style={{
-                background: hoveredNext ? '#F5F7FA' : 'transparent',
-                border: 'none',
-                color: hoveredNext ? '#1C2A44' : '#667085',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '26px',
-                width: '26px',
-                borderRadius: '3px',
-                transition: 'all 200ms ease',
-                outline: 'none',
-              }}
+              className="flex items-center justify-center h-[26px] w-[26px] rounded-[3px] bg-transparent border-none text-[#667085] cursor-pointer transition-all duration-200 ease outline-none hover:bg-[#F5F7FA] hover:text-[#1C2A44]"
             >
               <ChevronRight size={16} />
             </button>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', marginBottom: '8px' }}>
+          <div className="grid grid-cols-7 gap-1 text-center mb-2">
             {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-              <div key={d} style={{ fontSize: '0.7rem', fontWeight: 600, color: '#667085' }}>{d}</div>
+              <div key={d} className="text-[0.7rem] font-semibold text-[#667085]">{d}</div>
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+          <div className="grid grid-cols-7 gap-1">
             {days.map((day, idx) => {
               if (!day) return <div key={`empty-${idx}`} />
               
@@ -186,29 +128,20 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
               const isToday = todayStr === dateStr
               const isPast = dateStr < todayStr
               const disabled = disablePast && isPast
-              const isHovered = hoveredDay === day && !disabled
 
-              let bg = 'transparent'
-              let fontColor = '#1C2A44'
-              let border = '1px solid transparent'
-              let shadow = 'none'
-              let weight = 500
-
+              let btnClasses = "py-1.5 rounded-[3px] text-[0.8rem] transition-all duration-200 ease outline-none border "
+              
               if (isSelected) {
-                bg = 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)'
-                fontColor = '#FFFFFF'
-                border = '1px solid #E6C36A'
-                shadow = '0 2px 4px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-                weight = 600
+                btnClasses += "bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] text-white border-[#E6C36A] shadow-[0_2px_4px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] font-semibold"
               } else if (disabled) {
-                fontColor = '#667085'
-              } else if (isHovered) {
-                bg = '#F5F7FA'
-                border = '1px solid #C89B3C'
-              } else if (isToday) {
-                border = '1px solid #E4E7EC'
-                fontColor = '#C89B3C'
-                weight = 600
+                btnClasses += "opacity-40 cursor-not-allowed text-[#667085] border-transparent bg-transparent"
+              } else {
+                btnClasses += "cursor-pointer hover:bg-[#F5F7FA] hover:border-[#C89B3C] "
+                if (isToday) {
+                  btnClasses += "border-[#E4E7EC] text-[#C89B3C] font-semibold"
+                } else {
+                  btnClasses += "bg-transparent text-[#1C2A44] font-medium border-transparent"
+                }
               }
 
               return (
@@ -216,8 +149,6 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
                   key={idx}
                   type="button"
                   disabled={disabled}
-                  onMouseEnter={() => setHoveredDay(day)}
-                  onMouseLeave={() => setHoveredDay(null)}
                   onClick={(e) => {
                     e.stopPropagation()
                     if (!disabled) {
@@ -225,20 +156,7 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
                       setOpen(false)
                     }
                   }}
-                  style={{
-                    padding: '6px 0',
-                    borderRadius: '3px',
-                    fontSize: '0.8rem',
-                    fontWeight: weight,
-                    color: fontColor,
-                    background: bg,
-                    border: border,
-                    boxShadow: shadow,
-                    cursor: disabled ? 'not-allowed' : 'pointer',
-                    opacity: disabled ? 0.4 : 1,
-                    transition: 'all 200ms ease',
-                    outline: 'none',
-                  }}
+                  className={btnClasses}
                 >
                   {day}
                 </button>
@@ -246,42 +164,18 @@ export default function DatePicker({ value, onChange, placeholder = 'DD-MM-YYYY'
             })}
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #E4E7EC' }}>
+          <div className="flex justify-between mt-3 pt-2.5 border-t border-[#E4E7EC]">
              <button 
                type="button" 
-               onMouseEnter={() => setHoveredClear(true)}
-               onMouseLeave={() => setHoveredClear(false)}
                onClick={(e) => { e.stopPropagation(); onChange(''); setOpen(false) }} 
-               style={{ 
-                 fontSize: '0.75rem', 
-                 fontWeight: 600, 
-                 color: hoveredClear ? '#1C2A44' : '#667085', 
-                 background: 'transparent', 
-                 border: 'none', 
-                 cursor: 'pointer',
-                 transition: 'color 200ms ease',
-                 outline: 'none',
-                 padding: '0 4px',
-               }}
+               className="text-[0.75rem] font-semibold text-[#667085] bg-transparent border-none cursor-pointer transition-colors duration-200 ease outline-none px-1 hover:text-[#1C2A44]"
              >
                Clear
              </button>
              <button 
                type="button" 
-               onMouseEnter={() => setHoveredToday(true)}
-               onMouseLeave={() => setHoveredToday(false)}
                onClick={(e) => { e.stopPropagation(); onChange(new Date().toISOString().split('T')[0]); setOpen(false) }} 
-               style={{ 
-                 fontSize: '0.75rem', 
-                 fontWeight: 600, 
-                 color: hoveredToday ? '#E6C36A' : '#1C2A44', 
-                 background: 'transparent', 
-                 border: 'none', 
-                 cursor: 'pointer',
-                 transition: 'color 200ms ease',
-                 outline: 'none',
-                 padding: '0 4px',
-               }}
+               className="text-[0.75rem] font-semibold text-[#1C2A44] bg-transparent border-none cursor-pointer transition-colors duration-200 ease outline-none px-1 hover:text-[#E6C36A]"
              >
                Today
              </button>

@@ -164,7 +164,7 @@ export default function TransactionDetails() {
 
   return (
     <FormPage title="Transactional Details" icon={<Banknote size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
         
         <SectionCard title="Sale Type & Pricing" icon={<Tag size={14} />}>
           <div className="flex flex-col gap-6">

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode } from 'react'
 import { useForm } from '../../context/FormContext'
 
 const SaveIcon = () => (
@@ -49,61 +49,35 @@ export default function FormPage({
   const { state } = useForm()
   const isFirstStep = state.step === 1
 
-  const [hoverSave, setHoverSave] = useState(false)
-  const [hoverBack, setHoverBack] = useState(false)
-  const [hoverNext, setHoverNext] = useState(false)
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: '#F5F7FA', fontFamily: "'Outfit', sans-serif" }}>
+    <div className="flex flex-col h-full overflow-hidden bg-[#F5F7FA] font-['Outfit',sans-serif]">
       
       {/* Premium Header */}
-      <div 
-        style={{ 
-          background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)',
-          padding: '16px 20px 32px 20px',
-          flexShrink: 0,
-          position: 'relative',
-          overflow: 'hidden',
-          zIndex: 0
-        }}
-      >
+      <div className="relative shrink-0 pt-4 px-5 pb-8 bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] overflow-hidden z-0">
+        
         {/* Subtle dot pattern overlay */}
         <div 
+          className="absolute inset-0 pointer-events-none"
           style={{
-            position: 'absolute', inset: 0,
             backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0)',
             backgroundSize: '12px 12px',
-            pointerEvents: 'none'
-          }} 
-        />
-        {/* Premium Gold Accent Line */}
-        <div 
-          style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px',
-            background: 'linear-gradient(90deg, transparent 0%, rgba(200, 155, 60, 0.8) 50%, transparent 100%)',
           }} 
         />
         
-        <div style={{ position: 'relative', maxWidth: '720px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#FFFFFF', margin: 0, display: 'flex', alignItems: 'center', gap: '10px', letterSpacing: '-0.01em' }}>
+        {/* Premium Gold Accent Line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[linear-gradient(90deg,transparent_0%,rgba(200,155,60,0.8)_50%,transparent_100%)]" />
+        
+        <div className="relative max-w-[720px] mx-auto flex flex-col items-center text-center">
+          <h1 className="flex items-center gap-2.5 m-0 text-[1.2rem] font-bold text-white tracking-[-0.01em]">
             {icon && (
-              <span 
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  width: '28px', height: '28px', borderRadius: '4px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                  color: '#E6C36A'
-                }}
-              >
+              <span className="flex items-center justify-center w-7 h-7 rounded bg-white/10 border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.2)] text-[#E6C36A]">
                 {icon}
               </span>
             )}
             {title}
           </h1>
           {subtitle && (
-            <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', margin: '4px 0 0 0', fontWeight: 400 }}>
+            <p className="mt-1 mb-0 text-[0.85rem] font-normal text-white/70">
               {subtitle}
             </p>
           )}
@@ -111,77 +85,30 @@ export default function FormPage({
       </div>
 
       {/* Main Content Area */}
-      <div 
-        className="custom-scrollbar"
-        style={{ 
-          flex: 1, 
-          overflowY: 'auto', 
-          overflowX: 'hidden', 
-          position: 'relative', 
-          zIndex: 10,
-          marginTop: '-16px' // Pull content up over the header slightly for depth
-        }}
-      >
-        <div style={{ width: '100%', padding: '0 16px 80px 16px', position: 'relative', zIndex: 20 }}>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden relative z-10 -mt-4 custom-scrollbar">
+        <div className="relative z-20 w-full px-4 pb-8">
           {children}
         </div>
       </div>
 
       {/* Premium Footer Actions */}
-      <div 
-        style={{
-          flexShrink: 0,
-          background: '#FFFFFF',
-          borderTop: '1px solid #E4E7EC',
-          boxShadow: '0 -4px 16px rgba(15, 27, 46, 0.04)',
-          padding: '10px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          position: 'relative',
-          zIndex: 30
-        }}
-      >
+      <div className="relative z-30 shrink-0 flex items-center justify-between py-2.5 px-4 bg-white border-t border-[#E4E7EC] shadow-[0_-4px_16px_rgba(15,27,46,0.04)]">
         <button
           type="button"
           onClick={onSaveDraft || (() => alert('Draft saved!'))}
-          onMouseEnter={() => setHoverSave(true)}
-          onMouseLeave={() => setHoverSave(false)}
-          style={{
-            display: 'flex', alignItems: 'center', gap: '6px',
-            padding: '6px 12px', borderRadius: '3px',
-            background: hoverSave ? 'rgba(200, 155, 60, 0.1)' : 'transparent',
-            border: `1px solid ${hoverSave ? '#C89B3C' : 'transparent'}`,
-            color: '#C89B3C',
-            fontSize: '0.8rem', fontWeight: 600,
-            cursor: 'pointer', transition: 'all 200ms ease',
-            outline: 'none'
-          }}
+          className="flex items-center gap-1.5 py-1.5 px-3 rounded-[3px] bg-transparent border border-transparent text-[#C89B3C] text-[0.8rem] font-semibold cursor-pointer outline-none transition-all duration-200 ease hover:bg-[#C89B3C]/10 hover:border-[#C89B3C]"
         >
           <SaveIcon />
           <span>Save draft</span>
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onBack}
             disabled={backDisabled || isFirstStep}
-            onMouseEnter={() => setHoverBack(true)}
-            onMouseLeave={() => setHoverBack(false)}
             aria-label="Previous step"
-            style={{
-              width: '32px', height: '32px', borderRadius: '3px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: hoverBack && !(backDisabled || isFirstStep) ? '#F5F7FA' : '#FFFFFF',
-              border: `1px solid ${hoverBack && !(backDisabled || isFirstStep) ? '#C89B3C' : '#E4E7EC'}`,
-              color: (backDisabled || isFirstStep) ? '#A0AAB8' : '#1C2A44',
-              cursor: (backDisabled || isFirstStep) ? 'not-allowed' : 'pointer',
-              opacity: (backDisabled || isFirstStep) ? 0.6 : 1,
-              transition: 'all 200ms ease',
-              outline: 'none',
-              boxShadow: hoverBack && !(backDisabled || isFirstStep) ? '0 2px 4px rgba(15, 27, 46, 0.05)' : 'none'
-            }}
+            className="flex items-center justify-center w-8 h-8 rounded-[3px] outline-none transition-all duration-200 ease disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-white disabled:border-[#E4E7EC] disabled:text-[#A0AAB8] enabled:bg-white enabled:border-[#E4E7EC] enabled:text-[#1C2A44] enabled:cursor-pointer enabled:hover:bg-[#F5F7FA] enabled:hover:border-[#C89B3C] enabled:hover:shadow-[0_2px_4px_rgba(15,27,46,0.05)]"
           >
             <ChevronLeft />
           </button>
@@ -189,25 +116,13 @@ export default function FormPage({
           <button
             type="button"
             onClick={onNext}
-            onMouseEnter={() => setHoverNext(true)}
-            onMouseLeave={() => setHoverNext(false)}
             aria-label={isLastStep ? 'Submit' : 'Next step'}
-            style={{
-              height: '32px', borderRadius: '3px', border: 'none',
-              background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)',
-              color: '#FFFFFF',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-              fontSize: '0.85rem', fontWeight: 600,
-              cursor: 'pointer',
-              padding: isLastStep ? '0 16px' : '0 12px',
-              minWidth: isLastStep ? 'auto' : '48px',
-              boxShadow: hoverNext 
-                ? '0 4px 12px rgba(15, 27, 46, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)' 
-                : '0 2px 6px rgba(15, 27, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-              transform: hoverNext ? 'translateY(-1px)' : 'translateY(0)',
-              transition: 'all 200ms ease',
-              outline: 'none'
-            }}
+            className={`
+              flex items-center justify-center gap-1.5 h-8 rounded-[3px] border-none bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] text-white text-[0.85rem] font-semibold cursor-pointer outline-none transition-all duration-200 ease
+              shadow-[0_2px_6px_rgba(15,27,46,0.2),inset_0_1px_0_rgba(255,255,255,0.05)]
+              hover:shadow-[0_4px_12px_rgba(15,27,46,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-[1px]
+              ${isLastStep ? 'px-4 min-w-auto' : 'px-3 min-w-[48px]'}
+            `}
           >
             {isLastStep ? (nextLabel || 'Submit') : <ChevronRight />}
           </button>

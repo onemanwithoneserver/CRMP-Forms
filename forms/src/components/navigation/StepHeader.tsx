@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDevice } from '../../context/DeviceContext'
 import { ChevronLeft } from 'lucide-react'
 
@@ -16,7 +16,7 @@ const CheckIcon = () => (
   </svg>
 )
 
-// Extracted Desktop Step to manage independent hover states
+// Extracted Desktop Step to manage independent hover states via Tailwind groups
 function DesktopStep({ 
   step, 
   stepNum, 
@@ -30,70 +30,39 @@ function DesktopStep({
   isCompleted: boolean; 
   onClick?: () => void 
 }) {
-  const [isHovered, setIsHovered] = useState(false)
   const isClickable = !!onClick && isCompleted
 
-  let boxBg = '#FFFFFF'
-  let boxBorder = '1px solid #E4E7EC'
-  let boxColor = '#667085'
-  let boxShadow = 'none'
-  let fontWeight = 500
-
+  let boxClass = 'w-7 h-7 rounded-[3px] flex items-center justify-center text-[0.8rem] font-bold transition-all duration-250 ease-in-out border '
+  
   if (isActive) {
-    boxBg = 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)'
-    boxBorder = '1px solid #E6C36A'
-    boxColor = '#FFFFFF'
-      fontWeight = 600
-    boxShadow = '0 2px 6px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+    boxClass += 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border-[#E6C36A] text-white shadow-[0_2px_6px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)]'
   } else if (isCompleted) {
-    boxBg = isHovered && isClickable ? '#FFFFFF' : '#F5F7FA'
-    boxBorder = `1px solid ${isHovered && isClickable ? '#E6C36A' : '#C89B3C'}`
-    boxColor = '#C89B3C'
-    fontWeight = 600
-    boxShadow = isHovered && isClickable ? '0 2px 4px rgba(15, 27, 46, 0.05)' : 'none'
+    boxClass += 'text-[#C89B3C] '
+    if (isClickable) {
+      boxClass += 'bg-[#F5F7FA] border-[#C89B3C] group-hover:bg-white group-hover:border-[#E6C36A] group-hover:shadow-[0_2px_4px_rgba(15,27,46,0.05)]'
+    } else {
+      boxClass += 'bg-[#F5F7FA] border-[#C89B3C]'
+    }
+  } else {
+    boxClass += 'bg-white border-[#E4E7EC] text-[#667085]'
   }
 
   return (
     <div
       onClick={() => isClickable && onClick?.()}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        cursor: isClickable ? 'pointer' : 'default',
-        opacity: isActive || isCompleted ? 1 : 0.6,
-        transition: 'all 250ms ease-in-out',
-      }}
+      className={`
+        flex items-center gap-2 transition-opacity duration-250 ease-in-out
+        ${isActive || isCompleted ? 'opacity-100' : 'opacity-60'}
+        ${isClickable ? 'group cursor-pointer' : 'cursor-default'}
+      `}
     >
-      <div
-        style={{
-          width: '28px',
-          height: '28px',
-          borderRadius: '3px', // Sharp, modern 3px radius
-          background: boxBg,
-          border: boxBorder,
-          color: boxColor,
-          boxShadow: boxShadow,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '0.8rem',
-          fontWeight: 700,
-          transition: 'all 250ms ease-in-out',
-        }}
-      >
+      <div className={boxClass}>
         {isCompleted ? <CheckIcon /> : stepNum}
       </div>
-      <span
-        style={{
-          fontSize: '0.85rem',
-          fontWeight: fontWeight,
-          color: isActive ? '#1C2A44' : isCompleted ? '#1C2A44' : '#667085',
-          transition: 'color 250ms ease-in-out',
-        }}
-      >
+      <span className={`
+        text-[0.85rem] transition-colors duration-250 ease-in-out
+        ${isActive || isCompleted ? 'font-semibold text-[#1C2A44]' : 'font-medium text-[#667085]'}
+      `}>
         {step.label}
       </span>
     </div>
@@ -102,7 +71,7 @@ function DesktopStep({
 
 function DesktopHeader({ steps, currentStep, onStepClick }: Props) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', width: '100%', fontFamily: "'Outfit', sans-serif" }}>
+    <div className="flex items-center w-full font-['Outfit',sans-serif]">
       {steps.map((step, i) => {
         const stepNum = i + 1
         const isActive = stepNum === currentStep
@@ -119,14 +88,10 @@ function DesktopHeader({ steps, currentStep, onStepClick }: Props) {
             />
             {i < steps.length - 1 && (
               <div 
-                style={{ 
-                  flex: 1, 
-                  height: '2px', 
-                  background: isCompleted ? '#C89B3C' : '#E4E7EC', 
-                  margin: '0 12px',
-                  borderRadius: '1px',
-                  transition: 'background 300ms ease-in-out'
-                }} 
+                className={`
+                  flex-1 h-[2px] mx-3 rounded-[1px] transition-colors duration-300 ease-in-out
+                  ${isCompleted ? 'bg-[#C89B3C]' : 'bg-[#E4E7EC]'}
+                `} 
               />
             )}
           </React.Fragment>
@@ -141,75 +106,41 @@ function MobileHeader({ steps, currentStep, onStepClick }: Props) {
   const prev = currentStep > 1 ? steps[currentStep - 2] : null
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '12px', fontFamily: "'Outfit', sans-serif", padding: '8px 0' }}>
+    <div className="flex flex-col w-full gap-3 py-2 font-['Outfit',sans-serif]">
       
       {/* Top Row: Back Button & Current Step */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', height: '34px', padding: '0 4px' }}>
+      <div className="flex items-center justify-center relative h-[34px] px-1">
         <button
           onClick={() => prev && onStepClick?.(currentStep - 1)}
-          style={{
-            position: 'absolute',
-            left: '4px',
-            width: '34px',
-            height: '34px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: prev ? '#F5F7FA' : 'transparent',
-            border: prev ? '1px solid #E4E7EC' : 'none',
-            borderRadius: '3px',
-            color: '#1C2A44',
-            visibility: prev ? 'visible' : 'hidden',
-            cursor: 'pointer',
-            transition: 'all 200ms ease',
-            outline: 'none',
-          }}
+          className={`
+            absolute left-1 w-[34px] h-[34px] flex items-center justify-center rounded-[3px] text-[#1C2A44] transition-all duration-200 ease outline-none
+            ${prev ? 'bg-[#F5F7FA] border border-[#E4E7EC] visible cursor-pointer hover:bg-white hover:border-[#C89B3C]' : 'invisible'}
+          `}
         >
           <ChevronLeft size={18} />
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div
-            style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '3px',
-              background: 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)',
-              border: '1px solid #E6C36A',
-              color: '#FFFFFF',
-              boxShadow: '0 2px 6px rgba(15, 27, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '0.8rem',
-              fontWeight: 700,
-            }}
-          >
+        <div className="flex items-center gap-2">
+          <div className="w-[26px] h-[26px] rounded-[3px] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#E6C36A] text-white shadow-[0_2px_6px_rgba(15,27,46,0.2),inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center justify-center text-[0.8rem] font-bold">
             {currentStep}
           </div>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1C2A44', letterSpacing: '-0.01em' }}>
+          <span className="text-[0.9rem] font-semibold text-[#1C2A44] tracking-[-0.01em]">
             {current?.label}
           </span>
         </div>
       </div>
 
       {/* Bottom Row: Segmented Progress Bar */}
-      <div style={{ display: 'flex', gap: '4px', width: '100%', padding: '0 4px' }}>
+      <div className="flex gap-1 w-full px-1">
         {steps.map((_, i) => {
-          let barBg = '#E4E7EC' // Pending
-          if (i + 1 === currentStep) barBg = 'linear-gradient(90deg, #1C2A44 0%, #0F1B2E 100%)' // Active
-          else if (i + 1 < currentStep) barBg = '#C89B3C' // Completed
+          let barBg = 'bg-[#E4E7EC]' // Pending
+          if (i + 1 === currentStep) barBg = 'bg-[linear-gradient(90deg,#1C2A44_0%,#0F1B2E_100%)]' // Active
+          else if (i + 1 < currentStep) barBg = 'bg-[#C89B3C]' // Completed
 
           return (
             <div 
               key={i} 
-              style={{ 
-                flex: 1, 
-                height: '4px', 
-                borderRadius: '2px', 
-                background: barBg,
-                transition: 'background 300ms ease-in-out'
-              }} 
+              className={`flex-1 h-1 rounded-[2px] transition-all duration-300 ease-in-out ${barBg}`} 
             />
           )
         })}

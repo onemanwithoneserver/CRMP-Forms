@@ -69,7 +69,7 @@ export default function BudgetArea() {
       onNext={next}
       icon={<Wallet size={20} color="#E6C36A" />}
     >
-      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
         
         <SectionCard title="Budget Range" icon={<Banknote size={14} />}>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">

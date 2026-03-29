@@ -117,7 +117,7 @@ export default function UploadPhotos() {
 
   return (
     <FormPage title="Property Gallery" icon={<Library size={20} color="#E6C36A" />} onBack={back} onNext={handleNext}>
-      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
         
         <SectionCard title="Media & Documentation" icon={<Upload size={14} />}>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">

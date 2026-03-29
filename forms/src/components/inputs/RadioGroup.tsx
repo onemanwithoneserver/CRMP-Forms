@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 type Option = { value: string; label: string }
 
@@ -19,84 +19,37 @@ function RadioOption({
   selected: boolean
   onClick: () => void
 }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  let bg = '#F5F7FA'
-  let border = '1px solid #E4E7EC'
-  let textColor = '#667085'
-  let shadow = 'none'
-  let fontWeight = 500
-
-  if (selected) {
-    bg = 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)'
-    border = '1px solid #E6C36A'
-    textColor = '#FFFFFF'
-    shadow = '0 2px 6px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-    fontWeight = 600
-  } else if (isHovered) {
-    bg = '#FFFFFF'
-    border = '1px solid #C89B3C'
-    textColor = '#1C2A44'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08)'
-  }
-
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        width: '100%',
-        padding: '6px 10px',
-        borderRadius: '3px',
-        background: bg,
-        border: border,
-        boxShadow: shadow,
-        cursor: 'pointer',
-        transition: 'all 250ms ease-in-out',
-        outline: 'none',
-        textAlign: 'left',
-      }}
+      className={`
+        group flex items-center gap-2 w-full py-1.5 px-2.5 rounded-[3px] text-left cursor-pointer transition-all duration-250 ease-in-out outline-none
+        ${selected 
+          ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#E6C36A] shadow-[0_2px_6px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)]' 
+          : 'bg-[#F5F7FA] border border-[#E4E7EC] hover:bg-white hover:border-[#C89B3C] hover:shadow-[0_2px_8px_rgba(15,27,46,0.08)]'
+        }
+      `}
       aria-pressed={selected}
     >
       <div
-        style={{
-          width: '14px',
-          height: '14px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          transition: 'all 250ms ease-in-out',
-          background: selected ? '#C89B3C' : isHovered ? '#F5F7FA' : '#FFFFFF',
-          border: selected ? '1px solid transparent' : `1px solid ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
-        }}
+        className={`
+          w-[14px] h-[14px] rounded-full flex items-center justify-center shrink-0 transition-all duration-250 ease-in-out border
+          ${selected 
+            ? 'bg-[#C89B3C] border-transparent' 
+            : 'bg-white border-[#E4E7EC] group-hover:bg-[#F5F7FA] group-hover:border-[#C89B3C]'
+          }
+        `}
       >
         {selected && (
-          <div
-            style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              background: '#FFFFFF',
-              boxShadow: '0 0 4px rgba(255, 255, 255, 0.6)'
-            }}
-          />
+          <div className="w-[6px] h-[6px] rounded-full bg-white shadow-[0_0_4px_rgba(255,255,255,0.6)]" />
         )}
       </div>
       <span
-        style={{
-          fontSize: '0.85rem',
-          fontWeight: fontWeight,
-          color: textColor,
-          flex: 1,
-          transition: 'color 250ms ease-in-out',
-        }}
+        className={`
+          flex-1 text-[0.85rem] transition-colors duration-250 ease-in-out
+          ${selected ? 'font-semibold text-white' : 'font-medium text-[#667085] group-hover:text-[#1C2A44]'}
+        `}
       >
         {option.label}
       </span>
@@ -106,13 +59,13 @@ function RadioOption({
 
 export default function RadioGroup({ label, options, value, onChange, error }: Props) {
   return (
-    <div style={{ fontFamily: "'Outfit', sans-serif", width: '100%' }}>
+    <div className="w-full font-['Outfit',sans-serif]">
       {label && (
-        <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44', marginBottom: '6px' }}>
+        <div className="text-[0.8rem] font-semibold text-[#1C2A44] mb-1.5">
           {label}
         </div>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div className="flex flex-col gap-1">
         {options.map(option => (
           <RadioOption
             key={option.value}
@@ -123,7 +76,7 @@ export default function RadioGroup({ label, options, value, onChange, error }: P
         ))}
       </div>
       {error && (
-        <div style={{ fontSize: '0.75rem', color: '#EF4444', marginTop: '4px', fontWeight: 500 }}>
+        <div className="text-[0.75rem] text-[#EF4444] mt-1 font-medium">
           {error}
         </div>
       )}

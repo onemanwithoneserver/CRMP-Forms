@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 export interface TextFieldProps {
   label: string
@@ -10,39 +10,9 @@ export interface TextFieldProps {
 }
 
 export function TextFieldModern({ label, value, placeholder, onChange, readOnly, className }: TextFieldProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
-
-  let borderColor = '#E4E7EC'
-  let background = '#F5F7FA'
-  let shadow = 'none'
-  let textColor = '#1C2A44'
-
-  if (readOnly) {
-    borderColor = '#E4E7EC'
-    background = '#F5F7FA'
-    textColor = '#667085'
-  } else if (isFocused) {
-    borderColor = '#C89B3C'
-    background = '#FFFFFF'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08), 0 0 0 3px rgba(200, 155, 60, 0.1)'
-  } else if (isHovered) {
-    borderColor = '#E6C36A'
-    background = '#FFFFFF'
-  }
-
   return (
-    <div 
-      className={className}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        width: '100%',
-        fontFamily: "'Outfit', sans-serif"
-      }}
-    >
-      <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1C2A44' }}>
+    <div className={`flex flex-col gap-1 w-full font-['Outfit',sans-serif] ${className || ''}`}>
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">
         {label}
       </label>
       <input
@@ -51,26 +21,14 @@ export function TextFieldModern({ label, value, placeholder, onChange, readOnly,
         placeholder={placeholder}
         value={value}
         onChange={e => onChange(e.target.value)}
-        onMouseEnter={() => !readOnly && setIsHovered(true)}
-        onMouseLeave={() => !readOnly && setIsHovered(false)}
-        onFocus={() => !readOnly && setIsFocused(true)}
-        onBlur={() => !readOnly && setIsFocused(false)}
-        style={{
-          width: '100%',
-          height: '34px',
-          padding: '0 10px',
-          fontSize: '0.85rem',
-          fontWeight: 500,
-          color: textColor,
-          background: background,
-          border: `1px solid ${borderColor}`,
-          borderRadius: '3px',
-          outline: 'none',
-          transition: 'all 250ms ease-in-out',
-          boxShadow: shadow,
-          boxSizing: 'border-box',
-          cursor: readOnly ? 'default' : 'text'
-        }}
+        className={`
+          w-full h-[34px] px-[10px] text-[0.85rem] font-medium rounded-[3px] outline-none box-border
+          transition-all duration-250 ease-in-out border
+          ${readOnly 
+            ? 'bg-[#F5F7FA] border-[#E4E7EC] text-[#667085] cursor-default' 
+            : 'bg-[#F5F7FA] border-[#E4E7EC] text-[#1C2A44] cursor-text hover:bg-white hover:border-[#E6C36A] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]'
+          }
+        `}
       />
     </div>
   )

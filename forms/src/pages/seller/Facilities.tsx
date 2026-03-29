@@ -90,7 +90,7 @@ export default function Facilities() {
 
   return (
     <FormPage title="Facilities" icon={<Settings size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
 
         {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (

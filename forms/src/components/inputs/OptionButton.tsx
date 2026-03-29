@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDevice } from '../../context/DeviceContext'
 
 export interface OptionButtonProps {
@@ -10,89 +10,51 @@ export interface OptionButtonProps {
 export function OptionButton({ label, selected, onClick }: OptionButtonProps) {
   const { device } = useDevice()
   const isMobile = device === 'mobile'
-  const [isHovered, setIsHovered] = useState(false)
 
-  let bg = '#F5F7FA'
-  let border = '1px solid #E4E7EC'
-  let textColor = '#667085'
-  let shadow = 'none'
-  let fontWeight = 500
+  const btnClass = `
+    group w-full flex items-center text-left font-['Outfit',sans-serif] 
+    transition-all duration-250 ease-in-out rounded-[3px] cursor-pointer outline-none
+    ${isMobile ? 'py-1.5 px-2 min-h-[32px] gap-1.5' : 'py-2 px-2.5 min-h-[36px] gap-2'}
+    ${selected 
+      ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#E6C36A] shadow-[0_2px_6px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)]'
+      : 'bg-[#F5F7FA] border border-[#E4E7EC] hover:bg-white hover:border-[#C89B3C] hover:shadow-[0_2px_8px_rgba(15,27,46,0.08)]'
+    }
+  `
 
-  if (selected) {
-    bg = 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)'
-    border = '1px solid #E6C36A'
-    textColor = '#FFFFFF'
-    shadow = '0 2px 6px rgba(15, 27, 46, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-    fontWeight = 600
-  } else if (isHovered) {
-    bg = '#FFFFFF'
-    border = '1px solid #C89B3C'
-    textColor = '#1C2A44'
-    shadow = '0 2px 8px rgba(15, 27, 46, 0.08)'
-  }
+  const boxClass = `
+    shrink-0 rounded-[3px] flex items-center justify-center transition-all duration-250 ease-in-out
+    ${isMobile ? 'w-[14px] h-[14px]' : 'w-4 h-4'}
+    ${selected 
+      ? 'bg-[#C89B3C] border border-transparent'
+      : 'bg-white border border-[#E4E7EC] group-hover:bg-[#F5F7FA] group-hover:border-[#C89B3C]'
+    }
+  `
+
+  const innerDotClass = `
+    bg-white rounded-[1.5px] shadow-[0_0_4px_rgba(255,255,255,0.6)]
+    ${isMobile ? 'w-1.5 h-1.5' : 'w-2 h-2'}
+  `
+
+  const textClass = `
+    transition-colors duration-250 ease-in-out leading-[1.2] break-words tracking-[-0.01em]
+    ${isMobile ? 'text-[0.75rem]' : 'text-[0.85rem]'}
+    ${selected 
+      ? 'font-semibold text-white' 
+      : 'font-medium text-[#667085] group-hover:text-[#1C2A44]'
+    }
+  `
 
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        textAlign: 'left',
-        fontFamily: "'Outfit', sans-serif",
-        transition: 'all 250ms ease-in-out',
-        borderRadius: '3px',
-        cursor: 'pointer',
-        outline: 'none',
-        padding: isMobile ? '6px 8px' : '8px 10px',
-        minHeight: isMobile ? '32px' : '36px',
-        gap: isMobile ? '6px' : '8px',
-        background: bg,
-        border: border,
-        boxShadow: shadow,
-      }}
+      className={btnClass}
     >
-      <div
-        style={{
-          flexShrink: 0,
-          width: isMobile ? '14px' : '16px',
-          height: isMobile ? '14px' : '16px',
-          borderRadius: '3px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 250ms ease-in-out',
-          background: selected ? '#C89B3C' : isHovered ? '#F5F7FA' : '#FFFFFF',
-          border: selected ? '1px solid transparent' : `1px solid ${isHovered ? '#C89B3C' : '#E4E7EC'}`,
-        }}
-      >
-        {selected && (
-          <div 
-            style={{
-              width: isMobile ? '6px' : '8px',
-              height: isMobile ? '6px' : '8px',
-              borderRadius: '1.5px',
-              background: '#FFFFFF',
-              boxShadow: '0 0 4px rgba(255, 255, 255, 0.6)'
-            }} 
-          />
-        )}
+      <div className={boxClass}>
+        {selected && <div className={innerDotClass} />}
       </div>
 
-      <span
-        style={{
-          fontSize: isMobile ? '0.75rem' : '0.85rem',
-          fontWeight: fontWeight,
-          color: textColor,
-          transition: 'color 250ms ease-in-out',
-          lineHeight: 1.2,
-          wordBreak: 'break-word',
-          letterSpacing: '-0.01em',
-        }}
-      >
+      <span className={textClass}>
         {label}
       </span>
     </button>

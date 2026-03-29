@@ -219,7 +219,7 @@ export default function UnitDetails() {
 
   return (
     <FormPage title="Unit Details" icon={<LayoutGrid size={20} color="#E6C36A" />} onBack={back} onNext={next}>
-      <div className="max-w-[896px] mx-auto flex flex-col gap-4 font-['Outfit',sans-serif]">
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
 
         <SectionCard title="Size & Dimensions" icon={<Ruler size={14} />}>
           <div className="flex flex-col gap-4">

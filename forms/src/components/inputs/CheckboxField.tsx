@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 type Props = {
   label: string
@@ -13,56 +13,27 @@ const CheckIcon = () => (
 )
 
 export default function CheckboxField({ label, checked, onChange }: Props) {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
     <button
       type="button"
       onClick={() => onChange(!checked)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: '2px 0',
-        textAlign: 'left',
-        fontFamily: "'Outfit', sans-serif",
-        outline: 'none',
-      }}
+      className="group flex items-center gap-[6px] bg-transparent border-none cursor-pointer py-0.5 text-left font-['Outfit',sans-serif] outline-none"
     >
       <div
-        style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '3px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 250ms ease-in-out',
-          background: checked ? 'linear-gradient(135deg, #1C2A44 0%, #0F1B2E 100%)' : '#F5F7FA',
-          border: `1px solid ${
-            checked
-              ? isHovered ? '#E6C36A' : 'rgba(200, 155, 60, 0.4)'
-              : isHovered ? '#C89B3C' : '#E4E7EC'
-          }`,
-          boxShadow: checked
-            ? '0 2px 4px rgba(15, 27, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-            : isHovered ? '0 1px 2px rgba(15, 27, 46, 0.05)' : 'none',
-        }}
+        className={`
+          w-4 h-4 rounded-[3px] flex items-center justify-center transition-all duration-[250ms] ease-in-out border
+          ${checked
+            ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border-[#C89B3C]/40 group-hover:border-[#E6C36A] shadow-[0_2px_4px_rgba(15,27,46,0.2),inset_0_1px_0_rgba(255,255,255,0.05)]'
+            : 'bg-[#F5F7FA] border-[#E4E7EC] group-hover:border-[#C89B3C] shadow-none group-hover:shadow-[0_1px_2px_rgba(15,27,46,0.05)]'
+          }
+        `}
       >
         {checked && <CheckIcon />}
       </div>
       <span
-        style={{
-          fontSize: '0.85rem',
-          fontWeight: 500,
-          transition: 'color 250ms ease-in-out',
-          color: checked ? '#1C2A44' : '#667085',
-        }}
+        className={`text-[0.85rem] font-medium transition-colors duration-[250ms] ease-in-out ${
+          checked ? 'text-[#1C2A44]' : 'text-[#667085]'
+        }`}
       >
         {label}
       </span>

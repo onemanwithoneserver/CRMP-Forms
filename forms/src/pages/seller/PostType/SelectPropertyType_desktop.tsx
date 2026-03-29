@@ -20,7 +20,7 @@ function PostTypeRadioOption({
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-[6px] px-[10px] py-[6px] cursor-pointer bg-transparent border-none outline-none group"
+      className="flex flex-row items-center gap-[6px] px-[10px] py-[6px] cursor-pointer bg-transparent border-none outline-none group"
     >
       <div className={`w-[14px] h-[14px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
         selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4] group-hover:border-navy'
@@ -113,27 +113,25 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
                   </span>
                 </button>
                 <div className="w-px h-auto bg-border flex-shrink-0" />
-                <div className="flex  justify-end gap-auto flex-1 min-w-0">
-                  <div className="flex items-center gap-[4px] flex-shrink-0">
-                    {SELLER_POST_TYPES.filter(option =>
-                      option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
-                    ).map(option => {
-                      const selected = postType === option.value
-                      return (
-                        <PostTypeRadioOption
-                          key={option.value}
-                          option={option}
-                          selected={selected}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (!selected) {
-                              dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
-                            }
-                          }}
-                        />
-                      )
-                    })}
-                  </div>
+                <div className="flex flex-col gap-[12px] flex-1 min-w-0">
+                  {SELLER_POST_TYPES.filter(option =>
+                    option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+                  ).map(option => {
+                    const selected = postType === option.value
+                    return (
+                      <PostTypeRadioOption
+                        key={option.value}
+                        option={option}
+                        selected={selected}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (!selected) {
+                            dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
+                          }
+                        }}
+                      />
+                    )
+                  })}
                 </div>
               </div>
             )

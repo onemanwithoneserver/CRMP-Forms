@@ -20,7 +20,7 @@ function PostTypeRadioOptionMobile({
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-[5px] px-[8px] py-[5px] cursor-pointer bg-transparent border-none outline-none group active:scale-[0.98] transition-transform"
+      className="flex flex-row items-center gap-[5px] px-[8px] py-[5px] cursor-pointer bg-transparent border-none outline-none group active:scale-[0.98] transition-transform"
     >
       <div className={`w-[13px] h-[13px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
         selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4]'
@@ -113,27 +113,25 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
                 <div className="w-px h-[24px] bg-border flex-shrink-0" />
 
                 {/* Right Side: Radio Controls */}
-                <div className="flex flex-1 justify-end min-w-0">
-                  <div className="flex items-center gap-[2px] flex-shrink-0">
-                    {SELLER_POST_TYPES.filter(option => 
-                      option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
-                    ).map(option => {
-                      const selected = postType === option.value
-                      return (
-                        <PostTypeRadioOptionMobile
-                          key={option.value}
-                          option={option}
-                          selected={selected}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (!selected) {
-                              dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
-                            }
-                          }}
-                        />
-                      )
-                    })}
-                  </div>
+                <div className="flex flex-col gap-[10px] min-w-0">
+                  {SELLER_POST_TYPES.filter(option => 
+                    option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+                  ).map(option => {
+                    const selected = postType === option.value
+                    return (
+                      <PostTypeRadioOptionMobile
+                        key={option.value}
+                        option={option}
+                        selected={selected}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (!selected) {
+                            dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
+                          }
+                        }}
+                      />
+                    )
+                  })}
                 </div>
               </div>
             )

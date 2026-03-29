@@ -10,7 +10,7 @@ const queryClient = new QueryClient()
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/CRMP-Forms">
+      <BrowserRouter basename="/CRMP-Forms" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <App />
       </BrowserRouter>
     </QueryClientProvider>

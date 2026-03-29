@@ -17,22 +17,27 @@ function PostTypeRadioOption({
   onClick: (e: React.MouseEvent) => void
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex flex-row items-center gap-[2px] px-[4px] py-[2px] cursor-pointer bg-transparent border-none outline-none group"
-    >
-      <div className={`w-[12px] h-[12px] rounded-full border-2 flex items-end justify-end shrink-0 transition-all duration-200 ${
-        selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4] group-hover:border-navy'
-      }`}>
-        {selected && <div className="w-[5px] h-[5px] rounded-full bg-[#E6C36A]" />}
-      </div>
-      <span className={`text-[0.85rem] tracking-[-0.01em] transition-colors whitespace-nowrap ${
-        selected ? 'font-semibold text-navy' : 'font-medium text-[#667085] group-hover:text-navy'
-      }`}>
-        {option.label}
-      </span>
-    </button>
+ <button
+  type="button"
+  onClick={onClick}
+  className="flex flex-row items-center gap-2 px-1 py-0.5 cursor-pointer bg-transparent border-none outline-none group"
+>
+  <div className={`w-3 h-3 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+    selected 
+      ? 'bg-[#C89B3C] border-[#C89B3C]' 
+      : 'border-[#C4C9D4] group-hover:border-navy'
+  }`}>
+    {selected && <div className="w-1 h-1 rounded-full bg-white" />}
+  </div>
+
+  <span className={`text-[0.85rem] tracking-tight transition-colors whitespace-nowrap ml-1.5 ${
+    selected 
+      ? 'font-semibold text-navy' 
+      : 'font-medium text-[#667085] group-hover:text-navy'
+  }`}>
+    {option.label}
+  </span>
+</button>
   )
 }
 

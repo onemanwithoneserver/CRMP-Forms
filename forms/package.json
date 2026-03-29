@@ -2,7 +2,7 @@
   "name": "forms",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://onemanwithoneserver.github.io/CREMP-Forms/",
+  "homepage": "https://onemanwithoneserver.github.io/CRMP-Forms/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

@@ -65,7 +65,7 @@ export default function PostType() {
           </div>
 
           {/* The rest remains tightly packed at 2px as requested */}
-          {propertyType !== 'land' && !!postType && <div className={`w-full max-w-[896px] h-auto mx-auto mt-[2px] mb-[2px] ${isMobile ? 'px-0' : 'px-[2px]'}`}>
+          {propertyType !== 'land' && !!postType && <div className={`w-full max-w-[896px] h-auto mx-auto mt-[16px] mb-[2px] ${isMobile ? 'px-0' : 'px-[2px]'}`}>
             <div className={`bg-white shadow-[0_4px_16px_rgba(15,27,46,0.04)] border border-[#E4E7EC] overflow-hidden ${isMobile ? 'rounded-none' : 'rounded-[4px]'}`}>
               <div className="flex items-center gap-[2px] p-[2px] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border-b border-[rgba(200,155,60,0.3)]">
                 <div className="flex items-center justify-center w-[26px] h-[26px] rounded-[3px] bg-white/5 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">

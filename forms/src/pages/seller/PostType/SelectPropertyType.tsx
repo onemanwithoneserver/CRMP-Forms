@@ -7,9 +7,10 @@ import SelectPropertyTypeMobile from './SelectPropertyType_mobile'
 
 interface SelectPropertyTypeProps {
   sectionRef?: React.RefObject<HTMLDivElement | null>
+  showBuildingInfo?: boolean
 }
 
-export default function SelectPropertyType({ sectionRef }: SelectPropertyTypeProps) {
+export default function SelectPropertyType({ sectionRef, showBuildingInfo }: SelectPropertyTypeProps) {
   const { state } = useForm()
   const { device } = useDevice()
   const { propertyType } = state.formData
@@ -18,9 +19,9 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   return (
     <div
       ref={sectionRef}
-className={`relative max-w-[724px] mx-auto w-full aspect-[4/3] transition-all duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] font-outfit z-20 ${
-        isMobile ? '-mt-[24px] px-0' : '-mt-[32px] px-[16px]'
-      }`}
+      className={`relative max-w-[724px] mx-auto transition-all duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] font-outfit z-20 ${
+        !showBuildingInfo ? 'w-full aspect-[4/3]' : ''
+      } ${isMobile ? '-mt-[24px] px-0' : '-mt-[32px] px-[16px]'}`}
     >
       <div
         // Removed `overflow-hidden` here so the absolutely positioned checkmarks don't get clipped

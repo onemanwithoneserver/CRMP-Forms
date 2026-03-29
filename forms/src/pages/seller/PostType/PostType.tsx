@@ -61,7 +61,10 @@ export default function PostType() {
           </div>
 
           <div className={propertyType !== 'land' && !!postType ? 'h-auto' : 'flex-1'}>
-            <SelectPropertyType sectionRef={postTypeSectionRef} />
+            <SelectPropertyType 
+              sectionRef={postTypeSectionRef}
+              showBuildingInfo={propertyType !== 'land' && !!postType}
+            />
           </div>
 
           {/* The rest remains tightly packed at 2px as requested */}

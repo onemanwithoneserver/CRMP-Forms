@@ -30,7 +30,7 @@ function SelectionCard({
     >
       <div
         className={`
-          w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ease border
+          w-5 h-5 rounded-[4px] flex items-center justify-center shrink-0 transition-all duration-200 ease border
           ${selected 
             ? 'bg-[#C89B3C] border-transparent shadow-[0_2px_4px_rgba(200,155,60,0.3)]' 
             : 'bg-white border-[#E4E7EC] group-hover:border-[#C89B3C] shadow-[inset_0_1px_2px_rgba(15,27,46,0.05)]'
@@ -38,7 +38,7 @@ function SelectionCard({
         `}
       >
         {selected && (
-          <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+          <div className="w-2 h-2 rounded-[4px] bg-white shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
         )}
       </div>
 
@@ -54,7 +54,7 @@ function SelectionCard({
         <Icon size={24} strokeWidth={1.5} />
         {isAdd && (
           <div 
-            className={`absolute -bottom-1 -right-1 text-white rounded-full p-0.5 flex items-center justify-center transition-all duration-200 ease ${
+            className={`absolute -bottom-1 -right-1 text-white rounded-[4px] p-0.5 flex items-center justify-center transition-all duration-200 ease ${
               selected ? 'bg-[#C89B3C]' : 'bg-[#E4E7EC] group-hover:bg-[#C89B3C]'
             }`}
           >

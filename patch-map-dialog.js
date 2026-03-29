@@ -115,7 +115,7 @@ function MapDialog({ isOpen, onClose, onConfirm, initialLat, initialLng }: MapDi
           )}
           <div className="absolute bottom-4 inset-x-0 flex justify-center z-10">
             <button type="button" onClick={e => { e.stopPropagation(); handleAutoFetch() }} disabled={fetching}
-              className="flex items-center gap-2 px-5 py-2 rounded-full bg-white shadow-[0_2px_12px_rgba(0,0,0,0.15)] border border-[#E2E8F0] text-[13px] font-semibold font-['Outfit'] text-[#1C2A44] hover:bg-[#F8FAFC] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150">
+              className="flex items-center gap-2 px-5 py-2 rounded-[4px] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.15)] border border-[#E2E8F0] text-[13px] font-semibold font-['Outfit'] text-[#1C2A44] hover:bg-[#F8FAFC] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150">
               <Navigation size={13} className={fetching ? 'animate-spin text-[#2563EB]' : 'text-[#2563EB]'} />
               {fetching ? 'Fetching...' : 'Auto-fetch My Location'}
             </button>

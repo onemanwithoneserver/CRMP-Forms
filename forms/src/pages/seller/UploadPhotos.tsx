@@ -83,7 +83,7 @@ function UploadZone({ label, description, accept, note, icon, isMultiple = true 
 
       {note && (
         <p className="flex items-center gap-1 mt-1 mb-0 text-[0.75rem] font-medium text-[#A0AAB8]">
-          <span className="inline-block w-1 h-1 rounded-full bg-[#C89B3C]" />
+          <span className="inline-block w-1 h-1 rounded-[4px] bg-[#C89B3C]" />
           {note}
         </p>
       )}

@@ -87,7 +87,7 @@ function UploadZone({ label, description, accept, note, isMultiple = true }: Upl
 
       {note && (
         <p className="text-[0.75rem] text-[#A0AAB8] m-0 font-medium flex items-center gap-1">
-          <span className="inline-block w-1 h-1 rounded-full bg-[#C89B3C]" />
+          <span className="inline-block w-1 h-1 rounded-[4px] bg-[#C89B3C]" />
           {note}
         </p>
       )}

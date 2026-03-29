@@ -22,12 +22,12 @@ function PostTypeRadioOption({
   onClick={onClick}
   className="flex flex-row items-center gap-2 px-1 py-0.5 cursor-pointer bg-transparent border-none outline-none group"
 >
-  <div className={`w-3 h-3 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+  <div className={`w-3 h-3 rounded-[4px] border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
     selected 
       ? 'bg-[#C89B3C] border-[#C89B3C]' 
       : 'border-[#C4C9D4] group-hover:border-navy'
   }`}>
-    {selected && <div className="w-1 h-1 rounded-full bg-white" />}
+    {selected && <div className="w-1 h-1 rounded-[4px] bg-white" />}
   </div>
 
   <span className={`text-[0.85rem] tracking-tight transition-colors whitespace-nowrap ml-1.5 ${
@@ -92,7 +92,7 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
                 style={{ gap: '72%' }}
               >
                 <div 
-                  className="absolute -top-[10px] -right-[10px] bg-white rounded-full flex items-center justify-center shadow-sm"
+                  className="absolute -top-[10px] -right-[10px] bg-white rounded-[4px] flex items-center justify-center shadow-sm"
                   title="Selected Property Type"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

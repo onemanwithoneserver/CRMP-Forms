@@ -22,10 +22,10 @@ function PostTypeRadioOptionMobile({
       onClick={onClick}
       className="flex flex-row items-center gap-[5px] px-[8px] py-[5px] cursor-pointer bg-transparent border-none outline-none group active:scale-[0.98] transition-transform"
     >
-      <div className={`w-[13px] h-[13px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+      <div className={`w-[13px] h-[13px] rounded-[4px] border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
         selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4]'
       }`}>
-        {selected && <div className="w-[4px] h-[4px] rounded-full bg-[#E6C36A]" />}
+        {selected && <div className="w-[4px] h-[4px] rounded-[4px] bg-[#E6C36A]" />}
       </div>
       <span className={`text-[0.8rem] tracking-[-0.01em] transition-colors whitespace-nowrap ${
         selected ? 'font-semibold text-navy' : 'font-medium text-[#667085]'
@@ -86,7 +86,7 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
               >
                 {/* Outer Gold Checkmark */}
                 <div 
-                  className="absolute -top-[8px] -right-[8px] z-10 bg-white rounded-full flex items-center justify-center shadow-sm"
+                  className="absolute -top-[8px] -right-[8px] z-10 bg-white rounded-[4px] flex items-center justify-center shadow-sm"
                   title="Selected Property Type"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#C89B3C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check" aria-hidden="true">

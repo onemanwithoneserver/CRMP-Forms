@@ -18,7 +18,7 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   return (
     <div
       ref={sectionRef}
-      className={`relative max-w-[724px] mx-auto w-auto transition-all duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] font-outfit z-20 ${
+className={`relative max-w-[724px] mx-auto w-full aspect-[4/3] transition-all duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] font-outfit z-20 ${
         isMobile ? '-mt-[24px] px-0' : '-mt-[32px] px-[16px]'
       }`}
     >

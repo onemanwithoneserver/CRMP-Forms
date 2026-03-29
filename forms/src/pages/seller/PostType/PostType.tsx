@@ -60,15 +60,7 @@ export default function PostType() {
             </div>
           </div>
 
-          <div
-            className={
-              propertyType !== 'land' && !!postType
-                ? isMobile
-                  ? 'h-[400px] sm:h-[500px]'
-                  : 'h-[1900px] xl:h-[900px]'
-                : 'flex-1'
-            }
-          >
+          <div className={propertyType !== 'land' && !!postType ? 'h-auto' : 'flex-1'}>
             <SelectPropertyType sectionRef={postTypeSectionRef} />
           </div>
 

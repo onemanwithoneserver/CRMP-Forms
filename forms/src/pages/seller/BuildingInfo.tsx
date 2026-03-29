@@ -408,10 +408,10 @@ export function BuildingInfoPanel() {
           </button>
         </div>
       </div>
-
       <div
-        className={`overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${formOpen ? 'max-h-[9000px] opacity-100 mt-[12px]' : 'max-h-0 opacity-0 mt-0'}`}
+        className={`grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${formOpen ? 'grid-rows-[1fr] opacity-100 mt-[12px]' : 'grid-rows-[0fr] opacity-0 mt-0'}`}
       >
+      <div className="overflow-hidden">
         {form.buildingType && (
           <div className="flex items-center gap-[6px] mb-[8px]">
             <span className="text-gold flex"><BuildingIcon /></span>
@@ -866,6 +866,7 @@ export function BuildingInfoPanel() {
 
           </div>
         </div>
+      </div>
       </div>
 
       {mapDialogOpen && (

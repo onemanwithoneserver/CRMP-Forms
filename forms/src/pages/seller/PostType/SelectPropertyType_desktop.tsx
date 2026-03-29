@@ -7,7 +7,7 @@ interface SelectPropertyTypeDesktopProps {
   propertyType: string | undefined
 }
 
-function PostTypeTabOption({
+function PostTypeRadioOption({
   option,
   selected,
   onClick
@@ -20,13 +20,18 @@ function PostTypeTabOption({
     <button
       type="button"
       onClick={onClick}
-      className={`px-[16px] py-[4px] text-[0.85rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out outline-none ${
-        selected
-          ? 'bg-navy text-white font-semibold shadow-[0_1px_3px_rgba(15,27,46,0.2)]'
-          : 'bg-transparent text-text-tertiary font-medium hover:text-navy hover:bg-black/5'
-      }`}
+      className="flex items-center gap-[6px] px-[10px] py-[6px] cursor-pointer bg-transparent border-none outline-none group"
     >
-      {option.label}
+      <div className={`w-[14px] h-[14px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+        selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4] group-hover:border-navy'
+      }`}>
+        {selected && <div className="w-[5px] h-[5px] rounded-full bg-[#E6C36A]" />}
+      </div>
+      <span className={`text-[0.85rem] tracking-[-0.01em] transition-colors whitespace-nowrap ${
+        selected ? 'font-semibold text-navy' : 'font-medium text-[#667085] group-hover:text-navy'
+      }`}>
+        {option.label}
+      </span>
     </button>
   )
 }
@@ -95,13 +100,13 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
                 </button>
                 <div className="w-px h-auto bg-border flex-shrink-0" />
                 <div className="flex  justify-end gap-auto flex-1 min-w-0">
-                  <div className="flex items-center bg-[#F5F7FA] p-[2px] rounded-[6px] border border-border flex-shrink-0">
+                  <div className="flex items-center gap-[4px] flex-shrink-0">
                     {SELLER_POST_TYPES.filter(option =>
                       option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
                     ).map(option => {
                       const selected = postType === option.value
                       return (
-                        <PostTypeTabOption
+                        <PostTypeRadioOption
                           key={option.value}
                           option={option}
                           selected={selected}

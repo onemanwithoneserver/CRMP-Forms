@@ -7,7 +7,7 @@ interface SelectPropertyTypeMobileProps {
   propertyType: string | undefined
 }
 
-function PostTypeTabOptionMobile({
+function PostTypeRadioOptionMobile({
   option,
   selected,
   onClick
@@ -20,14 +20,18 @@ function PostTypeTabOptionMobile({
     <button
       type="button"
       onClick={onClick}
-      // Adjusted px-padding slightly to ensure it fits side-by-side on small mobile screens
-      className={`px-[8px] xs:px-[12px] py-[4px] text-center text-[0.8rem] tracking-[-0.01em] rounded-[4px] cursor-pointer transition-all duration-200 ease-out active:scale-[0.98] outline-none whitespace-nowrap ${
-        selected
-          ? 'bg-navy text-white font-semibold shadow-[0_1px_3px_rgba(15,27,46,0.2)]'
-          : 'bg-transparent text-text-tertiary font-medium'
-      }`}
+      className="flex items-center gap-[5px] px-[8px] py-[5px] cursor-pointer bg-transparent border-none outline-none group active:scale-[0.98] transition-transform"
     >
-      {option.label}
+      <div className={`w-[13px] h-[13px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+        selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4]'
+      }`}>
+        {selected && <div className="w-[4px] h-[4px] rounded-full bg-[#E6C36A]" />}
+      </div>
+      <span className={`text-[0.8rem] tracking-[-0.01em] transition-colors whitespace-nowrap ${
+        selected ? 'font-semibold text-navy' : 'font-medium text-[#667085]'
+      }`}>
+        {option.label}
+      </span>
     </button>
   )
 }
@@ -96,13 +100,13 @@ export default function SelectPropertyTypeMobile({ propertyType }: SelectPropert
 
                   {/* Right Side: Tab Controls */}
                   <div className="flex flex-1 justify-end min-w-0">
-                    <div className="flex items-center bg-[#F5F7FA] p-[2px] rounded-[6px] border border-border flex-shrink-0">
+                    <div className="flex items-center gap-[2px] flex-shrink-0">
                       {SELLER_POST_TYPES.filter(option => 
                         option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
                       ).map(option => {
                         const selected = postType === option.value
                         return (
-                          <PostTypeTabOptionMobile
+                          <PostTypeRadioOptionMobile
                             key={option.value}
                             option={option}
                             selected={selected}

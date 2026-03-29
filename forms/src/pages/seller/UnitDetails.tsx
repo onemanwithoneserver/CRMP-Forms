@@ -394,7 +394,7 @@ export default function UnitDetails() {
             <div className="absolute inset-0" onClick={() => setIsApplianceModalOpen(false)} />
             <div className="relative bg-white rounded flex flex-col w-full max-w-[720px] max-h-[90vh] shadow-[0_16px_48px_rgba(15,27,46,0.15)] border border-[#E4E7EC]">
               
-              <div className="flex items-center justify-between py-4 px-5 border-b border-[#E4E7EC] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] shrink-0">
+              <div className="flex items-center justify-between px-2 py-2 border-b border-[#E4E7EC] bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] shrink-0">
                 <h3 className="text-[1.05rem] font-bold text-white m-0 tracking-[-0.01em]">Add / Edit Appliances</h3>
                 <button
                   onClick={() => setIsApplianceModalOpen(false)}
@@ -427,7 +427,7 @@ export default function UnitDetails() {
                 </div>
               </div>
 
-              <div className="py-4 px-5 border-t border-[#E4E7EC] bg-[#F5F7FA] flex justify-end gap-3 shrink-0">
+              <div className="px-2 py-2 border-t border-[#E4E7EC] bg-[#F5F7FA] flex justify-end gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsApplianceModalOpen(false)}

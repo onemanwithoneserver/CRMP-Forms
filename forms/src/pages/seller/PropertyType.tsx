@@ -21,7 +21,7 @@ function SelectionCard({
       type="button"
       onClick={onClick}
       className={`
-        group flex items-center gap-4 py-4 px-5 w-full rounded cursor-pointer transition-all duration-250 ease outline-none font-['Outfit',sans-serif]
+        group flex items-center gap-4 px-2 py-2 w-full rounded cursor-pointer transition-all duration-250 ease outline-none font-['Outfit',sans-serif]
         ${selected 
           ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#C89B3C] text-white shadow-[0_4px_12px_rgba(15,27,46,0.15),inset_0_1px_0_rgba(255,255,255,0.05)]' 
           : 'bg-[#F5F7FA] border border-[#E4E7EC] text-[#1C2A44] hover:bg-white hover:border-[#E6C36A] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)]'

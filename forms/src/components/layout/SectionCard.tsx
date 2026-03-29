@@ -17,7 +17,7 @@ export default function SectionCard({ title, icon, children }: SectionCardProps)
       <div className={`h-[6px] w-full ${gradientClass}`} />
       
       {/* Header */}
-      <div className="py-4 px-5">
+      <div className="px-2 py-2">
         <div className="flex items-center gap-2.5">
           {icon && (
             <div className="flex items-center justify-center text-[#C89B3C]">

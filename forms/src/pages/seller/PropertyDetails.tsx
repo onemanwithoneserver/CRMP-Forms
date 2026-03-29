@@ -1,6 +1,70 @@
 import React from 'react'
 import { useForm } from '../../context/FormContext'
 import FormPage from '../../components/layout/FormPage'
+import { Search, Building2, Plus, Building } from 'lucide-react'
+
+function SelectionCard({
+  title,
+  icon: Icon,
+  selected,
+  onClick,
+  isAdd = false
+}: {
+  title: string
+  icon: React.ElementType
+  selected: boolean
+  onClick: () => void
+  isAdd?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`
+        group flex items-center gap-4 py-4 px-5 w-full rounded outline-none cursor-pointer transition-all duration-250 ease font-['Outfit',sans-serif]
+        ${selected 
+          ? 'bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] border border-[#C89B3C] shadow-[0_4px_12px_rgba(15,27,46,0.15),inset_0_1px_0_rgba(255,255,255,0.05)] text-white' 
+          : 'bg-[#F5F7FA] border border-[#E4E7EC] hover:bg-white hover:border-[#E6C36A] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)] text-[#1C2A44]'
+        }
+      `}
+    >
+      <div
+        className={`
+          w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ease border
+          ${selected 
+            ? 'bg-[#C89B3C] border-transparent shadow-[0_2px_4px_rgba(200,155,60,0.3)]' 
+            : 'bg-white border-[#E4E7EC] group-hover:border-[#C89B3C] shadow-[inset_0_1px_2px_rgba(15,27,46,0.05)]'
+          }
+        `}
+      >
+        {selected && (
+          <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+        )}
+      </div>
+
+      <span className="flex-1 text-left text-[0.95rem] font-bold tracking-[-0.01em] transition-colors duration-200 ease">
+        {title}
+      </span>
+
+      <div 
+        className={`relative flex items-center justify-center w-7 h-7 transition-colors duration-200 ease ${
+          selected ? 'text-[#E6C36A]' : 'text-[#667085] group-hover:text-[#C89B3C]'
+        }`}
+      >
+        <Icon size={24} strokeWidth={1.5} />
+        {isAdd && (
+          <div 
+            className={`absolute -bottom-1 -right-1 text-white rounded-full p-0.5 flex items-center justify-center transition-all duration-200 ease ${
+              selected ? 'bg-[#C89B3C]' : 'bg-[#E4E7EC] group-hover:bg-[#C89B3C]'
+            }`}
+          >
+            <Plus size={10} strokeWidth={3} />
+          </div>
+        )}
+      </div>
+    </button>
+  )
+}
 
 export default function PropertyDetails() {
   const { state, dispatch, next, back } = useForm()
@@ -15,73 +79,47 @@ export default function PropertyDetails() {
       title="Is this property in an existing building?"
       onBack={back}
       onNext={next}
+      icon={<Building size={20} color="#E6C36A" />}
     >
-      <div className="flex flex-col gap-4">
-
-        <div className="relative">
+      <div className="max-w-[720px] mx-auto flex flex-col gap-5 font-['Outfit',sans-serif]">
+        
+        <div className="relative w-full">
           <input
             type="text"
-            className="form-input pr-[48px] h-[54px] rounded-[8px] text-[1rem] text-[var(--text)] border-[var(--border-light)]"
             placeholder="Search Building Name"
             value={buildingName}
             onChange={(e) => onUpdate({ buildingName: e.target.value })}
+            className="peer w-full h-[44px] pl-4 pr-11 text-[0.95rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded outline-none box-border transition-all duration-250 ease-in-out shadow-[inset_0_1px_3px_rgba(15,27,46,0.03)] hover:bg-white hover:border-[#E6C36A] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_4px_12px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
           />
-          <div className="absolute right-[16px] top-[15px] text-[var(--text-tertiary)]">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex pointer-events-none transition-colors duration-250 ease text-[#667085] peer-focus:text-[#C89B3C]">
+            <Search size={18} strokeWidth={2} />
           </div>
         </div>
 
+        <div className="flex flex-col gap-3">
+          <SelectionCard
+            title="Select from Existing"
+            icon={Building2}
+            selected={buildingSelection === 'existing'}
+            onClick={() => onUpdate({ buildingSelection: 'existing' })}
+          />
 
-        <button
-          type="button"
-          className={`selection-card ${buildingSelection === 'existing' ? 'selected' : ''} flex items-center shadow-[0_4px_10px_rgba(0,0,0,0.04)] p-[18px_20px] gap-[16px] rounded-[8px]`}
-          onClick={() => onUpdate({ buildingSelection: 'existing' })}
-        >
-          <div className={`radio-circle ${buildingSelection === 'existing' ? 'active' : ''} !mt-0`} />
-          <div className="flex-1 text-[1rem] font-[800] text-[var(--text)] text-left">
-            Select from Existing
-          </div>
-          <div className={buildingSelection === 'existing' ? 'text-[var(--text)]' : 'text-[var(--text-tertiary)]'}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="4" y="8" width="8" height="14" rx="1" />
-              <rect x="12" y="4" width="8" height="18" rx="1" />
-              <path d="M6 12h4M6 16h4M14 8h4M14 12h4M14 16h4" />
-            </svg>
-          </div>
-        </button>
+          <SelectionCard
+            title="Add New Building"
+            icon={Building2}
+            isAdd={true}
+            selected={buildingSelection === 'new'}
+            onClick={() => onUpdate({ buildingSelection: 'new' })}
+          />
+        </div>
 
+        {state.errors.buildingSelection && (
+          <div className="py-2.5 px-3.5 bg-[#FEF2F2] border border-[#FECACA] rounded text-[#EF4444] text-[0.8rem] font-medium">
+            {state.errors.buildingSelection}
+          </div>
+        )}
 
-        <button
-          type="button"
-          className={`selection-card ${buildingSelection === 'new' ? 'selected' : ''} flex items-center shadow-[0_4px_10px_rgba(0,0,0,0.04)] p-[18px_20px] gap-[16px] rounded-[8px]`}
-          onClick={() => onUpdate({ buildingSelection: 'new' })}
-        >
-          <div className={`radio-circle ${buildingSelection === 'new' ? 'active' : ''} !mt-0`} />
-          <div className="flex-1 text-[1rem] font-[800] text-[var(--text)] text-left">
-            Add New Existing
-          </div>
-          <div className={`relative ${buildingSelection === 'new' ? 'text-[var(--text)]' : 'text-[var(--text-tertiary)]'}`}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 21h18" />
-              <path d="M5 21V7l14-4v18" />
-              <path d="M9 9h6" />
-              <path d="M9 13h6" />
-            </svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" 
-              className={`absolute bottom-[-4px] right-[-4px] rounded-full ${buildingSelection === 'new' ? 'bg-[var(--accent-gold)]' : 'bg-[var(--surface-lowest)]'}`}>
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-          </div>
-        </button>
       </div>
-      {state.errors.buildingSelection && (
-        <div className="text-[0.75rem] text-[#d32f2f] mt-[12px]">
-          {state.errors.buildingSelection}
-        </div>
-      )}
     </FormPage>
   )
 }

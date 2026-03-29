@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import { useForm } from '../../context/FormContext'
 
 const SaveIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
     <polyline points="17,21 17,13 7,13 7,21" />
     <polyline points="7,3 7,8 15,8" />
@@ -10,13 +10,13 @@ const SaveIcon = () => (
 )
 
 const ChevronLeft = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15,18 9,12 15,6" />
   </svg>
 )
 
 const ChevronRight = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="9,6 15,12 9,18" />
   </svg>
 )
@@ -50,49 +50,65 @@ export default function FormPage({
   const isFirstStep = state.step === 1
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-[var(--surface)]">
-      <div style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0px)', backgroundSize: '16px 16px' }} className="bg-[#1C2A44] px-[20px] pt-[10px] pb-[40px] flex-shrink-0 relative overflow-hidden z-0">
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1C2A44] via-[#C89B3C] to-[#1C2A44] opacity-50" />
-        <div className="relative max-w-[720px] mx-auto">
-          <h1 className="font-['Outfit'] text-[1.15rem] flex justify-center items-center gap-2 font-[800] text-white m-0 leading-[1.2] tracking-[-0.02em]">
+    <div className="flex flex-col h-full overflow-hidden bg-[#F5F7FA] font-['Outfit',sans-serif]">
+      
+      {/* Premium Header */}
+      <div className="relative shrink-0 pt-4 px-5 pb-8 bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] overflow-hidden z-0">
+        
+        {/* Subtle dot pattern overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0)',
+            backgroundSize: '12px 12px',
+          }} 
+        />
+        
+        {/* Premium Gold Accent Line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[linear-gradient(90deg,transparent_0%,rgba(200,155,60,0.8)_50%,transparent_100%)]" />
+        
+        <div className="relative max-w-[720px] mx-auto flex flex-col items-center text-center">
+          <h1 className="flex items-center gap-2.5 m-0 text-[1.2rem] font-bold text-white tracking-[-0.01em]">
             {icon && (
-              <span className="flex items-center justify-center w-8 h-8 rounded-[4px] bg-white/15 backdrop-blur-md border border-white/30 text-white shadow-[0_4px_12px_rgba(255,255,255,0.1)]">
+              <span className="flex items-center justify-center w-7 h-7 rounded bg-white/10 border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.2)] text-[#E6C36A]">
                 {icon}
               </span>
             )}
             {title}
           </h1>
           {subtitle && (
-            <p className="text-[0.82rem] text-white/65 mt-[4px] font-['Outfit'] leading-[1.4]">
+            <p className="mt-1 mb-0 text-[0.85rem] font-normal text-white/70">
               {subtitle}
             </p>
           )}
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10 -mt-8">
-        <div className="w-full px-4 pb-20 relative z-20">
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden relative z-10 -mt-4 custom-scrollbar">
+        <div className="relative z-20 w-full px-4 pb-8">
           {children}
         </div>
       </div>
 
-      <div className="flex-shrink-0 bg-white border-t border-[#edf0f5] shadow-[0_-4px_20px_rgba(0,0,0,0.04)] p-[6px_10px] flex items-center justify-between">
+      {/* Premium Footer Actions */}
+      <div className="relative z-30 shrink-0 flex items-center justify-between py-2.5 px-4 bg-white border-t border-[#E4E7EC] shadow-[0_-4px_16px_rgba(15,27,46,0.04)]">
         <button
           type="button"
           onClick={onSaveDraft || (() => alert('Draft saved!'))}
-          className="flex items-center gap-[4px] p-[5px_10px] rounded-[4px] border-[1.5px] border-[#C89B3C]/50 bg-[#C89B3C]/5 text-[#C89B3C] font-['Outfit'] text-[0.8rem] font-[700] cursor-pointer transition-all duration-200"
+          className="flex items-center gap-1.5 py-1.5 px-3 rounded-[3px] bg-transparent border border-transparent text-[#C89B3C] text-[0.8rem] font-semibold cursor-pointer outline-none transition-all duration-200 ease hover:bg-[#C89B3C]/10 hover:border-[#C89B3C]"
         >
           <SaveIcon />
           <span>Save draft</span>
         </button>
 
-        <div className="flex items-center gap-[8px]">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onBack}
             disabled={backDisabled || isFirstStep}
             aria-label="Previous step"
-            className={`w-[30px] h-[30px] rounded-[4px] border-[1.5px] border-[#e2e6ec] bg-white flex items-center justify-center transition-all duration-200 text-[#445069] ${(backDisabled || isFirstStep) ? 'opacity-[0.35] cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+            className="flex items-center justify-center w-8 h-8 rounded-[3px] outline-none transition-all duration-200 ease disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-white disabled:border-[#E4E7EC] disabled:text-[#A0AAB8] enabled:bg-white enabled:border-[#E4E7EC] enabled:text-[#1C2A44] enabled:cursor-pointer enabled:hover:bg-[#F5F7FA] enabled:hover:border-[#C89B3C] enabled:hover:shadow-[0_2px_4px_rgba(15,27,46,0.05)]"
           >
             <ChevronLeft />
           </button>
@@ -101,7 +117,12 @@ export default function FormPage({
             type="button"
             onClick={onNext}
             aria-label={isLastStep ? 'Submit' : 'Next step'}
-            className={`h-[30px] rounded-[4px] border-none bg-gradient-to-br from-[#1C2A44] to-[#2a3f66] text-white flex items-center justify-center cursor-pointer font-['Outfit'] text-[0.85rem] font-[700] shadow-[0_4px_12px_rgba(28,42,68,0.25)] transition-all duration-200 gap-[6px] ${isLastStep ? 'min-w-auto px-[14px]' : 'min-w-[42px] px-0'}`}
+            className={`
+              flex items-center justify-center gap-1.5 h-8 rounded-[3px] border-none bg-[linear-gradient(135deg,#1C2A44_0%,#0F1B2E_100%)] text-white text-[0.85rem] font-semibold cursor-pointer outline-none transition-all duration-200 ease
+              shadow-[0_2px_6px_rgba(15,27,46,0.2),inset_0_1px_0_rgba(255,255,255,0.05)]
+              hover:shadow-[0_4px_12px_rgba(15,27,46,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-[1px]
+              ${isLastStep ? 'px-4 min-w-auto' : 'px-3 min-w-[48px]'}
+            `}
           >
             {isLastStep ? (nextLabel || 'Submit') : <ChevronRight />}
           </button>

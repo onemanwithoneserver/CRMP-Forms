@@ -17,88 +17,74 @@ export function PropertyCard({ label, icon: Icon, selected, compact, row, classN
   const { device } = useDevice()
   const isMobile = device === 'mobile'
 
+  // 1. SELECTED STATE (Premium layout with children support)
   if (selected) {
     return (
-      <div className={`w-full flex flex-col md:flex-row rounded-[4px] border border-[#C89B3C] bg-[#FFFBF0] shadow-[0_4px_24px_rgba(200,155,60,0.12)] overflow-hidden transition-all duration-500 scale-[1.01] ${className || ''}`}>
+      <div
+        className={`flex ${isMobile ? 'flex-col' : 'flex-row'} w-full rounded-[3px] border border-gold bg-white shadow-[0_4px_16px_rgba(15,27,46,0.08),0_2px_4px_rgba(200,155,60,0.05)] overflow-hidden transition-all duration-250 font-outfit ${className || ''}`}
+      >
         {/* Left Side: Property Identifier */}
         <div
-          className={`flex items-center md:flex-col md:justify-center relative cursor-pointer md:w-40 md:min-h-[140px] md:border-r md:border-[#C89B3C]/15 ${isMobile ? 'px-3 py-2.5' : 'px-4 py-6'}`}
           onClick={onClick}
+          className={`flex items-center ${isMobile ? 'flex-row' : 'flex-col'} ${isMobile ? 'justify-start' : 'justify-center'} relative cursor-pointer ${isMobile ? 'w-full min-h-0' : 'w-[150px] min-h-[130px]'} ${isMobile && children ? 'border-b border-border' : ''} ${!isMobile ? 'border-r border-border' : ''} ${isMobile ? 'px-[12px] py-[10px]' : 'p-[20px]'} bg-[#F5F7FA] flex-shrink-0`}
         >
-          <div className="flex items-center md:flex-col gap-3 md:gap-2 text-center">
-            <div className={`rounded-[4px] bg-[#C89B3C]/15 backdrop-blur-md border border-[#C89B3C]/20 flex items-center justify-center shadow-[0_2px_8px_rgba(200,155,60,0.1)] ${isMobile ? 'w-8 h-8' : 'w-14 h-14'}`}>
-              <Icon size={isMobile ? 16 : 28} className="text-[#C89B3C]" />
+          <div className={`flex items-center ${isMobile ? 'flex-row gap-[10px]' : 'flex-col gap-[12px]'}`}>
+            <div
+              className={`rounded-[3px] bg-gradient-to-br from-navy to-navy-dark border border-gold shadow-[0_2px_6px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center justify-center ${isMobile ? 'w-[32px] h-[32px]' : 'w-[48px] h-[48px]'}`}
+            >
+              <Icon size={isMobile ? 16 : 24} color="#E6C36A" />
             </div>
-            <span className={`font-bold text-[#1C2A44] font-['Outfit'] leading-tight tracking-tight ${isMobile ? 'text-[14px]' : 'text-[18px]'}`}>
+            <span className={`font-semibold text-navy ${isMobile ? 'text-[0.85rem]' : 'text-[0.95rem]'} text-center leading-[1.1] ${isMobile ? 'pr-[24px]' : ''}`}>
               {label}
             </span>
           </div>
-          <div className={`absolute ${isMobile ? 'top-2.5 right-3' : 'top-3 right-4'}`}>
-            <CheckCircle2 size={isMobile ? 16 : 18} className="text-[#C89B3C] fill-[#C89B3C] stroke-[#FFFBF0]" />
+          <div className={`absolute ${isMobile ? 'top-[10px] right-[12px]' : 'top-[12px] right-[12px]'}`}>
+            <CheckCircle2 size={isMobile ? 16 : 18} color="#C89B3C" fill="#FFFFFF" />
           </div>
         </div>
-
         {/* Right Side / Bottom: Sub-options (Children) */}
         {children && (
-          <div className={`flex-1 bg-white/40 backdrop-blur-sm self-stretch flex items-center ${isMobile ? 'border-t border-[#C89B3C]/15 px-3 pb-4 pt-3' : 'px-6 py-4'}`}>
-            <div className="w-full">
-              {children}
-            </div>
+          <div className={`flex-1 ${isMobile ? 'p-[12px]' : 'p-[16px]'} bg-white`}>
+            {children}
           </div>
         )}
       </div>
     )
   }
 
+  // 2. ROW STATE (Horizontal List Layout)
   if (row) {
     return (
       <button
         type="button"
         onClick={onClick}
-        className={`
-          w-full flex items-center gap-3 px-3 py-2.5 rounded-[4px] border border-[#E2E8F0] bg-white
-          hover:border-[#C89B3C]/40 hover:bg-[#FFFBF0]/40 hover:scale-[1.02] hover:shadow-md
-          shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 cursor-pointer
-          ${className || ''}
-        `}
+        className={`group flex items-center gap-[10px] w-full px-[10px] py-[8px] rounded-[3px] border border-border bg-[#F5F7FA] hover:border-gold hover:bg-white hover:shadow-[0_2px_8px_rgba(15,27,46,0.08)] transition-all duration-250 cursor-pointer outline-none font-outfit ${className || ''}`}
       >
-        <div className="w-8 h-8 rounded-[4px] bg-[#1C2A44]/5 border border-[#1C2A44]/10 shadow-sm flex items-center justify-center flex-shrink-0">
-          <Icon size={16} className="text-[#445069]" />
+        <div className="w-[28px] h-[28px] rounded-[3px] bg-white border border-border group-hover:bg-[#F5F7FA] group-hover:border-gold flex items-center justify-center flex-shrink-0 transition-all duration-250">
+          {/* By passing text color via className, Lucide uses it as currentColor */}
+          <Icon size={14} className="text-[#667085] group-hover:text-[#C89B3C] transition-colors duration-250 ease-in-out" />
         </div>
-        <span className="font-bold text-[#445069] font-['Outfit'] text-[13px] text-left flex-1 leading-tight tracking-tight">
+        <span className="font-medium text-text-tertiary group-hover:font-semibold group-hover:text-navy text-[0.85rem] text-left flex-1 transition-all duration-250">
           {label}
         </span>
       </button>
     )
   }
 
+  // 3. DEFAULT STATE (Grid / Vertical Block Layout)
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`
-       w-auto h-auto flex flex-col items-center justify-center transition-all duration-300 cursor-pointer rounded-[4px] border border-[#E2E8F0] bg-white 
-       hover:border-[#C89B3C]/40 hover:shadow-xl hover:scale-[1.05] relative z-10
-        ${compact
-          ? 'gap-1 py-1.5 px-0.5'
-          : (isMobile ? 'gap-2 py-3 px-2' : 'gap-3 py-6 px-4 min-w-auto')}
-        ${className || ''}
-      `}
+      className={`group flex flex-col items-center justify-center w-full ${compact ? 'px-[4px] py-[6px] gap-[4px]' : isMobile ? 'px-[8px] py-[10px] gap-[6px]' : 'px-[12px] py-[16px] gap-[10px]'} rounded-[3px] border border-border bg-[#F5F7FA] hover:border-gold hover:bg-white hover:shadow-[0_4px_12px_rgba(15,27,46,0.08)] hover:-translate-y-[1px] transition-all duration-250 cursor-pointer outline-none font-outfit`}
     >
-      <div className={`
-        rounded-[4px] bg-[#1C2A44]/5 border border-[#1C2A44]/10 shadow-sm flex items-center justify-center transition-colors
-        ${compact
-          ? 'w-7 h-7 mb-0'
-          : (isMobile ? 'w-7 h-7 mb-0.5' : 'w-11 h-11 mb-1.5')}
-      `}>
-        <Icon size={compact ? 14 : (isMobile ? 16 : 22)} className="text-[#445069]" />
+      <div className={`${compact ? 'w-[24px] h-[24px]' : isMobile ? 'w-[28px] h-[28px]' : 'w-[40px] h-[40px]'} rounded-[3px] bg-white border border-border group-hover:bg-gradient-to-br group-hover:from-navy group-hover:to-navy-dark group-hover:border-gold group-hover:shadow-[0_2px_4px_rgba(15,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center justify-center transition-all duration-250`}>
+        <Icon
+          size={compact ? 12 : isMobile ? 14 : 18}
+          className="text-[#667085] group-hover:text-[#E6C36A] transition-colors duration-250 ease-in-out"
+        />
       </div>
-      <span className={`
-        font-bold text-[#445069] font-['Outfit'] text-center w-full px-0.5 break-words tracking-tight
-        ${compact
-          ? (isMobile ? 'text-[10px] leading-[1.1] line-clamp-2' : 'text-[11px] leading-[1.1] line-clamp-2')
-          : (isMobile ? 'text-[12px] leading-[1.2]' : 'text-[15px] leading-[1.2]')}
-      `}>
+      <span className={`font-medium text-text-tertiary group-hover:font-semibold group-hover:text-navy ${compact ? isMobile ? 'text-[0.65rem]' : 'text-[0.7rem]' : isMobile ? 'text-[0.75rem]' : 'text-[0.85rem]'} text-center leading-[1.15] break-words tracking-[-0.01em] transition-colors duration-250`}>
         {label === 'Entire Building' && compact ? 'Building' : label}
       </span>
     </button>

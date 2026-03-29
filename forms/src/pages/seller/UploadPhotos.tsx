@@ -4,123 +4,88 @@ import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
 import { useDevice } from '../../context/DeviceContext'
 import UploadPhotosMobile from './UploadPhotosMobile'
-import { Library, Camera, Plus, Upload } from 'lucide-react'
-
-import iconOffice from '../../assets/Select Property Type/Office Space.svg'
-import iconRetail from '../../assets/Select Property Type/Rental  Commercial Space.svg'
-import iconHostel from '../../assets/Select Property Type/Hostel.svg'
-import iconLand from '../../assets/Select Property Type/Land.svg'
-import iconCoworking from '../../assets/Select Property Type/Co-Working.svg'
-
-const PROPERTY_TYPE_OPTIONS = [
-  { value: 'office', label: 'Office Space', icon: iconOffice },
-  { value: 'retail', label: 'Rental / Commercial Space', icon: iconRetail },
-  { value: 'hostel', label: 'Hostel / PG', icon: iconHostel },
-  { value: 'land', label: 'Land', icon: iconLand },
-  { value: 'coworking', label: 'Co-Working', icon: iconCoworking },
-  { value: 'entire_building', label: 'Entire Building', icon: iconOffice },
-]
-
-
+import { Library, Camera, Plus, Upload, Image as ImageIcon, Video, FileText } from 'lucide-react'
 
 interface UploadZoneProps {
   label: string
   description: string
   accept: string
   note?: string
+  icon?: React.ReactNode
+  isMultiple?: boolean
 }
 
-function UploadTile({ accept, index }: { accept: string; index: number }) {
+function UploadTile({ accept, index, type = 'image' }: { accept: string; index: number, type?: 'image' | 'video' | 'document' }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const isMain = index === 0
+
   return (
     <div
       onClick={() => inputRef.current?.click()}
-      style={{
-        border: `1.5px dashed ${isMain ? 'var(--accent-gold)' : 'var(--border)'}`,
-        borderRadius: '6px',
-        height: '38px',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '6px',
-        cursor: 'pointer',
-        background: isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)',
-        transition: 'border-color 200ms ease, background 200ms ease',
-        position: 'relative',
-      }}
-      onMouseEnter={e => {
-        ; (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--accent-gold)'
-          ; (e.currentTarget as HTMLDivElement).style.background = 'rgba(200,155,60,0.06)'
-      }}
-      onMouseLeave={e => {
-        ; (e.currentTarget as HTMLDivElement).style.borderColor = isMain ? 'var(--accent-gold)' : 'var(--border)'
-          ; (e.currentTarget as HTMLDivElement).style.background = isMain ? 'rgba(200,155,60,0.04)' : 'var(--surface-lowest)'
-      }}
+      className={`
+        group relative flex flex-row items-center justify-center gap-2 h-[42px] rounded-[3px] cursor-pointer transition-all duration-200 ease
+        ${isMain 
+          ? 'bg-[rgba(200,155,60,0.05)] border border-dashed border-[#C89B3C]' 
+          : 'bg-[#F5F7FA] border border-dashed border-[#E4E7EC] hover:bg-white hover:border-[#C89B3C] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)]'
+        }
+      `}
     >
-      <input ref={inputRef} type="file" accept={accept} style={{ display: 'none' }} />
-      {/* Camera / image icon */}
-      <span className="flex items-center justify-center" style={{ filter: isMain ? 'grayscale(0) brightness(1.1)' : 'grayscale(100%) opacity(50%)' }}>
-        <Camera size={18} color={isMain ? '#C89B3C' : '#8993a4'} />
+      <input ref={inputRef} type="file" accept={accept} className="hidden" />
+      <span className={`flex items-center justify-center transition-colors duration-200 ease ${isMain ? 'text-[#C89B3C]' : 'text-[#667085] group-hover:text-[#C89B3C]'}`}>
+        {type === 'image' && <Camera size={16} strokeWidth={isMain ? 2.5 : 2} />}
+        {type === 'video' && <Video size={16} strokeWidth={isMain ? 2.5 : 2} />}
+        {type === 'document' && <FileText size={16} strokeWidth={isMain ? 2.5 : 2} />}
       </span>
-      <span style={{
-        fontSize: '0.75rem',
-        fontWeight: isMain ? 700 : 500,
-        color: isMain ? 'var(--accent-gold)' : 'var(--text-tertiary)',
-        letterSpacing: '0.01em',
-      }}>
-        {isMain ? 'Main Photo' : `Photo ${index + 1}`}
+      <span className={`
+        text-[0.8rem] tracking-[-0.01em] transition-colors duration-200 ease
+        ${isMain ? 'font-bold text-[#C89B3C]' : 'font-medium text-[#667085] group-hover:text-[#1C2A44]'}
+      `}>
+        {isMain ? 'Main Cover' : `Slot ${index + 1}`}
       </span>
     </div>
   )
 }
 
-function UploadZone({ label, description, accept, note }: UploadZoneProps) {
+function UploadZone({ label, description, accept, note, icon, isMultiple = true }: UploadZoneProps) {
   const addMoreRef = useRef<HTMLInputElement>(null)
 
-  return (
-    <div className="flex flex-col gap-1.5 w-full">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
+  const type = accept.includes('video') ? 'video' : accept.includes('pdf') ? 'document' : 'image'
 
-      {/* 1×2 grid of upload tiles (responsive) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-        {[0, 1].map(i => (
-          <UploadTile key={i} accept={accept} index={i} />
-        ))}
+  return (
+    <div className="flex flex-col gap-2 w-full font-['Outfit',sans-serif]">
+      <div className="flex items-center gap-2">
+        {icon && <span className="text-[#C89B3C] flex">{icon}</span>}
+        <label className="text-[0.85rem] font-semibold text-[#1C2A44]">{label}</label>
       </div>
 
-      {/* Add more button */}
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3">
+        {isMultiple ? (
+          <>
+            <UploadTile accept={accept} index={0} type={type} />
+            <UploadTile accept={accept} index={1} type={type} />
+          </>
+        ) : (
+          <div className="col-[1/-1]">
+             <UploadTile accept={accept} index={0} type={type} />
+          </div>
+        )}
+      </div>
+
       <button
         type="button"
         onClick={() => addMoreRef.current?.click()}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-          height: '38px', borderRadius: '6px',
-          border: '1.5px dashed var(--border)',
-          background: 'transparent',
-          color: 'var(--text-secondary)',
-          fontSize: '0.8rem', fontWeight: 600,
-          cursor: 'pointer', fontFamily: "'Outfit', sans-serif",
-          transition: 'border-color 200ms ease, color 200ms ease',
-          width: '100%',
-        }}
-        onMouseEnter={e => {
-          ; (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--accent-gold)'
-            ; (e.currentTarget as HTMLButtonElement).style.color = 'var(--accent-gold)'
-        }}
-        onMouseLeave={e => {
-          ; (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'
-            ; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'
-        }}
+        className="group flex items-center justify-center gap-2 w-full h-[42px] rounded-[3px] bg-transparent border border-dashed border-[#E4E7EC] text-[#667085] text-[0.8rem] font-semibold cursor-pointer transition-all duration-200 ease outline-none hover:bg-white hover:border-[#C89B3C] hover:text-[#1C2A44] hover:shadow-[0_2px_8px_rgba(15,27,46,0.05)]"
       >
-        <input ref={addMoreRef} type="file" accept={accept} multiple style={{ display: 'none' }} />
-        <Plus size={16} />
+        <input ref={addMoreRef} type="file" accept={accept} multiple className="hidden" />
+        <Plus size={16} strokeWidth={2.5} className="text-[#667085] transition-colors duration-200 ease group-hover:text-[#C89B3C]" />
         {description}
       </button>
 
       {note && (
-        <p style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', textAlign: 'center', marginTop: '-4px' }}>{note}</p>
+        <p className="flex items-center gap-1 mt-1 mb-0 text-[0.75rem] font-medium text-[#A0AAB8]">
+          <span className="inline-block w-1 h-1 rounded-full bg-[#C89B3C]" />
+          {note}
+        </p>
       )}
     </div>
   )
@@ -151,43 +116,63 @@ export default function UploadPhotos() {
   }
 
   return (
-    <FormPage title="Property Gallery" icon={<Library size={22} />} onBack={back} onNext={handleNext}>
-      <div className="flex flex-col gap-[2px] font-['Outfit'] pb-2">
+    <FormPage title="Property Gallery" icon={<Library size={20} color="#E6C36A" />} onBack={back} onNext={handleNext}>
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
         
-        {/* Main Header: Photos, Videos & Plans */}
-        <SectionCard title="Photos, Videos & Plans" icon={<Upload size={18} />}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <SectionCard title="Media & Documentation" icon={<Upload size={14} />}>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
+            
             {/* IMAGES */}
-            <UploadZone
-              label="Upload Image (Description)"
-              description="Drag & drop photos here"
-              accept="image/jpeg,image/png,image/webp"
-              note="JPG, PNG, WEBP — Max 15 images"
-            />
+            <div className="p-4 bg-white border border-[#E4E7EC] rounded shadow-[0_2px_8px_rgba(15,27,46,0.02)]">
+              <UploadZone
+                label="Property Photos"
+                description="Upload additional photos"
+                accept="image/jpeg,image/png,image/webp"
+                note="JPG, PNG, WEBP (Max 15 images)"
+                icon={<ImageIcon size={16} />}
+              />
+            </div>
 
             {/* VIDEO */}
-            <UploadZone
-              label="Upload Video (Description)"
-              description="Drag & drop walkthrough video here"
-              accept="video/mp4,video/webm,video/quicktime"
-              note="MP4, MOV, WebM — Max 1 video, up to 200 MB"
-            />
+            <div className="p-4 bg-white border border-[#E4E7EC] rounded shadow-[0_2px_8px_rgba(15,27,46,0.02)]">
+              <UploadZone
+                label="Walkthrough Video"
+                description="Upload video tour"
+                accept="video/mp4,video/webm,video/quicktime"
+                note="MP4, MOV, WebM (Max 1 video, 200MB)"
+                icon={<Video size={16} />}
+                isMultiple={false}
+              />
+            </div>
 
             {/* FLOOR PLAN */}
-            <UploadZone
-              label="Floor Plan"
-              description="Drag & drop floor plan here"
-              accept="image/jpeg,image/png,application/pdf"
-              note="JPG, PNG, PDF — architectural or space layout"
-            />
+            {showFloorPlan && (
+              <div className="p-4 bg-white border border-[#E4E7EC] rounded shadow-[0_2px_8px_rgba(15,27,46,0.02)]">
+                <UploadZone
+                  label="Floor Plan"
+                  description="Upload architectural plans"
+                  accept="image/jpeg,image/png,application/pdf"
+                  note="JPG, PNG, PDF (High resolution preferred)"
+                  icon={<FileText size={16} />}
+                  isMultiple={false}
+                />
+              </div>
+            )}
 
             {/* LAYOUT PLAN */}
-            <UploadZone
-              label="Layout Plan"
-              description="Drag & drop layout / site plan here"
-              accept="image/jpeg,image/png,application/pdf"
-              note="JPG, PNG, PDF — demarcation or survey plan"
-            />
+            {showLayoutPlan && (
+              <div className="p-4 bg-white border border-[#E4E7EC] rounded shadow-[0_2px_8px_rgba(15,27,46,0.02)]">
+                <UploadZone
+                  label="Site / Layout Plan"
+                  description="Upload demarcation or survey plan"
+                  accept="image/jpeg,image/png,application/pdf"
+                  note="JPG, PNG, PDF (Official documents preferred)"
+                  icon={<FileText size={16} />}
+                  isMultiple={false}
+                />
+              </div>
+            )}
+
           </div>
         </SectionCard>
 

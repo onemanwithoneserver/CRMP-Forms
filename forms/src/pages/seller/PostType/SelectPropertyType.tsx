@@ -16,22 +16,23 @@ export default function SelectPropertyType({ sectionRef }: SelectPropertyTypePro
   const isMobile = device === 'mobile'
 
   return (
-    <div ref={sectionRef} className="relative -mt-6 md:-mt-8 px-0 md:px-4 max-w-4xl mx-auto w-full transition-all duration-500">
-      <div className="bg-white md:rounded-[4px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] border-y md:border border-[var(--border-light)] overflow-hidden">
-        {/* Premium Gradient accent bar */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-[#1C2A44] via-[#3b5998] to-[#C89B3C] shadow-sm" />
-
-        <div className="p-4">
-          {/* Section heading */}
-          <div className="flex items-center gap-3 mb-5 md:mb-6">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-[4px] bg-[#1C2A44]/5 backdrop-blur-md border border-[#1C2A44]/15 flex items-center justify-center shadow-sm">
-              <LayoutGrid size={18} className="text-[#1C2A44]" />
+    <div
+      ref={sectionRef}
+      className={`relative max-w-[896px] mx-auto w-full transition-all duration-[500ms] ease-[cubic-bezier(0.4,0,0.2,1)] font-outfit z-20 ${isMobile ? '-mt-[24px] px-0' : '-mt-[32px] px-[16px]'}`}
+    >
+      <div
+        className={`bg-white shadow-[0_8px_32px_rgba(15,27,46,0.08),0_2px_8px_rgba(15,27,46,0.04)] overflow-hidden ${isMobile ? 'rounded-none border-y border-x-0 border-border' : 'rounded-[4px] border border-border'}`}
+      >
+        <div className="h-[4px] w-full bg-gradient-to-r from-navy to-gold" />
+        <div className={isMobile ? 'p-[16px]' : 'py-[8px] px-[16px]'}>
+          <div className={`flex items-center gap-[12px] mb-[16px]`}>
+            <div className={`rounded-[3px] bg-[#F5F7FA] border border-border flex items-center justify-center shadow-[inset_0_1px_0_#FFFFFF,0_1px_2px_rgba(15,27,46,0.05)] ${isMobile ? 'w-8 h-8' : 'w-9 h-9'}`}>
+              <LayoutGrid size={isMobile ? 16 : 18} color="#1C2A44" />
             </div>
-            <h2 className="text-[1.1rem] font-bold text-[#1C2A44] font-['Outfit'] tracking-tight">
+            <h2 className={`font-bold text-navy m-0 tracking-[-0.01em] ${isMobile ? 'text-[1.05rem]' : 'text-[1.15rem]'}`}>
               Select Property Type
             </h2>
           </div>
-
           {isMobile ? (
             <SelectPropertyTypeMobile propertyType={propertyType} />
           ) : (

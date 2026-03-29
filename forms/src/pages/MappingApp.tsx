@@ -23,7 +23,6 @@ import UserLocationPref from './user/LocationPref'
 
 const COMPONENT_MAP: Record<string, React.ComponentType> = {
   'post-type': PostType,
-
   'property-type': PropertyType,
   'property-details': PropertyDetails,
   'building-info': BuildingInfo,
@@ -34,11 +33,9 @@ const COMPONENT_MAP: Record<string, React.ComponentType> = {
   'business-info': BusinessInfo,
   'transaction-details': TransactionDetails,
   'upload-photos': UploadPhotos,
-
   'looking-for': UserLookingFor,
   'budget-area': UserBudgetArea,
   'location-pref': UserLocationPref,
-
   'review': Review,
 }
 
@@ -55,20 +52,33 @@ export default function MappingApp() {
   const StepComponent = COMPONENT_MAP[currentStepData.key]
 
   if (!StepComponent) {
-    return <div style={{ padding: 40, textAlign: 'center' }}>Component not bound: {currentStepData.key}</div>
+    return (
+      <div className="flex items-center justify-center h-screen w-full bg-[#F5F7FA] p-10 text-center font-['Outfit',sans-serif] text-[#667085]">
+        <div className="bg-white p-6 rounded border border-[#E4E7EC] shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+          <strong className="font-bold">Configuration Error:</strong> Component not bound for key:{' '}
+          <code className="text-[#C89B3C] font-mono">{currentStepData.key}</code>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden bg-[#F5F7FA] font-['Outfit',sans-serif]">
+      {/* Premium Step Navigation Bar */}
       {!state.designStepOverride && (
-        <StepHeader
-          steps={steps}
-          currentStep={state.step}
-          onStepClick={goToStep}
-        />
+        <div className="z-50 bg-white py-3 px-4 border-b border-[#E4E7EC] shadow-[0_2px_8px_rgba(15,27,46,0.03)]">
+          <div className="max-w-[896px] mx-auto">
+            <StepHeader
+              steps={steps}
+              currentStep={state.step}
+              onStepClick={goToStep}
+            />
+          </div>
+        </div>
       )}
 
-      <div className="flex-1 overflow-hidden">
+      {/* Main Content Area */}
+      <div className="relative flex-1 overflow-hidden">
         <StepComponent key={state.step} />
       </div>
     </div>

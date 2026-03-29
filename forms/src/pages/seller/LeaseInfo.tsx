@@ -4,15 +4,10 @@ import { useDevice } from '../../context/DeviceContext'
 import FormPage from '../../components/layout/FormPage'
 import SectionCard from '../../components/layout/SectionCard'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
-import TextField from '../../components/inputs/TextField'
 import { Dropdown } from '../../components/inputs/Dropdown'
 import { Handshake, Coins } from 'lucide-react'
 
-// ─── constants ────────────────────────────────────────────
-const LEASE_SUB_TYPES = [
-  { label: 'Full Lease', value: 'Full Lease' },
-  { label: 'Sub Lease', value: 'Sub Lease' },
-]
+const LEASE_SUB_TYPES = ['Full Lease', 'Sub Lease']
 
 const RENT_PRICING_MODES = [
   { label: 'Per Sq Ft / Sq.yd', value: 'Per Sq Ft' },
@@ -25,7 +20,80 @@ const INDUSTRY_CATEGORIES = [
   'E-commerce', 'Real Estate', 'Telecom', 'Media', 'Others',
 ]
 
-// ─── main component ───────────────────────────────────────
+function NumericField({
+  label,
+  value,
+  onChange,
+  placeholder = '0',
+  prefix,
+  suffix,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  prefix?: string
+  suffix?: string
+}) {
+  return (
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      {label && <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>}
+      <div className="relative w-full">
+        {prefix && (
+          <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.85rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
+            {prefix}
+          </span>
+        )}
+        <input
+          type="number"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={`
+            peer w-full h-[34px] py-0 text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] 
+            border border-[#E4E7EC] rounded-[3px] outline-none box-border
+            transition-all duration-250 ease-in-out
+            hover:bg-white hover:border-[#E6C36A] 
+            focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]
+            ${prefix ? 'pl-[24px]' : 'pl-[10px]'}
+            ${suffix ? 'pr-[30px]' : 'pr-[10px]'}
+          `}
+        />
+        {suffix && (
+          <span className="absolute right-[10px] top-1/2 -translate-y-1/2 text-[#667085] text-[0.8rem] font-semibold pointer-events-none z-10 transition-colors duration-250 ease peer-focus:text-[#C89B3C]">
+            {suffix}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function StringField({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+}) {
+  return (
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full h-[34px] px-[10px] text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded-[3px] outline-none box-border transition-all duration-250 ease-in-out hover:bg-white hover:border-[#E6C36A] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
+      />
+    </div>
+  )
+}
+
 export default function LeaseInfo() {
   const { state, dispatch, next, back } = useForm()
   const { device } = useDevice()
@@ -38,227 +106,121 @@ export default function LeaseInfo() {
 
   const isSubLease = d.leaseSubType === 'Sub Lease'
 
-  const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0', prefix?: string) => (
-    <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="relative group">
-        {prefix && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[0.8rem] font-medium pointer-events-none z-10">
-            {prefix}
-          </span>
-        )}
-        <input
-          type="number"
-          className={`form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 ${prefix ? 'pl-6' : 'px-3'} pr-3 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all`}
-          value={d[field] as string}
-          onChange={e => onUpdate({ [field]: e.target.value })}
-          placeholder={placeholder}
-        />
-      </div>
-    </div>
-  )
-
   const renderNumericWithUnit = (label: string, valField: keyof typeof state.formData, unitField: keyof typeof state.formData) => (
-    <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="flex items-center gap-1.5">
-        <input
-          type="number"
-          className="form-input bg-white w-20 border-[#e2e6ec] rounded-[6px] py-1.5 px-3 text-sm text-[#1C2A44] h-[34px] focus:outline-none focus:border-[#3525cd] transition-all"
-          value={d[valField] as string}
-          onChange={e => onUpdate({ [valField]: e.target.value })}
-          placeholder="0"
-        />
-        <div className="flex-1 min-w-[100px]">
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <NumericField 
+            label="" 
+            value={d[valField] as string || ''} 
+            onChange={v => onUpdate({ [valField]: v })} 
+            placeholder="0" 
+          />
+        </div>
+        <div className="w-[110px]">
           <Dropdown
+            label=""
             value={(d[unitField] as string) || 'Months'}
             options={['Months', 'Years']}
             onChange={v => onUpdate({ [unitField]: v })}
-            variant="compact"
           />
         </div>
       </div>
     </div>
   )
 
-  const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => (
-    <div className="flex items-center justify-between w-full py-1.5 px-0.5">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-      <div className="w-[110px]">
-        <SegmentedControl
-          options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
-          value={d[field] as string || 'No'}
-          onChange={v => onUpdate({ [field]: v })}
-        />
-      </div>
-    </div>
-  )
-
   return (
-    <FormPage title="Lease Information" icon={<Handshake size={22} />} onBack={back} onNext={next}>
-      <div className={`flex flex-col font-['Outfit'] pb-4 gap-[2px]`}>
+    <FormPage title="Lease Information" icon={<Handshake size={20} color="#E6C36A" />} onBack={back} onNext={next}>
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
 
-        {/* SECTION 1: Lease Type & Pricing */}
-        <SectionCard title="Lease Type & Pricing" icon={<Handshake size={18} />}>
-
-          {isMobile ? (
-            <>
-              <div className="w-1/2">
-                <Dropdown
-                  label="Lease Type"
-                  value={d.leaseSubType || 'Full Lease'}
-                  options={LEASE_SUB_TYPES.map(t => t.value)}
-                  onChange={v => onUpdate({ leaseSubType: v })}
-                  placeholder="Select type"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Monthly Lease / Rent Type</label>
+        <SectionCard title="Lease Type & Pricing" icon={<Handshake size={14} />}>
+          <div className="flex flex-col gap-5">
+            
+            <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-1' : 'grid-cols-[1fr_2fr]'}`}>
+              <Dropdown
+                label="Lease Type"
+                value={d.leaseSubType || 'Full Lease'}
+                options={LEASE_SUB_TYPES}
+                onChange={v => onUpdate({ leaseSubType: v })}
+                placeholder="Select type"
+              />
+              <div className="flex flex-col gap-2">
+                <label className="text-[0.8rem] font-semibold text-[#1C2A44]">Monthly Lease / Rent Type</label>
                 <SegmentedControl
                   options={RENT_PRICING_MODES}
                   value={d.rentPricingMode || 'Per Sq Ft'}
                   onChange={v => onUpdate({ rentPricingMode: v })}
                 />
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {renderNumeric(
-                  d.rentPricingMode === 'Fixed Amount' ? 'Monthly Rent Value' : 'Rent Per Sq Ft',
-                  d.rentPricingMode === 'Fixed Amount' ? 'monthlyRent' : 'pricePerSqFt',
-                  'e.g. ₹ 150000',
-                )}
-                {renderNumeric('Advance Deposit', 'advanceDeposit', 'e.g. ₹ 300000')}
-              </div>
+            <div className="h-px w-full bg-[#E4E7EC]" />
 
-              <div className="w-1/2">
-                {renderNumeric('Maintenance (If any)', 'maintenanceCharges', 'e.g. ₹ 10000')}
-              </div>
-            </>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-              <div className="lg:col-span-1">
-                <Dropdown
-                  label="Lease Type"
-                  value={d.leaseSubType || 'Full Lease'}
-                  options={LEASE_SUB_TYPES.map(t => t.value)}
-                  onChange={v => onUpdate({ leaseSubType: v })}
-                  placeholder="Select type"
+            <div className={`grid gap-4 ${isMobile ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              <NumericField
+                label={d.rentPricingMode === 'Fixed Amount' ? 'Monthly Lease Value' : 'Rent Per Sq Ft / Sq.yd'}
+                value={d.rentPricingMode === 'Fixed Amount' ? (d.monthlyRent as string) : (d.pricePerSqFt as string)}
+                onChange={v => onUpdate({ [d.rentPricingMode === 'Fixed Amount' ? 'monthlyRent' : 'pricePerSqFt']: v })}
+                placeholder="0"
+                prefix="₹"
+              />
+              <NumericField
+                label="Advance Deposit"
+                value={d.advanceDeposit as string}
+                onChange={v => onUpdate({ advanceDeposit: v })}
+                placeholder="0"
+                prefix="₹"
+              />
+              <div className={isMobile ? 'col-span-2' : ''}>
+                <NumericField
+                  label="Maintenance (If any)"
+                  value={d.maintenanceCharges as string}
+                  onChange={v => onUpdate({ maintenanceCharges: v })}
+                  placeholder="0"
+                  prefix="₹"
                 />
               </div>
-
-              <div className="sm:col-span-2 lg:col-span-2 max-w-md">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Monthly Lease / Rent Type</label>
-                  <div className="w-full">
-                    <SegmentedControl
-                      options={RENT_PRICING_MODES}
-                      value={d.rentPricingMode || 'Per Sq Ft'}
-                      onChange={v => onUpdate({ rentPricingMode: v })}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="hidden lg:block"></div>
-
-              {renderNumeric(
-                d.rentPricingMode === 'Fixed Amount' ? 'Monthly Lease / Rent Value' : 'Rent Per Sq Ft / Sq.yd',
-                d.rentPricingMode === 'Fixed Amount' ? 'monthlyRent' : 'pricePerSqFt',
-                'e.g. ₹ 150000',
-              )}
-              {renderNumeric('Advance Deposit', 'advanceDeposit', 'e.g. ₹ 300000')}
-              {renderNumeric('Maintenance Charges (If any)', 'maintenanceCharges', 'e.g. ₹ 10000')}
-              <div className="hidden lg:block"></div>
             </div>
-          )}
+          </div>
         </SectionCard>
 
-        {/* SECTION 2: Financial & Terms */}
-        <SectionCard title="Financial & Terms" icon={<Coins size={18} />}>
-
-          {isMobile ? (
-            <>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col gap-1.5 w-full">
-                  <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none"
-                      value={d.rentEscalation}
-                      onChange={e => onUpdate({ rentEscalation: e.target.value })}
-                      placeholder="0"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">%</span>
-                  </div>
-                </div>
-                {renderNumericWithUnit('Escalation Every', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
+        <SectionCard title="Financial & Terms" icon={<Coins size={14} />}>
+          <div className="flex flex-col gap-5">
+            <div className={`grid gap-4 items-end ${isMobile ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              <NumericField
+                label="Rent Escalation"
+                value={d.rentEscalation as string}
+                onChange={v => onUpdate({ rentEscalation: v })}
+                placeholder="0"
+                suffix="%"
+              />
+              <div className={isMobile ? 'col-span-2' : ''}>
+                {renderNumericWithUnit('Escalation Cycle', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
               </div>
+            </div>
 
-              {isSubLease && (
-                <>
-                  <div className="w-1/2">
-                    <Dropdown
-                      label="Existing Tenant (Industry)"
-                      value={d.tenantIndustry}
-                      options={INDUSTRY_CATEGORIES}
-                      placeholder="Select industry"
-                      onChange={v => onUpdate({ tenantIndustry: v })}
-                    />
-                  </div>
-                  <TextField
-                    label="Remarks"
-                    value={d.subLeaseRemarks}
+            {isSubLease && (
+              <>
+                <div className="h-px w-full bg-[#E4E7EC]" />
+                <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-[1fr_2fr]'}`}>
+                  <Dropdown
+                    label="Existing Tenant (Industry)"
+                    value={d.tenantIndustry}
+                    options={INDUSTRY_CATEGORIES}
+                    placeholder="Select industry"
+                    onChange={v => onUpdate({ tenantIndustry: v })}
+                  />
+                  <StringField
+                    label="Sub-Lease Remarks"
+                    value={d.subLeaseRemarks as string}
                     onChange={v => onUpdate({ subLeaseRemarks: v })}
                     placeholder="Any additional details about the sub-lease arrangement"
                   />
-                </>
-              )}
-            </>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-              <div className="flex flex-col gap-1.5 w-full max-w-[220px]">
-                <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">Rent Escalation (%)</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    className="form-input bg-white w-full border-[#e2e6ec] rounded-[6px] py-1.5 px-3 pr-8 text-sm text-[#1C2A44] h-[34px] focus:outline-none"
-                    value={d.rentEscalation}
-                    onChange={e => onUpdate({ rentEscalation: e.target.value })}
-                    placeholder="0"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">%</span>
                 </div>
-              </div>
-
-              {renderNumericWithUnit('Rent Escalation Every', 'rentEscalationEvery', 'rentEscalationEveryUnit')}
-
-              <div className="hidden lg:block lg:col-span-2"></div>
-
-              {isSubLease && (
-                <>
-                  <div className="sm:col-span-2 lg:col-span-1">
-                    <Dropdown
-                      label="Existing Tenant (Industry)"
-                      value={d.tenantIndustry}
-                      options={INDUSTRY_CATEGORIES}
-                      placeholder="Select industry"
-                      onChange={v => onUpdate({ tenantIndustry: v })}
-                    />
-                  </div>
-                  <div className="sm:col-span-2 lg:col-span-2">
-                    <TextField
-                      label="Remarks"
-                      value={d.subLeaseRemarks}
-                      onChange={v => onUpdate({ subLeaseRemarks: v })}
-                      placeholder="Any additional details about the sub-lease arrangement"
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </SectionCard>
 
       </div>

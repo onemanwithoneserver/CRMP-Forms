@@ -1,16 +1,11 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 
 export type FormData = {
-  // Global
   postType: string
   postSubCategory: string
-
-  // Property / Building
   propertyType: string
   buildingSelection: string
   buildingName: string
-
-  // Location & Pricing
   country: string
   state: string
   city: string
@@ -40,8 +35,6 @@ export type FormData = {
   liftAvailable: boolean
   fireCompliant: boolean
   ownershipType: string
-
-  // Transaction Setup
   askingPriceTotal: string
   askingPriceMonthly: string
   propertyOwnership: string
@@ -62,17 +55,11 @@ export type FormData = {
   annualYield: string
   isPreLeased: string
   fractionalRemarks: string
-
-  // Unit Availability
   isImmediatelyAvailable: string
   tentativeMonth: string
   unitNo: string
   numberOfUnitsAvailable: string
-
-  // Uploads
   photosUploaded: boolean
-
-  // Unit Details
   totalBuiltUpArea: string
   numberOfRooms: string
   numberOfBeds: string
@@ -114,8 +101,6 @@ export type FormData = {
   pantryEquipment: boolean
   appliances: string[]
   appliancesOthers: string
-
-  // Facilities
   designatedParking: string
   noOfParkings: string
   visitorParking: string
@@ -124,8 +109,6 @@ export type FormData = {
   washrooms: string
   fireSprinklers: string
   fireExtinguishers: string
-
-  // Lease Information
   monthlyRent: string
   leaseSubType: string
   rentPricingMode: string
@@ -139,16 +122,12 @@ export type FormData = {
   lockInPeriod: string
   isFurnished: string
   powerBackup: string
-
-  // Business Information
   businessCategory: string
   monthlyRevenue: string
   monthlyExpenses: string
   occupancyRate: string
   yearsInOperation: string
   rentEscalation: string
-
-  // Tenant / Buyer Specific (User Flow)
   lookingFor: string[]
   budgetMin: string
   budgetMax: string
@@ -170,7 +149,6 @@ export const getDynamicSteps = (data: FormData) => {
     steps.push({ key: 'budget-area', label: 'Budget & Area' })
     steps.push({ key: 'location-pref', label: 'Location' })
   } else if (post) {
-    // Seller/Landlord flows
     steps.push({ key: 'unit-details', label: 'Unit details' })
     steps.push({ key: 'facilities', label: 'Facilities' })
     steps.push({ key: 'upload-photos', label: 'Property Gallery' })
@@ -183,13 +161,18 @@ export const getDynamicSteps = (data: FormData) => {
     } else {
       steps.push({ key: 'transaction-details', label: 'Transactional Details' })
     }
+  } else {
+    // Design-purpose default: show a full flow when postType isn't chosen yet
+    steps.push({ key: 'unit-details', label: 'Unit details' })
+    steps.push({ key: 'facilities', label: 'Facilities' })
+    steps.push({ key: 'upload-photos', label: 'Property Gallery' })
+    steps.push({ key: 'transaction-details', label: 'Transactional Details' })
   }
 
   steps.push({ key: 'review', label: 'Review' })
   return steps
 }
 
-/* ─── Options Data ─── */
 export const SELLER_POST_TYPES = [
   { value: 'Property Sale', label: 'Sell Property' },
   { value: 'Lease/Rent Property', label: 'Lease/Rent' },
@@ -244,7 +227,6 @@ export const USER_PROPERTY_TYPES = [
   { value: 'warehouse', label: 'Warehouse', icon: 'warehouse' },
 ] as const
 
-/* ─── State ─── */
 const initialFormData: FormData = {
   postType: '',
   postSubCategory: '',
@@ -280,14 +262,11 @@ const initialFormData: FormData = {
   liftAvailable: true,
   fireCompliant: true,
   ownershipType: 'Free Hold',
-
   isImmediatelyAvailable: 'Yes',
   tentativeMonth: '',
   unitNo: '',
   numberOfUnitsAvailable: '',
-
   photosUploaded: false,
-
   totalBuiltUpArea: '',
   numberOfRooms: '',
   numberOfBeds: '',
@@ -329,7 +308,6 @@ const initialFormData: FormData = {
   pantryEquipment: false,
   appliances: [],
   appliancesOthers: '',
-
   designatedParking: 'No',
   noOfParkings: '',
   visitorParking: 'No',
@@ -338,7 +316,6 @@ const initialFormData: FormData = {
   washrooms: 'No',
   fireSprinklers: 'No',
   fireExtinguishers: 'No',
-
   askingPriceTotal: '',
   askingPriceMonthly: '',
   propertyOwnership: '',
@@ -372,14 +349,12 @@ const initialFormData: FormData = {
   lockInPeriod: '',
   isFurnished: 'No',
   powerBackup: 'No',
-
   businessCategory: 'Hostel / PG',
   monthlyRevenue: '',
   monthlyExpenses: '',
   occupancyRate: '',
   yearsInOperation: '',
   rentEscalation: '',
-
   lookingFor: [],
   budgetMin: '',
   budgetMax: '',
@@ -446,7 +421,6 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-/* ─── Validation ─── */
 function validateStep(step: number, data: FormData): Record<string, string> {
   const errors: Record<string, string> = {}
 
@@ -456,10 +430,6 @@ function validateStep(step: number, data: FormData): Record<string, string> {
   if (currentStepKey === 'post-type') {
     if (!data.propertyType) {
       errors.propertyType = 'Please select a property type'
-    } else if (!data.postType) {
-      errors.postType = 'Please select what you want to do'
-    } else if (SELLER_SUB_CATEGORIES[data.postType] && !data.postSubCategory) {
-      errors.postType = 'Please select a sub-category to proceed'
     }
   }
 
@@ -479,7 +449,6 @@ function validateStep(step: number, data: FormData): Record<string, string> {
   return errors
 }
 
-/* ─── Context ─── */
 type ContextValue = {
   state: State
   dispatch: React.Dispatch<Action>
@@ -509,14 +478,16 @@ export function FormProvider({ children }: { children: ReactNode }) {
   const totalSteps = steps.length
 
   const next = () => {
+    // Validation temporarily disabled for design/demo purposes
+    /*
     const errors = validateStep(state.step, state.formData)
-
     if (Object.keys(errors).length > 0) {
       Object.entries(errors).forEach(([field, message]) => {
         dispatch({ type: 'setError', field, message })
       })
       return
     }
+    */
     dispatch({ type: 'next' })
   }
 

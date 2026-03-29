@@ -7,6 +7,32 @@ import { Dropdown } from '../../components/inputs/Dropdown'
 import SegmentedControl from '../../components/inputs/SegmentedControl'
 import { Settings, Car, Zap, Droplets, Flame } from 'lucide-react'
 
+// Sub-component to manage independent hover states for the numeric fields
+function NumericField({
+  label,
+  value,
+  onChange,
+  placeholder = '0',
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+}) {
+  return (
+    <div className="flex flex-col gap-1 w-full font-['Outfit',sans-serif]">
+      <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
+      <input
+        type="number"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full h-[34px] px-[10px] text-[0.85rem] font-medium text-[#1C2A44] bg-[#F5F7FA] border border-[#E4E7EC] rounded-[3px] outline-none box-border transition-all duration-250 ease-in-out hover:bg-white hover:border-[#E6C36A] focus:bg-white focus:border-[#C89B3C] focus:shadow-[0_2px_8px_rgba(15,27,46,0.08),0_0_0_3px_rgba(200,155,60,0.1)]"
+      />
+    </div>
+  )
+}
+
 export default function Facilities() {
   const { state, dispatch, next, back } = useForm()
   const { device } = useDevice()
@@ -35,22 +61,10 @@ export default function Facilities() {
     waterConnection: pType === 'land',
   }
 
-  const renderNumeric = (label: string, field: keyof typeof state.formData, placeholder = '0') => (
-    <div className="flex flex-col gap-1 w-full max-w-[200px]">
-      <label className="text-[0.78rem] font-semibold text-[#1C2A44] mb-0.5">{label}</label>
-      <input
-        type="number"
-        className="form-input bg-white w-full border border-[var(--border-light)] rounded-[4px] px-2 text-[12px] text-[var(--text)] transition-all h-[32px] focus:border-[var(--accent-gold)] focus:outline-none"
-        placeholder={placeholder}
-        value={d[field] as string}
-        onChange={e => onUpdate({ [field]: e.target.value })}
-      />
-    </div>
-  )
-
   const renderVerticalBoolean = (label: string, field: keyof typeof state.formData) => {
     const control = (
       <SegmentedControl
+        compact={!isMobile}
         options={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]}
         value={(d[field] as string) || 'No'}
         onChange={v => onUpdate({ [field]: v })}
@@ -59,34 +73,36 @@ export default function Facilities() {
 
     if (isMobile) {
       return (
-        <div className="flex items-center justify-between w-full py-1.5 px-0.5">
-          <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-          <div className="w-[110px]">{control}</div>
+        <div className="flex items-center justify-between w-full py-1.5 font-['Outfit',sans-serif]">
+          <label className="text-[0.85rem] font-semibold text-[#1C2A44]">{label}</label>
+          <div className="w-[120px]">{control}</div>
         </div>
       )
     }
 
     return (
-      <div className="flex flex-col gap-2 w-full py-1.5 px-0.5">
-        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5">{label}</label>
-        <div className="w-[110px]">{control}</div>
+      <div className="flex flex-col gap-2 w-full font-['Outfit',sans-serif]">
+        <label className="text-[0.8rem] font-semibold text-[#1C2A44]">{label}</label>
+        <div>{control}</div>
       </div>
     )
   }
 
   return (
-    <FormPage title="Facilities" icon={<Settings size={22} />} onBack={back} onNext={next}>
-      <div className={`flex flex-col font-['Outfit'] pb-2 gap-[2px]`}>
+    <FormPage title="Facilities" icon={<Settings size={20} color="#E6C36A" />} onBack={back} onNext={next}>
+      <div className="max-w-[896px] mx-auto flex flex-col  font-['Outfit',sans-serif]">
 
         {/* SECTION: Facilities - Parking */}
         {show.designatedParking && (
-          <SectionCard title="Facilities - Parking" icon={<Car size={18} />}>
+          <SectionCard title="Parking Details" icon={<Car size={14} />}>
             {isMobile ? (
-              <>
-                {/* Mobile: boolean full-width, then paired 2-col row */}
+              <div className="flex flex-col gap-3">
                 {renderVerticalBoolean('Designated parking', 'designatedParking')}
-                <div className="grid grid-cols-2 gap-2">
-                  {renderNumeric('No. of parkings', 'noOfParkings')}
+                
+                <div className="h-px w-full bg-[#E4E7EC]" />
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <NumericField label="No. of parkings" value={d.noOfParkings} onChange={v => onUpdate({ noOfParkings: v })} />
                   <Dropdown
                     label="Visitor parking"
                     value={d.visitorParking}
@@ -95,14 +111,11 @@ export default function Facilities() {
                     onChange={v => onUpdate({ visitorParking: v })}
                   />
                 </div>
-              </>
+              </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 {renderVerticalBoolean('Designated parking', 'designatedParking')}
-                <div className="max-w-[140px]">
-                  {renderNumeric('No. of parkings', 'noOfParkings')}
-                </div>
-              <div className="max-w-[200px]">
+                <NumericField label="No. of parkings" value={d.noOfParkings} onChange={v => onUpdate({ noOfParkings: v })} />
                 <Dropdown
                   label="Visitor parking"
                   value={d.visitorParking}
@@ -111,19 +124,20 @@ export default function Facilities() {
                   onChange={v => onUpdate({ visitorParking: v })}
                 />
               </div>
-            </div>
             )}
           </SectionCard>
         )}
 
         {/* SECTION: Facilities - Power */}
-        <SectionCard title="Facilities - Power" icon={<Zap size={18} />}>
+        <SectionCard title="Power & Electrical" icon={<Zap size={14} />}>
           {isMobile ? (
-            <>
-              {/* Mobile: boolean full-width, then paired 2-col row */}
+            <div className="flex flex-col gap-3">
               {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
-              <div className="grid grid-cols-2 gap-2">
-                {renderNumeric('Power load (kW)', 'powerLoad')}
+              
+              <div className="h-px w-full bg-[#E4E7EC]" />
+              
+              <div className="grid grid-cols-2 gap-3">
+                <NumericField label="Power load (kW)" value={d.powerLoad} onChange={v => onUpdate({ powerLoad: v })} />
                 <Dropdown
                   label="Power phase"
                   value={d.powerPhase}
@@ -132,62 +146,54 @@ export default function Facilities() {
                   onChange={v => onUpdate({ powerPhase: v })}
                 />
               </div>
-            </>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               {show.powerBackup && renderVerticalBoolean('Power backup', 'powerBackup')}
-              <div className="max-w-[140px]">
-                {renderNumeric('Power load (kW)', 'powerLoad')}
-              </div>
-              <div className="max-w-[200px]">
-                <Dropdown
-                  label="Power phase"
-                  value={d.powerPhase}
-                  options={['Single', 'Three']}
-                  placeholder="Select"
-                  onChange={v => onUpdate({ powerPhase: v })}
-                />
-              </div>
+              <NumericField label="Power load (kW)" value={d.powerLoad} onChange={v => onUpdate({ powerLoad: v })} />
+              <Dropdown
+                label="Power phase"
+                value={d.powerPhase}
+                options={['Single', 'Three']}
+                placeholder="Select"
+                onChange={v => onUpdate({ powerPhase: v })}
+              />
             </div>
           )}
         </SectionCard>
 
         {/* SECTIONS: Hygiene & Fire Safety — side by side on desktop */}
         {(show.washrooms || show.waterConnection || show.fireSprinklers) && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[2px]">
+          <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2'}`}>
 
             {/* Facilities - Hygiene & Utilities */}
             {(show.washrooms || show.waterConnection) && (
-              <SectionCard title="Facilities - Hygiene & Utilities" icon={<Droplets size={18} />}>
-                {show.washrooms && (
-                  <div className="max-w-[200px]">
+              <SectionCard title="Hygiene & Utilities" icon={<Droplets size={14} />}>
+                <div className="flex flex-col gap-3">
+                  {show.washrooms && (
                     <Dropdown
-                      label="Washroom"
+                      label="Washroom Configuration"
                       value={d.washrooms}
                       options={['Yes, within unit', 'No', 'Common with building']}
                       placeholder="Select setup"
                       onChange={v => onUpdate({ washrooms: v })}
                     />
-                  </div>
-                )}
-                {show.waterConnection && renderVerticalBoolean('Water connection', 'waterConnection')}
+                  )}
+                  {show.waterConnection && renderVerticalBoolean('Water connection', 'waterConnection')}
+                </div>
               </SectionCard>
             )}
 
             {/* Facilities - Fire Safety */}
             {show.fireSprinklers && (
-              <SectionCard title="Facilities - Fire Safety" icon={<Flame size={18} />}>
-                {isMobile ? (
-                  <>
-                    {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
-                    {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
-                  </>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
-                    {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
-                  </div>
-                )}
+              <SectionCard title="Fire Safety" icon={<Flame size={14} />}>
+                <div className="flex flex-col gap-3">
+                  {renderVerticalBoolean('Fire sprinklers', 'fireSprinklers')}
+                  
+                  {isMobile && <div className="h-px w-full bg-[#E4E7EC]" />}
+                  
+                  {renderVerticalBoolean('Fire extinguishers', 'fireExtinguishers')}
+                </div>
               </SectionCard>
             )}
 
@@ -198,4 +204,3 @@ export default function Facilities() {
     </FormPage>
   )
 }
-

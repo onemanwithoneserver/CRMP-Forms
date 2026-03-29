@@ -26,26 +26,29 @@ export function Dropdown({
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [openUpward, setOpenUpward] = useState(false)
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({})
+
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  // Compute position for portal panel
   const computeDirection = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect()
       const spaceBelow = window.innerHeight - rect.bottom
       const goUp = spaceBelow < 220
       setOpenUpward(goUp)
+      
+      const panelSpacing = 4 // Sharp 4px gap instead of attaching directly
+      
       setPanelStyle({
         position: 'fixed',
         left: rect.left,
         width: rect.width,
         zIndex: 9999,
         ...(goUp
-          ? { bottom: window.innerHeight - rect.top }
-          : { top: rect.bottom }),
+          ? { bottom: window.innerHeight - rect.top + panelSpacing }
+          : { top: rect.bottom + panelSpacing }),
       })
     }
   }, [])
@@ -123,109 +126,110 @@ export function Dropdown({
     }
   }
 
-  // Dynamic border-radius for trigger button
-  const triggerRadius = isOpen
-    ? openUpward
-      ? 'rounded-b-[6px] rounded-t-none'
-      : 'rounded-t-[6px] rounded-b-none'
-    : 'rounded-[6px]'
-
-  // Dynamic panel border-radius (no positional class — portal uses fixed coords)
-  const panelRadiusClass = openUpward
-    ? 'rounded-t-[6px] rounded-b-none border-b-0 border-t border-x'
-    : 'rounded-b-[6px] rounded-t-none border-t-0 border-b border-x'
-
   const panelEl = (
     <div
       style={panelStyle}
       className={`
-        bg-white ${panelRadiusClass} border-[#C89B3C] shadow-[0_8px_24px_-4px_rgba(200,155,60,0.15)] flex flex-col overflow-hidden
-        transition-all duration-200
+        bg-white border border-[#E4E7EC] rounded-[3px] shadow-[0_8px_24px_rgba(15,27,46,0.15),0_2px_6px_rgba(15,27,46,0.08)] 
+        flex flex-col overflow-hidden font-['Outfit',sans-serif] transition-all duration-200 ease
         ${openUpward ? 'origin-bottom' : 'origin-top'}
-        ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 pointer-events-none'}
+        ${isOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-95 pointer-events-none'}
       `}
     >
       {searchable && (
-        <div className="p-2 border-b border-[#e2e6ec] bg-[#f8f9fb]">
+        <div className="p-2 border-b border-[#E4E7EC] bg-[#F5F7FA]">
           <div className="relative">
-            <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#a0a8b5]" />
+            <Search size={14} color="#667085" className="absolute left-2 top-1/2 -translate-y-1/2" />
             <input
               ref={inputRef}
               type="text"
-              className="w-full pl-7 pr-2 py-1.5 text-[12px] rounded-[5px] border border-[#d0d4dc] bg-white font-['Outfit'] font-medium placeholder-[#a0a8b5] text-[#1C2A44] focus:outline-none focus:border-[#C89B3C] focus:shadow-[0_0_0_2px_rgba(200,155,60,0.1)] transition-all duration-200"
               placeholder="Search..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               tabIndex={isOpen ? 0 : -1}
+              className="w-full py-1.5 pl-7 pr-6 text-[0.8rem] font-medium rounded-[3px] border border-[#E4E7EC] bg-white text-[#1C2A44] outline-none transition-all duration-200 ease box-border focus:border-[#C89B3C] focus:shadow-[0_0_0_2px_rgba(200,155,60,0.1)]"
             />
             {search && (
-              <button onClick={() => setSearch('')} tabIndex={isOpen ? 0 : -1} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#a0a8b5] hover:text-[#4a5568]">
-                <X size={12} />
+              <button 
+                onClick={() => setSearch('')} 
+                tabIndex={isOpen ? 0 : -1} 
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer p-0 flex items-center outline-none"
+              >
+                <X size={14} color="#667085" />
               </button>
             )}
           </div>
         </div>
       )}
 
-      <div className="max-h-52 overflow-y-auto custom-scrollbar py-1" ref={listRef}>
+      <div className="max-h-[200px] overflow-y-auto p-1" ref={listRef}>
         {filtered.length === 0 ? (
-          <div className="px-3 py-4 text-center text-[12.5px] text-[#667085] font-semibold font-['Outfit']">No results</div>
+          <div className="p-3 text-center text-[0.8rem] text-[#667085] font-medium">No results</div>
         ) : (
-          filtered.map((option, index) => (
-            <button
-              key={option}
-              type="button"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
-              onMouseEnter={() => setFocusedIndex(index)}
-              className={`
-                w-full flex items-center justify-between px-3 py-2 text-left text-[13px] font-['Outfit'] transition-colors duration-150 cursor-pointer block
-                ${value === option
-                  ? 'bg-[#FFFBF0] text-[#C89B3C] font-bold border-l-2 border-[#C89B3C]'
-                  : focusedIndex === index
-                    ? 'bg-[#f8f9fb] text-[#1C2A44] font-semibold border-l-2 border-transparent'
-                    : 'text-[#4a5568] font-semibold hover:bg-[#f8f9fb] hover:text-[#1C2A44] border-l-2 border-transparent'
-                }
-              `}
-            >
-              <span className="truncate">{option}</span>
-              {value === option && <Check size={14} className="text-[#C89B3C] shrink-0 ml-2 drop-shadow-sm" />}
-            </button>
-          ))
+          filtered.map((option, index) => {
+            const isSelected = value === option;
+            const isFocused = focusedIndex === index;
+            
+            let btnClass = "w-full flex items-center justify-between py-2 px-2.5 text-left text-[0.85rem] rounded-[3px] cursor-pointer border-none outline-none transition-all duration-150 ease "
+            if (isSelected) {
+              btnClass += "bg-[#C89B3C]/10 text-[#C89B3C] font-semibold"
+            } else if (isFocused) {
+              btnClass += "bg-[#F5F7FA] text-[#1C2A44] font-medium"
+            } else {
+              btnClass += "bg-transparent text-[#667085] font-medium"
+            }
+
+            return (
+              <button
+                key={option}
+                type="button"
+                tabIndex={isOpen ? 0 : -1}
+                onClick={() => { onChange(option); setIsOpen(false); setSearch('') }}
+                onMouseEnter={() => setFocusedIndex(index)}
+                className={btnClass}
+              >
+                <span className="whitespace-nowrap overflow-hidden text-ellipsis">{option}</span>
+                {isSelected && <Check size={14} color="#C89B3C" className="shrink-0 ml-2" />}
+              </button>
+            )
+          })
         )}
       </div>
     </div>
   )
 
   return (
-    <div className="relative flex flex-col gap-1.5 w-full" ref={ref} onKeyDown={handleKeyDown}>
-      {variant !== 'compact' && label && (
-        <label className="text-[0.78rem] font-semibold text-[#1C2A44] pl-0.5 font-['Outfit']">
+    <div ref={ref} className="relative w-full font-['Outfit',sans-serif]">
+      {label && (
+        <label className="block mb-1 text-[0.8rem] font-semibold text-[#1C2A44]">
           {label}
         </label>
       )}
-
       <button
         ref={triggerRef}
         type="button"
-        onClick={() => { computeDirection(); setIsOpen(!isOpen); setSearch('') }}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
         className={`
-          w-full flex items-center justify-between gap-1.5 px-2.5 border text-left text-[12px] font-['Outfit'] transition-all duration-300 cursor-pointer
-          ${variant === 'compact' ? 'h-[32px] py-1' : 'h-[32px] py-1'}
-          ${triggerRadius}
-          ${isOpen
-            ? 'border-[#C89B3C] bg-white outline-none shadow-[0_0_0_3px_rgba(200,155,60,0.15)] relative z-10'
-            : 'border-[var(--border)] bg-[rgba(255,255,255,0.7)] text-[#1C2A44] hover:border-[#C89B3C]/60 hover:bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]'
+          group w-full flex items-center justify-between px-[10px] rounded-[3px] cursor-pointer outline-none transition-all duration-250 ease-in-out border
+          ${variant === 'compact' ? 'h-[30px]' : 'h-[34px]'}
+          ${isOpen 
+            ? 'bg-[#F5F7FA] border-[#C89B3C] shadow-[0_2px_8px_rgba(15,27,46,0.08)]' 
+            : 'bg-[#F5F7FA] border-[#E4E7EC] hover:bg-white hover:border-[#E6C36A]'
           }
         `}
       >
-        <span className={value ? 'text-[#1C2A44] font-semibold truncate' : 'text-[#667085] font-medium truncate'}>
+        <span className={`text-[0.85rem] font-medium whitespace-nowrap overflow-hidden text-ellipsis ${value ? 'text-[#1C2A44]' : 'text-[#667085]'}`}>
           {value || placeholder}
         </span>
-        <ChevronDown size={14} className={`transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-[#C89B3C]' : 'text-[#667085]'}`} />
+        <ChevronDown 
+          size={16} 
+          className={`transition-all duration-250 ease-in-out ${isOpen ? 'text-[#C89B3C] rotate-180' : 'text-[#667085] group-hover:text-[#C89B3C] rotate-0'}`} 
+        />
       </button>
 
-      {ReactDOM.createPortal(panelEl, document.body)}
+      {/* Render the panel using a Portal so it doesn't get clipped by parents with overflow: hidden */}
+      {typeof document !== 'undefined' && ReactDOM.createPortal(panelEl, document.body)}
     </div>
   )
 }

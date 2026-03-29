@@ -84,7 +84,7 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
               <div
                 key={type.id}
                 className={`relative flex justify-end px-[12px] rounded-[3px] border border-gold bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06),0_1px_3px_rgba(200,155,60,0.08)] font-outfit ${noBuilding ? 'min-h-[100px] py-0 items-center' : 'py-[8px]'}`}
-                style={{ gap: '37.5%' }}
+                style={{ gap: '72%' }}
               >
                 <div 
                   className="absolute -top-[10px] -right-[10px] bg-white rounded-full flex items-center justify-center shadow-sm"
@@ -111,7 +111,7 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
                     {type.label}
                   </span>
                 </button>
-                <div className="w-px h-auto bg-border flex-shrink-0" />
+           
                 <div className="flex flex-col gap-[12px] flex-1 min-w-0">
                   {SELLER_POST_TYPES.filter(option =>
                     option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'

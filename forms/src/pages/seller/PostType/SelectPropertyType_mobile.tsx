@@ -39,113 +39,105 @@ function PostTypeRadioOptionMobile({
 export default function SelectPropertyTypeMobile({ propertyType }: SelectPropertyTypeMobileProps) {
   const { state, dispatch } = useForm()
   const { postType } = state.formData
+  const noBuilding = propertyType === 'land' || !postType
+
+  const unselected = PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType)
+  const isOdd = unselected.length % 2 !== 0
 
   return (
     <div className="flex flex-col gap-[8px] font-outfit px-[4px]">
-      {propertyType ? (
-        <>
-          {/* Unselected options grid */}
-          <div className="grid grid-cols-4 gap-[6px] transition-all duration-300 ease-out">
-            {PROPERTY_TYPE_CARDS.filter(t => t.id !== propertyType).map(type => (
-              <PropertyCard
-                key={type.id}
-                icon={type.icon}
-                label={type.label}
-                selected={false}
-                compact={true}
-                onClick={() => dispatch({
-                  type: 'updateData',
-                  payload: { propertyType: type.id, postType: '', postSubCategory: '' },
-                })}
-              />
-            ))}
-          </div>
-
-          {/* Selected Option (Horizontal Layout matching image) */}
-          <div className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] mt-[4px]">
-            {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => {
-              const Icon = type.icon
-              return (
-                <div 
-                  key={type.id} 
-                  className="relative flex items-center justify-between gap-[6px] px-[8px] py-[6px] rounded-[4px] border border-[#C89B3C] bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06)]"
-                >
-                  {/* Outer Gold Checkmark */}
-                  <div 
-                    className="absolute -top-[8px] -right-[8px] z-10 bg-white rounded-full flex items-center justify-center shadow-sm"
-                    title="Selected Property Type"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#C89B3C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check" aria-hidden="true">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                  </div>
-
-                  {/* Left Side: Icon & Label */}
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: 'updateData', payload: { propertyType: '', postType: '', postSubCategory: '' } })}
-                    className="flex items-center gap-[8px] flex-shrink-0 cursor-pointer bg-transparent border-none p-0 outline-none group"
-                  >
-                    <div className="w-[32px] h-[32px] rounded-[3px] bg-navy border border-[#C89B3C] flex items-center justify-center flex-shrink-0 shadow-[0_2px_6px_rgba(15,27,46,0.25)]">
-                      <Icon size={16} color="#E6C36A" />
-                    </div>
-                    <span className="text-[0.85rem] font-semibold text-navy whitespace-nowrap">
-                      {type.label}
-                    </span>
-                  </button>
-
-                  {/* Vertical Separator Line */}
-                  <div className="w-px h-[24px] bg-border flex-shrink-0" />
-
-                  {/* Right Side: Tab Controls */}
-                  <div className="flex flex-1 justify-end min-w-0">
-                    <div className="flex items-center gap-[2px] flex-shrink-0">
-                      {SELLER_POST_TYPES.filter(option => 
-                        option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
-                      ).map(option => {
-                        const selected = postType === option.value
-                        return (
-                          <PostTypeRadioOptionMobile
-                            key={option.value}
-                            option={option}
-                            selected={selected}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              if (!selected) {
-                                dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
-                              }
-                            }}
-                          />
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                </div>
-              )
-            })}
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-wrap justify-center gap-[6px] w-full transition-all duration-300 ease-out">
-          {PROPERTY_TYPE_CARDS.map((type) => (
+      {/* Unified unselected options grid for all states */}
+      <div className={`grid gap-[6px] transition-all duration-300 ease-out ${noBuilding ? 'grid-cols-2' : 'grid-cols-4'}`}>
+        {unselected.map((type, idx) => {
+          const isLastLone = noBuilding && isOdd && idx === unselected.length - 1
+          return (
             <div
               key={type.id}
-              className="w-[calc(33.333%-4px)]"
+              className={`${
+                isLastLone ? 'col-span-2 flex justify-center' : noBuilding ? 'min-h-[80px]' : ''
+              }`}
             >
-              <PropertyCard
-                icon={type.icon}
-                label={type.label}
-                selected={false}
-                compact={true}
-                onClick={() => dispatch({
-                  type: 'updateData',
-                  payload: { propertyType: type.id, postType: '', postSubCategory: '' },
-                })}
-              />
+              <div className={isLastLone ? 'w-[calc(50%-3px)] min-h-[80px]' : 'w-full h-full'}>
+                <PropertyCard
+                  icon={type.icon}
+                  label={type.label}
+                  selected={false}
+                  compact={!noBuilding}
+                  onClick={() => dispatch({
+                    type: 'updateData',
+                    payload: { propertyType: type.id, postType: '', postSubCategory: '' },
+                  })}
+                />
+              </div>
             </div>
-          ))}
+          )
+        })}
+      </div>
+
+      {/* Selected Option — only rendered when a property type is chosen */}
+      {propertyType && (
+        <div className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] mt-[4px]">
+          {PROPERTY_TYPE_CARDS.filter(t => t.id === propertyType).map(type => {
+            const Icon = type.icon
+            return (
+              <div 
+                key={type.id} 
+                className={`relative flex items-center justify-between gap-[6px] px-[8px] rounded-[4px] border border-[#C89B3C] bg-white shadow-[0_2px_8px_rgba(15,27,46,0.06)] ${noBuilding ? 'min-h-[80px] py-0' : 'py-[6px]'}`}
+              >
+                {/* Outer Gold Checkmark */}
+                <div 
+                  className="absolute -top-[8px] -right-[8px] z-10 bg-white rounded-full flex items-center justify-center shadow-sm"
+                  title="Selected Property Type"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#C89B3C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </div>
+
+                {/* Left Side: Icon & Label */}
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: 'updateData', payload: { propertyType: '', postType: '', postSubCategory: '' } })}
+                  className="flex flex-col items-center gap-[6px] flex-shrink-0 cursor-pointer bg-transparent border-none p-0 outline-none group min-w-[56px]"
+                >
+                  <div className="w-[32px] h-[32px] rounded-[3px] bg-navy border border-[#C89B3C] flex items-center justify-center flex-shrink-0 shadow-[0_2px_6px_rgba(15,27,46,0.25)]">
+                    <Icon size={16} color="#E6C36A" />
+                  </div>
+                  <span className="text-[0.7rem] font-semibold text-navy text-center leading-tight">
+                    {type.label}
+                  </span>
+                </button>
+
+                {/* Vertical Separator Line */}
+                <div className="w-px h-[24px] bg-border flex-shrink-0" />
+
+                {/* Right Side: Radio Controls */}
+                <div className="flex flex-1 justify-end min-w-0">
+                  <div className="flex items-center gap-[2px] flex-shrink-0">
+                    {SELLER_POST_TYPES.filter(option => 
+                      option.label !== 'Offer Franchisee' && option.label !== 'Sell/Lease Running Business'
+                    ).map(option => {
+                      const selected = postType === option.value
+                      return (
+                        <PostTypeRadioOptionMobile
+                          key={option.value}
+                          option={option}
+                          selected={selected}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (!selected) {
+                              dispatch({ type: 'updateData', payload: { postType: option.value, postSubCategory: '' } })
+                            }
+                          }}
+                        />
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

@@ -20,9 +20,9 @@ function PostTypeRadioOption({
     <button
       type="button"
       onClick={onClick}
-      className="flex flex-row items-center gap-[6px] px-[10px] py-[6px] cursor-pointer bg-transparent border-none outline-none group"
+      className="flex flex-row items-center gap-[2px] px-[4px] py-[2px] cursor-pointer bg-transparent border-none outline-none group"
     >
-      <div className={`w-[14px] h-[14px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+      <div className={`w-[12px] h-[12px] rounded-full border-2 flex items-end justify-end shrink-0 transition-all duration-200 ${
         selected ? 'border-[#C89B3C] bg-navy' : 'border-[#C4C9D4] group-hover:border-navy'
       }`}>
         {selected && <div className="w-[5px] h-[5px] rounded-full bg-[#E6C36A]" />}
@@ -77,7 +77,7 @@ export default function SelectPropertyTypeDesktop({ propertyType }: SelectProper
         })}
       </div>
       {propertyType && (
-        <div className="mt-[8px] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+        <div className="mt-[2px] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {PROPERTY_TYPE_CARDS.filter(type => type.id === propertyType).map(type => {
             const Icon = type.icon
             return (
